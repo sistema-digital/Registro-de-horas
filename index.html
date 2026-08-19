@@ -325,7 +325,7 @@
           <div class="card-head"><div><div class="card-title">Detalle de registros</div><div class="card-note" id="recordsNote">0 registros</div></div></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Fecha</th><th>Unidad de producción</th><th>Labor</th><th>Nombre de labor</th><th>Horas</th><th>Productor</th><th>Responsable / Dueño</th></tr></thead>
+              <thead><tr><th>Fecha</th><th>Unidad de producción</th><th>Labor</th><th>Nombre de labor</th><th>Horas</th><th>Productor</th><th>Operador</th></tr></thead>
               <tbody id="detailTable"></tbody>
             </table>
             <div class="no-data" id="tableEmpty" hidden>No hay registros para este período.</div>
@@ -833,8 +833,8 @@
       const sorted=[...rows].sort((a,b)=>(a.date?.getTime()||0)-(b.date?.getTime()||0));
       doc.autoTable({
         startY:nextY, margin:{left:margin,right:margin,top:23,bottom:11},
-        head:[['Fecha','Unidad de producción','Labor','Nombre de labor','Horas','Productor','Responsable / Dueño']],
-        body:sorted.map(r=>[displayDate(r.date),r.unit||'—',r.labor||'—',r.laborName||'—',fmtHours(r.hours),r.producer||'—',r.owner||r.operator||r.employee||'—']),
+        head:[['Fecha','Unidad de producción','Labor','Nombre de labor','Horas','Productor','Operador']],
+        body:sorted.map(r=>[displayDate(r.date),r.unit||'—',r.labor||'—',r.laborName||'—',fmtHours(r.hours),r.producer||'—',r.operator||'—']),
         theme:'grid', showHead:'everyPage',
         styles:{font:'helvetica',fontSize:5.8,cellPadding:1.25,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.16,overflow:'linebreak'},
         headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold',fontSize:5.9},
@@ -951,7 +951,7 @@
       <td>${escapeHtml(r.laborName||'—')}</td>
       <td><span class="hours-pill">${fmtHours(r.hours)} h</span></td>
       <td>${escapeHtml(r.producer||'—')}</td>
-      <td>${escapeHtml(r.owner||r.operator||r.employee||'—')}</td>
+      <td>${escapeHtml(r.operator||'—')}</td>
     </tr>`).join('');
   }
 
