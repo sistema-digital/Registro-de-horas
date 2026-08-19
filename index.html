@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Registro de horas</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --panel:#ffffff;
+      --ink:#162033;
+      --muted:#667085;
+      --line:#e5eaf1;
+      --nav:#101828;
+      --nav2:#1d2939;
+      --blue:#2563eb;
+      --blue-soft:#eff6ff;
+      --green:#039855;
+      --green-soft:#ecfdf3;
+      --amber:#dc6803;
+      --amber-soft:#fffaeb;
+      --red:#d92d20;
+      --red-soft:#fef3f2;
+      --shadow:0 10px 30px rgba(16,24,40,.07);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+    button,input{font:inherit}
+    button{cursor:pointer}
+
+    .app{display:grid;grid-template-rows:72px 1fr;height:100vh;min-height:0}
+    .topbar{display:flex;align-items:center;gap:18px;padding:0 22px;background:var(--panel);border-bottom:1px solid var(--line);z-index:4}
+    .brand{display:flex;align-items:center;gap:12px;min-width:290px}
+    .brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#1d4ed8,#2563eb);display:grid;place-items:center;color:white;box-shadow:0 8px 18px rgba(37,99,235,.22)}
+    .brand-icon svg{width:23px;height:23px}
+    .brand-title{font-weight:800;letter-spacing:-.02em;line-height:1.05}
+    .brand-sub{display:none;font-size:12px;color:var(--muted);margin-top:4px}
+    .top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .file-status{display:flex;align-items:center;gap:8px;max-width:320px;padding:8px 12px;border-radius:10px;background:#f8fafc;color:#475467;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-status{display:none !important}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:#98a2b3;flex:0 0 auto}
+    .file-status.ok .status-dot{background:#12b76a}
+    .btn-primary,.btn-soft,.btn-report{border:0;border-radius:11px;padding:10px 15px;font-weight:700;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:var(--blue);color:#fff;box-shadow:0 5px 12px rgba(37,99,235,.2)}
+    .btn-primary:hover{background:#1d4ed8}
+    .btn-soft{background:#f2f4f7;color:#344054}
+    .btn-soft:hover{background:#e9edf3}
+    .btn-report{background:#101828;color:#fff;box-shadow:0 5px 12px rgba(16,24,40,.14)}
+    .btn-report:hover{background:#1d2939}
+    .btn-report:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+    .btn-primary svg,.btn-soft svg,.btn-report svg{width:18px;height:18px}
+
+    .workspace{display:grid;grid-template-columns:310px 1fr;min-height:0}
+    .sidebar{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+    .side-head{padding:18px 16px 14px;border-bottom:1px solid var(--line)}
+    .side-title-row{display:flex;align-items:center;gap:7px;margin-bottom:12px}
+    .side-title{font-size:14px;font-weight:800;flex:0 0 auto}
+    .status-filters{display:flex;align-items:center;gap:5px;margin-left:auto}
+    .status-filter-btn{border:1px solid var(--line);background:#fff;color:#475467;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:800;line-height:1.2;white-space:nowrap;transition:.18s}
+    .status-filter-btn:hover{background:#f8fafc;border-color:#cfd7e3}
+    .status-filter-btn[data-status="active"].selected{background:#ecfdf3;border-color:#abefc6;color:#067647}
+    .status-filter-btn[data-status="inactive"].selected{background:#fef3f2;border-color:#fecdca;color:#b42318}
+    .status-filter-btn .status-count{margin-left:3px;font-variant-numeric:tabular-nums}
+    .count-chip{font-size:12px;background:var(--blue-soft);color:#1d4ed8;padding:4px 8px;border-radius:999px;font-weight:800;flex:0 0 auto}
+    .search{position:relative}
+    .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#98a2b3}
+    .search input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 12px 0 37px;outline:none;color:var(--ink);background:#fff}
+    .search input:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .equipment-list{padding:8px;overflow:auto;min-height:0}
+    .equipment-item{width:100%;border:0;background:transparent;text-align:left;border-radius:12px;padding:12px 11px;display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;color:inherit;margin-bottom:3px}
+    .equipment-item:hover{background:#f8fafc}
+    .equipment-item.active{background:var(--blue-soft);box-shadow:inset 0 0 0 1px #dbeafe}
+    .eq-icon{width:40px;height:40px;border-radius:11px;background:#f2f4f7;display:grid;place-items:center;color:#475467}
+    .equipment-item.active .eq-icon{background:#dbeafe;color:#1d4ed8}
+    .eq-icon svg{width:21px;height:21px}
+    .eq-code{font-weight:800;font-size:14px}
+    .eq-meta{font-size:11.5px;color:var(--muted);margin-top:3px}
+    .eq-period{font-size:9px;color:#98a2b3;margin-top:3px;white-space:nowrap}
+    .eq-hours{text-align:right}
+    .eq-hours strong{font-size:14px;display:block}
+    .eq-hours span{font-size:10.5px;color:var(--muted)}
+    .side-empty{padding:34px 18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
+
+    .main{overflow:auto;min-height:0;padding:22px 24px 34px}
+    .empty-state{height:calc(100vh - 120px);display:grid;place-items:center}
+    .empty-card{max-width:560px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:42px 34px;box-shadow:var(--shadow)}
+    .empty-illustration{width:78px;height:78px;margin:0 auto 20px;border-radius:22px;background:var(--blue-soft);display:grid;place-items:center;color:var(--blue)}
+    .empty-illustration svg{width:40px;height:40px}
+    .empty-card h2{margin:0 0 10px;font-size:22px}
+    .empty-card p{margin:0 auto 22px;color:var(--muted);line-height:1.6;font-size:14px;max-width:440px}
+
+    .detail{display:none;max-width:1500px;margin:0 auto}
+    .detail.visible{display:block}
+    .detail-header{display:flex;align-items:flex-start;gap:20px;margin-bottom:18px}
+    .detail-title{min-width:0}
+    .eyebrow{font-size:12px;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+    .detail-title h1{font-size:28px;letter-spacing:-.035em;margin:0}
+    .detail-sub{color:var(--muted);font-size:13px;margin-top:6px}
+    .filters{margin-left:auto;display:flex;align-items:end;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+    .filter-group{display:flex;flex-direction:column;gap:5px}
+    .filter-group label{font-size:10.5px;color:var(--muted);font-weight:700}
+    .filter-group input{height:36px;border:1px solid var(--line);border-radius:9px;padding:0 10px;color:#344054;background:#fff;outline:none}
+    .filter-group input:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .date-range-group{min-width:245px}
+    .date-range-wrap{position:relative}
+    .date-range-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#667085;pointer-events:none;z-index:2}
+    .date-range-wrap input{width:245px;padding-left:36px;padding-right:12px;font-weight:650;cursor:pointer;background:#fff}
+    .flatpickr-calendar{font-family:inherit;border:1px solid #e4e7ec;box-shadow:0 16px 42px rgba(16,24,40,.18);border-radius:14px;overflow:hidden}
+    .flatpickr-months{padding:8px 5px 2px}
+    .flatpickr-current-month{font-size:14px;font-weight:800}
+    .flatpickr-weekdays{margin-top:4px}
+    span.flatpickr-weekday{color:#667085;font-size:11px;font-weight:700}
+    .flatpickr-day{border-radius:8px;color:#344054;font-weight:550}
+    .flatpickr-day.today{border-color:#2e90fa;color:#175cd3}
+    .flatpickr-day.today:hover{background:#eff8ff;border-color:#2e90fa}
+    .flatpickr-day.selected,.flatpickr-day.startRange,.flatpickr-day.endRange,.flatpickr-day.selected.inRange,.flatpickr-day.startRange.inRange,.flatpickr-day.endRange.inRange,.flatpickr-day.selected:focus,.flatpickr-day.startRange:focus,.flatpickr-day.endRange:focus,.flatpickr-day.selected:hover,.flatpickr-day.startRange:hover,.flatpickr-day.endRange:hover{background:#2e90fa;border-color:#2e90fa;color:#fff}
+    .flatpickr-day.inRange{background:#eaf4ff;border-color:#eaf4ff;box-shadow:-5px 0 0 #eaf4ff,5px 0 0 #eaf4ff}
+    .flatpickr-day.prevMonthDay,.flatpickr-day.nextMonthDay{color:#c0c7d1}
+
+    .active-filters{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 12px}
+    .active-filters.visible{display:flex}
+    .active-filter-label{font-size:10px;font-weight:800;color:#667085;text-transform:uppercase;letter-spacing:.04em}
+    .filter-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid #b2ddff;background:#eff8ff;color:#175cd3;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:750}
+    .filter-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:14px;line-height:1;padding:0}
+    .clear-interactive{border:0;background:transparent;color:#475467;font-size:11px;font-weight:750;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+    .kpis{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:12px;margin-bottom:14px}
+    .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(16,24,40,.025)}
+    .kpi-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .kpi-label{font-size:12px;color:var(--muted);font-weight:700}
+    .kpi-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
+    .kpi-icon svg{width:17px;height:17px}
+    .kpi-icon.blue{background:var(--blue-soft);color:var(--blue)}
+    .kpi-icon.green{background:var(--green-soft);color:var(--green)}
+    .kpi-icon.amber{background:var(--amber-soft);color:var(--amber)}
+    .kpi-icon.gray{background:#f2f4f7;color:#475467}
+    .kpi-icon.red{background:var(--red-soft);color:var(--red)}
+    .kpi-value{font-size:25px;font-weight:850;letter-spacing:-.03em;line-height:1}
+    .kpi-note{font-size:10.5px;color:#98a2b3;margin-top:6px}
+    .kpi-compliance{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .kpi-compliance-copy{min-width:0}
+    .mini-donut{--pct:0%;flex:0 0 58px;width:58px;height:58px;border-radius:50%;background:conic-gradient(#12b76a var(--pct),#f04438 0);position:relative;display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(16,24,40,.04)}
+    .mini-donut::after{content:"";position:absolute;width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(16,24,40,.03)}
+    .mini-donut span{position:relative;z-index:1;font-size:10px;font-weight:850;color:#344054}
+    .donut-legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:9px;color:#667085}
+    .donut-legend span{display:inline-flex;align-items:center;gap:4px}
+    .donut-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+    .donut-dot.green{background:#12b76a}.donut-dot.red{background:#f04438}
+
+    .grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);gap:14px;margin-bottom:14px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 8px rgba(16,24,40,.025);overflow:hidden}
+    .card-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .card-title{font-weight:800;font-size:14px}
+    .card-note{font-size:11px;color:var(--muted);margin-top:3px}
+    .card-body{padding:16px 17px}
+
+    .day-chart{min-height:235px;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid #eef2f6;padding:12px 4px 0;overflow-x:auto}
+    .day-col{height:205px;min-width:34px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;position:relative;cursor:pointer;border-radius:9px;padding:3px 2px;transition:.18s;border:0;background:transparent;font:inherit;color:inherit}
+    .day-col:hover{background:#f7faff}
+    .day-col.active{background:#eaf4ff;box-shadow:inset 0 0 0 1px #b2ddff}
+    .day-col.active .bar{background:linear-gradient(180deg,#1570ef,#175cd3);box-shadow:0 0 0 2px rgba(46,144,250,.16)}
+    .bar-wrap{height:155px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+    .bar{width:min(28px,72%);min-height:3px;background:linear-gradient(180deg,#3b82f6,#2563eb);border-radius:6px 6px 2px 2px;position:relative;transition:.2s}
+    .bar:hover{filter:brightness(.95);transform:translateY(-2px)}
+    .bar-value{font-size:10px;font-weight:800;color:#344054;white-space:nowrap}
+    .day-label{font-size:9.5px;color:var(--muted);white-space:nowrap}
+
+    .labor-list{display:flex;flex-direction:column;gap:12px}
+    .labor-row{display:grid;grid-template-columns:1fr auto;gap:7px;width:100%;border:0;background:transparent;text-align:left;font:inherit;color:inherit;padding:7px 8px;border-radius:9px;cursor:pointer;transition:.18s}
+    .labor-row:hover{background:#f7faff}
+    .labor-row.active{background:#eaf4ff;box-shadow:inset 0 0 0 1px #b2ddff}
+    .labor-name{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .labor-hours{font-size:12px;font-weight:800}
+    .progress{height:6px;background:#f2f4f7;border-radius:999px;overflow:hidden;grid-column:1/-1}
+    .progress > span{display:block;height:100%;background:#84adff;border-radius:999px}
+    .labor-empty{padding:35px 5px;text-align:center;color:var(--muted);font-size:13px}
+
+    .table-card{margin-bottom:16px}
+    .table-wrap{overflow:auto;max-height:440px}
+    table{width:100%;border-collapse:collapse;min-width:850px}
+    thead th{position:sticky;top:0;background:#f9fafb;z-index:1;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:#667085}
+    tbody td{padding:11px 14px;border-bottom:1px solid #f0f2f5;font-size:12px;vertical-align:top}
+    tbody tr:hover{background:#fafcff}
+    .hours-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--blue-soft);color:#1d4ed8;font-weight:800}
+    .labor-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#475467}
+    .muted{color:var(--muted)}
+    .no-data{padding:28px;text-align:center;color:var(--muted);font-size:13px}
+
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#101828;color:#fff;border-radius:12px;padding:11px 15px;box-shadow:0 12px 30px rgba(16,24,40,.25);font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:20;max-width:min(500px,calc(100vw - 32px));text-align:center}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .toast.error{background:#b42318}
+
+    @media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:1050px){
+      .workspace{grid-template-columns:270px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.brand{min-width:0}.file-status{display:none}
+    }
+    @media(max-width:760px){
+      body{overflow:auto}.app{height:auto;min-height:100vh;display:block}.topbar{position:sticky;top:0;height:68px;padding:0 13px}.brand-sub{display:none}.brand-title{font-size:14px}.btn-primary span{display:none}.workspace{display:block}.sidebar{border-right:0;border-bottom:1px solid var(--line);height:auto}.equipment-list{display:flex;overflow-x:auto;padding:8px 12px}.equipment-item{min-width:205px}.main{padding:16px 12px}.detail-header{display:block}.filters{margin:14px 0 0;justify-content:flex-start}.kpis{grid-template-columns:1fr 1fr}.empty-state{height:calc(100vh - 210px)}
+    }
+    @media(max-width:430px){.kpis{grid-template-columns:1fr}.filter-group{width:calc(50% - 5px)}.filter-group input{width:100%}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-7"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">Registro de horas</div>
+        <div class="brand-sub">Equipos con código 840 y 841</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="file-status" id="fileStatus"><span class="status-dot"></span><span id="fileStatusText">Sin archivo cargado</span></div>
+      <button class="btn-primary" id="loadBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14a2 2 0 0 0 2-2v-4"/><path d="M3 15v4a2 2 0 0 0 2 2"/></svg>
+        <span>Cargar datos</span>
+      </button>
+      <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden />
+    </div>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="side-head">
+        <div class="side-title-row">
+          <div class="side-title">Equipos</div>
+          <div class="status-filters" aria-label="Filtrar equipos por actividad">
+            <button class="status-filter-btn" id="activeFilterBtn" data-status="active" type="button">Activos <span class="status-count" id="activeCount">0</span></button>
+            <button class="status-filter-btn" id="inactiveFilterBtn" data-status="inactive" type="button">Inactivos <span class="status-count" id="inactiveCount">0</span></button>
+          </div>
+          <div class="count-chip" id="equipmentCount" title="Total de equipos">0</div>
+        </div>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="searchInput" type="search" placeholder="Buscar equipo..." autocomplete="off" />
+        </div>
+      </div>
+      <div class="equipment-list" id="equipmentList"></div>
+    </aside>
+
+    <main class="main">
+      <section class="empty-state" id="emptyState">
+        <div class="empty-card">
+          <div class="empty-illustration">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/><path d="M8 14h8M8 17h5"/></svg>
+          </div>
+          <h2>Carga tus datos de horas</h2>
+          <p style="display:none">Selecciona un archivo Excel. La aplicación detectará la tabla, filtrará automáticamente los equipos que comiencen por 840 o 841 y organizará sus horas trabajadas.</p>
+          <button class="btn-primary" id="emptyLoadBtn" type="button">Seleccionar archivo Excel</button>
+        </div>
+      </section>
+
+      <section class="detail" id="detailView">
+        <div class="detail-header">
+          <div class="detail-title">
+            <div class="eyebrow">Detalle del equipo</div>
+            <h1 id="detailEquipment">Equipo —</h1>
+            <div class="detail-sub" id="detailRange">Sin período seleccionado</div>
+          </div>
+          <div class="filters">
+            <div class="filter-group date-range-group">
+              <label>PERÍODO</label>
+              <div class="date-range-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+                <input id="dateRange" type="text" placeholder="Seleccionar período" readonly />
+              </div>
+              <input id="dateFrom" type="hidden" />
+              <input id="dateTo" type="hidden" />
+            </div>
+            <button class="btn-soft" id="clearDates" type="button">Limpiar</button>
+            <button class="btn-report" id="reportBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/><path d="M18 11h.01"/></svg>
+              Generar reporte
+            </button>
+          </div>
+        </div>
+
+        <div class="active-filters" id="activeFilters"></div>
+
+        <div class="kpis">
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Total de horas trabajadas</div><div class="kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div></div><div class="kpi-value" id="kpiHours">0.00 h</div><div class="kpi-note">Horas del período seleccionado</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Meta de horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="m9 12 2 2 4-5"/></svg></div></div><div class="kpi-value" id="kpiTarget">0.00 h</div><div class="kpi-note">8 horas × días del período</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Tiempo perdido</div><div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M4.5 4.5 19.5 19.5"/></svg></div></div><div class="kpi-value" id="kpiLost">0.00 h</div><div class="kpi-note">Horas faltantes para llegar a 8 h/día</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Promedio de horas por día</div><div class="kpi-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div></div><div class="kpi-value" id="kpiAverage">0.00 h</div><div class="kpi-note">Horas trabajadas ÷ días del período</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Días que cumplen las 8 horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="m8 16 2 2 5-5"/></svg></div></div><div class="kpi-value" id="kpiMetDays">0</div><div class="kpi-note" id="kpiMetDaysNote">0 de 0 días del período</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Cumplimiento</div><div class="kpi-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></div></div><div class="kpi-compliance"><div class="kpi-compliance-copy"><div class="kpi-value" id="kpiCompliance">0.00%</div><div class="kpi-note" id="kpiComplianceNote">0.00 h cumplidas de 0.00 h</div></div><div class="mini-donut" id="complianceDonut" style="--pct:0%"><span id="donutPct">0%</span></div></div><div class="donut-legend"><span><i class="donut-dot green"></i>Cumplido</span><span><i class="donut-dot red"></i>Faltante</span></div></article>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <div class="card-head"><div><div class="card-title">Horas por día</div><div class="card-note">Toca un día para filtrar los registros</div></div></div>
+            <div class="card-body"><div class="day-chart" id="dayChart"></div></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><div><div class="card-title">Horas por labor</div><div class="card-note">Toca una labor para ver los días en que se realizó</div></div></div>
+            <div class="card-body"><div class="labor-list" id="laborList"></div></div>
+          </article>
+        </div>
+
+        <article class="card table-card">
+          <div class="card-head"><div><div class="card-title">Detalle de registros</div><div class="card-note" id="recordsNote">0 registros</div></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fecha</th><th>Unidad de producción</th><th>Labor</th><th>Nombre de labor</th><th>Horas</th><th>Productor</th><th>Responsable / Dueño</th></tr></thead>
+              <tbody id="detailTable"></tbody>
+            </table>
+            <div class="no-data" id="tableEmpty" hidden>No hay registros para este período.</div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const state = { rows: [], byEquipment: new Map(), selected: null, sourceSheet: '', fileName: '', activeDay: '', activeLabor: '', equipmentStatus: 'all' };
+  const $ = id => document.getElementById(id);
+  const els = {
+    fileInput:$('fileInput'), loadBtn:$('loadBtn'), emptyLoadBtn:$('emptyLoadBtn'), fileStatus:$('fileStatus'), fileStatusText:$('fileStatusText'),
+    equipmentList:$('equipmentList'), equipmentCount:$('equipmentCount'), activeFilterBtn:$('activeFilterBtn'), inactiveFilterBtn:$('inactiveFilterBtn'), activeCount:$('activeCount'), inactiveCount:$('inactiveCount'), searchInput:$('searchInput'), emptyState:$('emptyState'), detailView:$('detailView'),
+    detailEquipment:$('detailEquipment'), detailRange:$('detailRange'), dateRange:$('dateRange'), dateFrom:$('dateFrom'), dateTo:$('dateTo'), clearDates:$('clearDates'), reportBtn:$('reportBtn'),
+    kpiHours:$('kpiHours'), kpiAverage:$('kpiAverage'), kpiTarget:$('kpiTarget'), kpiLost:$('kpiLost'), kpiMetDays:$('kpiMetDays'), kpiMetDaysNote:$('kpiMetDaysNote'), kpiCompliance:$('kpiCompliance'), kpiComplianceNote:$('kpiComplianceNote'), complianceDonut:$('complianceDonut'), donutPct:$('donutPct'), dayChart:$('dayChart'), laborList:$('laborList'),
+    detailTable:$('detailTable'), tableEmpty:$('tableEmpty'), recordsNote:$('recordsNote'), activeFilters:$('activeFilters'), toast:$('toast')
+  };
+
+  let dateRangePicker = null;
+
+  const currentMonthRange = () => {
+    const today = new Date();
+    const start = new Date(today.getFullYear(), today.getMonth(), 1);
+    return [start, today];
+  };
+
+  const syncDateInputs = dates => {
+    const from = dates?.[0] || null;
+    const to = dates?.[1] || dates?.[0] || null;
+    els.dateFrom.value = from ? isoDate(from) : '';
+    els.dateTo.value = to ? isoDate(to) : '';
+  };
+
+  const applyCurrentMonthRange = (triggerRender=true) => {
+    const range = currentMonthRange();
+    syncDateInputs(range);
+    if(dateRangePicker) dateRangePicker.setDate(range,false);
+    if(triggerRender){ renderEquipmentList(); if(state.selected) renderDetail(); }
+  };
+
+  const norm = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  const text = v => String(v ?? '').trim();
+  const equipmentText = v => text(v).replace(/\.0+$/,'').replace(/\s+/g,'');
+  const num = v => {
+    if (typeof v === 'number' && Number.isFinite(v)) return v;
+    if (v == null || v === '') return 0;
+    let s = String(v).trim().replace(/\s/g,'');
+    if (/^-?\d{1,3}(\.\d{3})+,\d+$/.test(s)) s = s.replace(/\./g,'').replace(',','.');
+    else if (/^-?\d+,\d+$/.test(s)) s = s.replace(',','.');
+    else s = s.replace(/,/g,'');
+    const n = Number(s); return Number.isFinite(n) ? n : 0;
+  };
+  const escapeHtml = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const fmtHours = n => new Intl.NumberFormat('es-PA',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n || 0);
+  const fmtInt = n => new Intl.NumberFormat('es-PA',{maximumFractionDigits:0}).format(n || 0);
+  const pad2 = n => String(n).padStart(2,'0');
+
+  function parseDate(v){
+    if (v instanceof Date && !Number.isNaN(v.getTime())) return new Date(v.getFullYear(),v.getMonth(),v.getDate());
+    if (typeof v === 'number' && window.XLSX?.SSF){
+      const p = XLSX.SSF.parse_date_code(v); if (p) return new Date(p.y,p.m-1,p.d);
+    }
+    const s = text(v); if (!s) return null;
+    let m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/); if (m) return new Date(+m[1],+m[2]-1,+m[3]);
+    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/); if (m){ let y=+m[3]; if(y<100)y+=2000; return new Date(y,+m[2]-1,+m[1]); }
+    const d = new Date(s); return Number.isNaN(d.getTime()) ? null : new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  }
+  function isoDate(d){ return d ? `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}` : ''; }
+  function displayDate(d){ return d ? new Intl.DateTimeFormat('es-PA',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d) : '—'; }
+  function shortDate(d){ return d ? new Intl.DateTimeFormat('es-PA',{day:'2-digit',month:'short'}).format(d).replace('.','') : '—'; }
+
+  function showToast(message, isError=false){
+    els.toast.textContent=message; els.toast.className='toast show'+(isError?' error':'');
+    clearTimeout(showToast.t); showToast.t=setTimeout(()=>els.toast.className='toast',3200);
+  }
+
+  function detectDataset(workbook){
+    let best=null;
+    for(const sheetName of workbook.SheetNames){
+      const ws=workbook.Sheets[sheetName];
+      const matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false});
+      const scan=Math.min(matrix.length,25);
+      for(let r=0;r<scan;r++){
+        const headers=(matrix[r]||[]).map(norm);
+        const hasEq=headers.some(h=>h==='equipo'||h.includes('equipo'));
+        const hasDate=headers.some(h=>h==='fecha'||h.startsWith('fecha '));
+        const hasHours=headers.some(h=>h.includes('horas o ha')||h.includes('horas maquinas')||h.includes('hectareas horas maquinas')||h==='horas'||h==='ha');
+        if(!hasEq||!hasHours) continue;
+        let score=(hasEq?6:0)+(hasHours?6:0)+(hasDate?3:0);
+        if(norm(sheetName)==='data26') score+=8;
+        if(headers.some(h=>h==='labor')) score+=2;
+        if(headers.some(h=>h.includes('nombre de labor')||h==='nombre labor')) score+=2;
+        if(!best||score>best.score) best={sheetName,ws,matrix,headerRow:r,headersRaw:matrix[r],headers,score};
+      }
+    }
+    return best;
+  }
+
+  function findIndex(headers, aliases){
+    for(const alias of aliases){
+      const a=norm(alias);
+      let idx=headers.findIndex(h=>h===a); if(idx>=0)return idx;
+    }
+    for(const alias of aliases){
+      const a=norm(alias);
+      let idx=headers.findIndex(h=>h.includes(a)||a.includes(h) && h.length>2); if(idx>=0)return idx;
+    }
+    return -1;
+  }
+
+  function buildRows(dataset){
+    const h=dataset.headers;
+    const idx={
+      date:findIndex(h,['Fecha']), unit:findIndex(h,['Unidad de Produccion','Up','Unidad Produccion']), equipment:findIndex(h,['Equipo']),
+      labor:findIndex(h,['Labor']), laborName:findIndex(h,['Nombre de Labor','Nombre Labor']), hours:findIndex(h,['Horas o Ha','Horas Maquinas','Hectareas/ Horas Maquinas','Horas','Ha']),
+      producer:findIndex(h,['Productor']), owner:findIndex(h,['NombreDueñoOEq','Nombre Dueno O Eq','Dueño de Contrato','Dueno de Contrato']), operator:findIndex(h,['Operador']), employee:findIndex(h,['NomEmpleado','Nombre Empleado'])
+    };
+    if(idx.equipment<0||idx.hours<0) throw new Error('No pude identificar las columnas Equipo y Horas.');
+    const rows=[];
+    for(let r=dataset.headerRow+1;r<dataset.matrix.length;r++){
+      const arr=dataset.matrix[r]||[];
+      const equipment=equipmentText(arr[idx.equipment]);
+      if(!/^(840|841)/.test(equipment)) continue;
+      const hours=num(arr[idx.hours]);
+      const date=idx.date>=0?parseDate(arr[idx.date]):null;
+      if(!equipment) continue;
+      rows.push({
+        equipment, date, hours,
+        unit:idx.unit>=0?text(arr[idx.unit]):'', labor:idx.labor>=0?text(arr[idx.labor]):'', laborName:idx.laborName>=0?text(arr[idx.laborName]):'',
+        producer:idx.producer>=0?text(arr[idx.producer]):'', owner:idx.owner>=0?text(arr[idx.owner]):'', operator:idx.operator>=0?text(arr[idx.operator]):'', employee:idx.employee>=0?text(arr[idx.employee]):''
+      });
+    }
+    return rows;
+  }
+
+  function groupRows(rows){
+    const map=new Map();
+    for(const row of rows){ if(!map.has(row.equipment))map.set(row.equipment,[]); map.get(row.equipment).push(row); }
+    for(const arr of map.values()) arr.sort((a,b)=>(a.date?.getTime()||0)-(b.date?.getTime()||0));
+    return new Map([...map.entries()].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true})));
+  }
+
+  async function loadFile(file){
+    if(!window.XLSX){ showToast('No se pudo cargar el lector de Excel. Verifica tu conexión a Internet y vuelve a abrir la app.',true); return; }
+    try{
+      const buffer=await file.arrayBuffer();
+      const workbook=XLSX.read(buffer,{type:'array',cellDates:true,cellNF:true});
+      const dataset=detectDataset(workbook);
+      if(!dataset) throw new Error('No encontré una tabla con las columnas Equipo y Horas.');
+      const rows=buildRows(dataset);
+      state.rows=rows; state.byEquipment=groupRows(rows); state.sourceSheet=dataset.sheetName; state.fileName=file.name; state.selected=null; state.activeDay=''; state.activeLabor=''; state.equipmentStatus='all';
+      els.fileStatus.classList.add('ok'); els.fileStatusText.textContent=`${file.name} · ${dataset.sheetName}`;
+      els.searchInput.value='';
+      setGlobalDateLimits(rows);
+      renderEquipmentList();
+      if(state.byEquipment.size){ selectEquipment(state.byEquipment.keys().next().value); showToast(`${state.byEquipment.size} equipos 840/841 encontrados.`); }
+      else { showNo84(); showToast('El archivo se cargó, pero no contiene equipos que comiencen por 840 o 841.',true); }
+    }catch(err){ console.error(err); showToast(err.message||'No se pudo leer el archivo.',true); }
+    finally{ els.fileInput.value=''; }
+  }
+
+  function setGlobalDateLimits(rows){
+    // Filtro predeterminado: desde el día 1 del mes actual hasta hoy.
+    applyCurrentMonthRange(false);
+  }
+
+  function showNo84(){
+    els.equipmentCount.textContent='0';
+    els.equipmentList.innerHTML='<div class="side-empty">No se encontraron equipos cuyo código comience por <strong>840</strong> o <strong>841</strong> en la tabla detectada.</div>';
+    els.detailView.classList.remove('visible'); els.emptyState.style.display='grid';
+    els.emptyState.querySelector('h2').textContent='No hay equipos 840/841';
+    els.emptyState.querySelector('p').textContent='El archivo fue leído correctamente, pero no contiene registros de equipos que empiecen por 840 o 841.';
+  }
+
+  function currentPeriodLabel(){
+    const from=els.dateFrom.value?new Date(els.dateFrom.value+'T00:00:00'):null;
+    const to=els.dateTo.value?new Date(els.dateTo.value+'T00:00:00'):null;
+    if(from&&to) return `${displayDate(from)} - ${displayDate(to)}`;
+    if(from) return `Desde ${displayDate(from)}`;
+    if(to) return `Hasta ${displayDate(to)}`;
+    return 'Todo el período';
+  }
+
+  function rowsInDateRange(rows){
+    const from=els.dateFrom.value?new Date(els.dateFrom.value+'T00:00:00'):null;
+    const to=els.dateTo.value?new Date(els.dateTo.value+'T23:59:59'):null;
+    return rows.filter(r=>{
+      if((from||to) && !r.date) return false;
+      return (!from||r.date>=from)&&(!to||r.date<=to);
+    });
+  }
+
+  function laborKey(r){ return `${r.labor||''}|||${r.laborName||''}`; }
+  function laborLabelFromKey(key){
+    const [code,name]=String(key||'').split('|||');
+    if(name) return name;
+    if(code) return `Labor ${code}`;
+    return 'Sin labor';
+  }
+
+  function equipmentPeriodStats(allRows){
+    const rows=rowsInDateRange(allRows);
+    const total=rows.reduce((sum,r)=>sum+r.hours,0);
+    const days=new Set(rows.filter(r=>r.date).map(r=>isoDate(r.date))).size;
+    return {rows,total,days,isActive:Math.abs(total)>0.000001};
+  }
+
+  function renderEquipmentList(){
+    const q=norm(els.searchInput.value);
+    const period=currentPeriodLabel();
+    const allEntries=[...state.byEquipment.entries()].map(([eq,allRows])=>[eq,allRows,equipmentPeriodStats(allRows)]);
+    const activeTotal=allEntries.filter(([, ,stats])=>stats.isActive).length;
+    const inactiveTotal=allEntries.length-activeTotal;
+
+    els.equipmentCount.textContent=allEntries.length;
+    els.activeCount.textContent=activeTotal;
+    els.inactiveCount.textContent=inactiveTotal;
+    els.activeFilterBtn.classList.toggle('selected',state.equipmentStatus==='active');
+    els.inactiveFilterBtn.classList.toggle('selected',state.equipmentStatus==='inactive');
+    els.activeFilterBtn.setAttribute('aria-pressed',state.equipmentStatus==='active'?'true':'false');
+    els.inactiveFilterBtn.setAttribute('aria-pressed',state.equipmentStatus==='inactive'?'true':'false');
+
+    const entries=allEntries.filter(([eq,,stats])=>{
+      if(!norm(eq).includes(q)) return false;
+      if(state.equipmentStatus==='active' && !stats.isActive) return false;
+      if(state.equipmentStatus==='inactive' && stats.isActive) return false;
+      return true;
+    });
+
+    if(!entries.length){
+      const statusText=state.equipmentStatus==='active'?'activos':state.equipmentStatus==='inactive'?'inactivos':'';
+      els.equipmentList.innerHTML=`<div class="side-empty">No hay equipos ${statusText} que coincidan con el período y la búsqueda actual.</div>`;
+      return;
+    }
+
+    els.equipmentList.innerHTML=entries.map(([eq,allRows,stats])=>{
+      const {rows,total,days}=stats;
+      return `<button class="equipment-item ${eq===state.selected?'active':''}" data-eq="${escapeHtml(eq)}" type="button">
+        <div class="eq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17h2l2-6h10l2 6h2"/><path d="M5 17h14v3H5z"/><path d="M8 11V7h8v4"/><circle cx="8" cy="20" r="1.5"/><circle cx="16" cy="20" r="1.5"/></svg></div>
+        <div><div class="eq-code">Equipo ${escapeHtml(eq)}</div><div class="eq-meta">${fmtInt(rows.length)} registros · ${fmtInt(days)} días</div><div class="eq-period">${escapeHtml(period)}</div></div>
+        <div class="eq-hours"><strong>${fmtHours(total)}</strong><span>horas</span></div>
+      </button>`;
+    }).join('');
+    els.equipmentList.querySelectorAll('.equipment-item').forEach(btn=>btn.addEventListener('click',()=>selectEquipment(btn.dataset.eq)));
+  }
+
+  function setEquipmentStatusFilter(status){
+    state.equipmentStatus=state.equipmentStatus===status?'all':status;
+    renderEquipmentList();
+    const visibleButtons=[...els.equipmentList.querySelectorAll('.equipment-item')];
+    const selectedVisible=visibleButtons.some(btn=>btn.dataset.eq===state.selected);
+    if(!selectedVisible && visibleButtons.length){
+      selectEquipment(visibleButtons[0].dataset.eq);
+    }
+  }
+
+  function selectEquipment(eq){
+    state.selected=eq;
+    state.activeDay=''; state.activeLabor='';
+    renderEquipmentList();
+    els.emptyState.style.display='none'; els.detailView.classList.add('visible');
+    renderDetail();
+  }
+
+  function dateRangeRows(){
+    return rowsInDateRange(state.byEquipment.get(state.selected)||[]);
+  }
+
+  function filteredRows(){
+    let rows=dateRangeRows();
+    if(state.activeDay) rows=rows.filter(r=>r.date&&isoDate(r.date)===state.activeDay);
+    if(state.activeLabor) rows=rows.filter(r=>laborKey(r)===state.activeLabor);
+    return rows;
+  }
+
+  function renderActiveFilters(){
+    const chips=[];
+    if(state.activeDay){
+      const d=new Date(state.activeDay+'T00:00:00');
+      chips.push(`<span class="filter-chip">Día: ${escapeHtml(displayDate(d))}<button type="button" data-clear-filter="day" aria-label="Quitar filtro de día">×</button></span>`);
+    }
+    if(state.activeLabor){
+      chips.push(`<span class="filter-chip">Labor: ${escapeHtml(laborLabelFromKey(state.activeLabor))}<button type="button" data-clear-filter="labor" aria-label="Quitar filtro de labor">×</button></span>`);
+    }
+    if(!chips.length){ els.activeFilters.className='active-filters'; els.activeFilters.innerHTML=''; return; }
+    els.activeFilters.className='active-filters visible';
+    els.activeFilters.innerHTML=`<span class="active-filter-label">Filtros activos</span>${chips.join('')}<button class="clear-interactive" id="clearInteractive" type="button">Quitar filtros</button>`;
+    els.activeFilters.querySelectorAll('[data-clear-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+      if(btn.dataset.clearFilter==='day') state.activeDay='';
+      if(btn.dataset.clearFilter==='labor') state.activeLabor='';
+      renderDetail();
+    }));
+    const clearAll=$('clearInteractive'); if(clearAll) clearAll.addEventListener('click',()=>{ state.activeDay='';state.activeLabor='';renderDetail(); });
+  }
+
+  function getSelectedPeriod(rows){
+    const dated=rows.filter(r=>r.date).map(r=>r.date).sort((a,b)=>a-b);
+    let from=els.dateFrom.value?new Date(els.dateFrom.value+'T00:00:00'):null;
+    let to=els.dateTo.value?new Date(els.dateTo.value+'T00:00:00'):null;
+    if(!from && dated.length) from=new Date(dated[0].getFullYear(),dated[0].getMonth(),dated[0].getDate());
+    if(!to && dated.length){ const d=dated[dated.length-1]; to=new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+    return {from,to};
+  }
+
+  function calculateDailyTarget(rows){
+    const {from,to}=getSelectedPeriod(rows);
+    if(!from||!to||from>to) return {periodDays:0,targetHours:0,lostHours:0,metDays:0};
+    const byDay=new Map();
+    for(const r of rows){
+      if(!r.date) continue;
+      const k=isoDate(r.date);
+      byDay.set(k,(byDay.get(k)||0)+r.hours);
+    }
+    let periodDays=0, lostHours=0, metDays=0;
+    for(let d=new Date(from); d<=to; d.setDate(d.getDate()+1)){
+      periodDays++;
+      const h=byDay.get(isoDate(d))||0;
+      if(h>=8) metDays++;
+      else lostHours+=8-h;
+    }
+    return {periodDays,targetHours:periodDays*8,lostHours,metDays};
+  }
+
+  function getDailyReportData(rows){
+    const {from,to}=getSelectedPeriod(rows);
+    if(!from||!to||from>to) return [];
+    const byDay=new Map();
+    for(const r of rows){
+      if(!r.date) continue;
+      const k=isoDate(r.date);
+      if(!byDay.has(k)) byDay.set(k,{hours:0,records:0,labors:new Set()});
+      const d=byDay.get(k);
+      d.hours+=r.hours; d.records++;
+      const labor=r.laborName||r.labor;
+      if(labor) d.labors.add(labor);
+    }
+    const result=[];
+    for(let d=new Date(from); d<=to; d.setDate(d.getDate()+1)){
+      const key=isoDate(d); const info=byDay.get(key)||{hours:0,records:0,labors:new Set()};
+      const lost=Math.max(0,8-info.hours);
+      result.push({date:new Date(d),hours:info.hours,records:info.records,lost,difference:info.hours-8,status:info.hours>=8?'Cumple':(info.hours>0?'No cumple':'Sin registro'),labors:[...info.labors].join(' / ')||'—'});
+    }
+    return result;
+  }
+
+  function getLaborReportData(rows){
+    const map=new Map();
+    for(const r of rows){
+      const code=r.labor||'—'; const name=r.laborName||'Sin nombre de labor'; const key=`${code}|||${name}`;
+      if(!map.has(key)) map.set(key,{code,name,hours:0,records:0});
+      const v=map.get(key); v.hours+=r.hours; v.records++;
+    }
+    const total=rows.reduce((s,r)=>s+r.hours,0);
+    return [...map.values()].sort((a,b)=>b.hours-a.hours).map(v=>({...v,pct:total?(v.hours/total)*100:0}));
+  }
+
+  function generateReport(){
+    if(!state.selected){ showToast('Selecciona un equipo antes de generar el reporte.',true); return; }
+    if(!window.jspdf?.jsPDF){ showToast('No se pudo cargar el generador de PDF. Verifica tu conexión a Internet.',true); return; }
+
+    const rows=dateRangeRows();
+    if(!rows.length){ showToast('No hay registros en el período seleccionado para generar el reporte.',true); return; }
+
+    try{
+      const {jsPDF}=window.jspdf;
+      // Oficio 8.5 x 13 pulgadas, horizontal. Márgenes estrechos de 7 mm.
+      const doc=new jsPDF({orientation:'landscape',unit:'mm',format:[215.9,330.2],compress:true});
+      const pageW=doc.internal.pageSize.getWidth();
+      const pageH=doc.internal.pageSize.getHeight();
+      const margin=7;
+      const dated=rows.filter(r=>r.date).map(r=>r.date).sort((a,b)=>a-b);
+      const total=rows.reduce((s,r)=>s+r.hours,0);
+      const uniqueDays=new Set(rows.filter(r=>r.date).map(r=>isoDate(r.date))).size;
+      const target=calculateDailyTarget(rows);
+      const daily=getDailyReportData(rows);
+      const labors=getLaborReportData(rows);
+      const coverage=target.targetHours?Math.max(0,Math.min(100,((target.targetHours-target.lostHours)/target.targetHours)*100)):0;
+      const metPct=target.periodDays?target.metDays/target.periodDays*100:0;
+      const avg=uniqueDays?total/uniqueDays:0;
+      const fromLabel=els.dateFrom.value?displayDate(new Date(els.dateFrom.value+'T00:00:00')):(dated.length?displayDate(dated[0]):'—');
+      const toLabel=els.dateTo.value?displayDate(new Date(els.dateTo.value+'T00:00:00')):(dated.length?displayDate(dated[dated.length-1]):'—');
+      const generated=new Intl.DateTimeFormat('es-PA',{dateStyle:'short',timeStyle:'short'}).format(new Date());
+      const safeFile=(state.fileName||'').replace(/[^a-zA-Z0-9._-]+/g,' ');
+
+      const addPageHeader=()=>{
+        doc.setFillColor(16,24,40); doc.rect(0,0,pageW,18,'F');
+        doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+        doc.text('REGISTRO DE HORAS',margin,8.2);
+        doc.setFontSize(9.5); doc.text(`Equipo ${state.selected}`,margin,13.4);
+        doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+        doc.text(`Período: ${fromLabel} - ${toLabel}`,pageW-margin,8.1,{align:'right'});
+        doc.text(`Generado: ${generated}`,pageW-margin,13.3,{align:'right'});
+      };
+
+      const addFooter=(pageNumber)=>{
+        doc.setDrawColor(220,225,232); doc.line(margin,pageH-7,pageW-margin,pageH-7);
+        doc.setTextColor(102,112,133); doc.setFont('helvetica','normal'); doc.setFontSize(6.8);
+        doc.text(`Fuente: ${safeFile||'Archivo cargado'}${state.sourceSheet?` | Hoja: ${state.sourceSheet}`:''}`,margin,pageH-3.4);
+        doc.text(`Página ${pageNumber}`,pageW-margin,pageH-3.4,{align:'right'});
+      };
+
+      addPageHeader();
+      let y=23;
+      doc.setTextColor(22,32,51); doc.setFont('helvetica','bold'); doc.setFontSize(9.5);
+      doc.text('Resumen ejecutivo',margin,y); y+=3.2;
+
+      const metrics=[
+        ['Horas trabajadas',`${fmtHours(total)} h`],
+        ['Meta del período',`${fmtHours(target.targetHours)} h`],
+        ['Tiempo perdido',`${fmtHours(target.lostHours)} h`],
+        ['Cobertura de meta',`${fmtHours(coverage)}%`],
+        ['Registros',fmtInt(rows.length)],
+        ['Días con registro',fmtInt(uniqueDays)],
+        ['Días del período',fmtInt(target.periodDays)],
+        ['Días que cumplen 8 h',`${fmtInt(target.metDays)} (${fmtHours(metPct)}%)`],
+        ['Promedio por día trabajado',`${fmtHours(avg)} h`]
+      ];
+      const gap=2.2, boxW=(pageW-margin*2-gap*8)/9, boxH=19;
+      metrics.forEach((m,i)=>{
+        const x=margin+i*(boxW+gap);
+        doc.setFillColor(248,250,252); doc.setDrawColor(229,234,241); doc.roundedRect(x,y,boxW,boxH,1.7,1.7,'FD');
+        doc.setTextColor(102,112,133); doc.setFont('helvetica','bold'); doc.setFontSize(5.8);
+        const lines=doc.splitTextToSize(m[0],boxW-4); doc.text(lines,x+2,y+5.2);
+        doc.setTextColor(22,32,51); doc.setFontSize(9); doc.text(m[1],x+2,y+15.2);
+      });
+      y+=boxH+6;
+
+      const below=daily.filter(d=>d.lost>0).sort((a,b)=>b.lost-a.lost).slice(0,5);
+      if(below.length){
+        doc.setTextColor(22,32,51); doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.text('Días con mayor tiempo perdido',margin,y); y+=2;
+        doc.autoTable({
+          startY:y, margin:{left:margin,right:margin},
+          head:[['Fecha','Horas trabajadas','Meta','Tiempo perdido','Estado','Labores registradas']],
+          body:below.map(d=>[displayDate(d.date),`${fmtHours(d.hours)} h`,'8.00 h',`${fmtHours(d.lost)} h`,d.status,d.labors]),
+          theme:'grid', tableWidth:'auto',
+          styles:{font:'helvetica',fontSize:6.5,cellPadding:1.6,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.2},
+          headStyles:{fillColor:[242,244,247],textColor:[52,64,84],fontStyle:'bold',fontSize:6.3},
+          columnStyles:{0:{cellWidth:22},1:{cellWidth:25,halign:'right'},2:{cellWidth:17,halign:'right'},3:{cellWidth:24,halign:'right'},4:{cellWidth:23},5:{cellWidth:'auto'}},
+          didDrawPage:()=>{ if(doc.internal.getNumberOfPages()>1) addPageHeader(); }
+        });
+        y=doc.lastAutoTable.finalY+5;
+      }
+
+      doc.setTextColor(22,32,51); doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.text('Resumen diario del período',margin,y); y+=2;
+      doc.autoTable({
+        startY:y, margin:{left:margin,right:margin,top:23,bottom:11},
+        head:[['Fecha','Registros','Horas','Meta','Diferencia','Tiempo perdido','Estado','Labores']],
+        body:daily.map(d=>[displayDate(d.date),fmtInt(d.records),fmtHours(d.hours),'8.00',`${d.difference>=0?'+':''}${fmtHours(d.difference)}`,fmtHours(d.lost),d.status,d.labors]),
+        theme:'grid', showHead:'everyPage',
+        styles:{font:'helvetica',fontSize:6.2,cellPadding:1.35,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.18,overflow:'linebreak'},
+        headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold',fontSize:6.2},
+        columnStyles:{0:{cellWidth:22},1:{cellWidth:17,halign:'right'},2:{cellWidth:18,halign:'right'},3:{cellWidth:15,halign:'right'},4:{cellWidth:20,halign:'right'},5:{cellWidth:22,halign:'right'},6:{cellWidth:23},7:{cellWidth:'auto'}},
+        didDrawPage:()=>addPageHeader()
+      });
+
+      let nextY=doc.lastAutoTable.finalY+5;
+      if(nextY>pageH-35){ doc.addPage(); addPageHeader(); nextY=23; }
+      doc.setTextColor(22,32,51); doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.text('Resumen por labor',margin,nextY); nextY+=2;
+      doc.autoTable({
+        startY:nextY, margin:{left:margin,right:margin,top:23,bottom:11},
+        head:[['Labor','Nombre de labor','Registros','Horas','% de horas']],
+        body:labors.map(v=>[v.code,v.name,fmtInt(v.records),fmtHours(v.hours),`${fmtHours(v.pct)}%`]),
+        theme:'grid', showHead:'everyPage',
+        styles:{font:'helvetica',fontSize:6.3,cellPadding:1.45,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.18},
+        headStyles:{fillColor:[16,24,40],textColor:[255,255,255],fontStyle:'bold',fontSize:6.2},
+        columnStyles:{0:{cellWidth:28},1:{cellWidth:'auto'},2:{cellWidth:22,halign:'right'},3:{cellWidth:24,halign:'right'},4:{cellWidth:24,halign:'right'}},
+        didDrawPage:()=>addPageHeader()
+      });
+
+      nextY=doc.lastAutoTable.finalY+6;
+      if(nextY>pageH-38){ doc.addPage(); addPageHeader(); nextY=23; }
+      doc.setTextColor(22,32,51); doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.text('Detalle completo de registros',margin,nextY); nextY+=2;
+      const sorted=[...rows].sort((a,b)=>(a.date?.getTime()||0)-(b.date?.getTime()||0));
+      doc.autoTable({
+        startY:nextY, margin:{left:margin,right:margin,top:23,bottom:11},
+        head:[['Fecha','Unidad de producción','Labor','Nombre de labor','Horas','Productor','Responsable / Dueño']],
+        body:sorted.map(r=>[displayDate(r.date),r.unit||'—',r.labor||'—',r.laborName||'—',fmtHours(r.hours),r.producer||'—',r.owner||r.operator||r.employee||'—']),
+        theme:'grid', showHead:'everyPage',
+        styles:{font:'helvetica',fontSize:5.8,cellPadding:1.25,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.16,overflow:'linebreak'},
+        headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold',fontSize:5.9},
+        columnStyles:{0:{cellWidth:20},1:{cellWidth:29},2:{cellWidth:27},3:{cellWidth:70},4:{cellWidth:17,halign:'right'},5:{cellWidth:52},6:{cellWidth:'auto'}},
+        didDrawPage:()=>addPageHeader()
+      });
+
+      const pages=doc.internal.getNumberOfPages();
+      for(let p=1;p<=pages;p++){ doc.setPage(p); addFooter(p); }
+      const filename=`Reporte_Horas_Equipo_${state.selected}_${(els.dateFrom.value||'inicio')}_${(els.dateTo.value||'fin')}.pdf`;
+      doc.save(filename);
+      showToast('Reporte PDF generado correctamente.');
+    }catch(err){
+      console.error(err); showToast('No se pudo generar el reporte PDF.',true);
+    }
+  }
+
+  function renderDetail(){
+    if(!state.selected)return;
+    const rangeRows=dateRangeRows();
+    const rows=filteredRows();
+    els.detailEquipment.textContent=`Equipo ${state.selected}`;
+    els.detailRange.textContent=`Período filtrado: ${currentPeriodLabel()}${state.sourceSheet?` · Hoja ${state.sourceSheet}`:''}`;
+    renderActiveFilters();
+
+    // El dashboard representa el cumplimiento general del equipo dentro del período de fechas.
+    // Los filtros interactivos de día/labor se mantienen para las gráficas y el detalle.
+    const dashboardRows=rangeRows;
+    const total=dashboardRows.reduce((sum,r)=>sum+r.hours,0);
+    const target=calculateDailyTarget(dashboardRows);
+    const fulfilledHours=Math.max(0,target.targetHours-target.lostHours);
+    const compliance=target.targetHours?Math.max(0,Math.min(100,(fulfilledHours/target.targetHours)*100)):0;
+    const average=target.periodDays?total/target.periodDays:0;
+
+    els.kpiHours.textContent=`${fmtHours(total)} h`;
+    els.kpiTarget.textContent=`${fmtHours(target.targetHours)} h`;
+    els.kpiLost.textContent=`${fmtHours(target.lostHours)} h`;
+    els.kpiAverage.textContent=`${fmtHours(average)} h`;
+    els.kpiMetDays.textContent=fmtInt(target.metDays);
+    els.kpiMetDaysNote.textContent=`${fmtInt(target.metDays)} de ${fmtInt(target.periodDays)} días del período`;
+    const roundedCompliance=Math.round(compliance);
+    els.kpiCompliance.textContent=`${roundedCompliance}%`;
+    els.kpiComplianceNote.textContent=`${fmtHours(fulfilledHours)} h cumplidas de ${fmtHours(target.targetHours)} h`;
+    els.complianceDonut.style.setProperty('--pct',`${roundedCompliance}%`);
+    els.donutPct.textContent=`${roundedCompliance}%`;
+
+    // La gráfica conserva el rango completo; al seleccionar una labor muestra sus días.
+    let chartRows=rangeRows;
+    if(state.activeLabor) chartRows=chartRows.filter(r=>laborKey(r)===state.activeLabor);
+    renderDayChart(chartRows);
+
+    // La lista de labores conserva todas las opciones del período o del día seleccionado.
+    let laborRows=rangeRows;
+    if(state.activeDay) laborRows=laborRows.filter(r=>r.date&&isoDate(r.date)===state.activeDay);
+    renderLaborList(laborRows);
+    renderTable(rows);
+  }
+
+  function renderDayChart(rows){
+    const byDay=new Map();
+    for(const r of rows){
+      if(!r.date) continue;
+      const k=isoDate(r.date);
+      if(!byDay.has(k)) byDay.set(k,{date:r.date,hours:0});
+      byDay.get(k).hours+=r.hours;
+    }
+    const days=[...byDay.values()].sort((a,b)=>a.date-b.date);
+    const max=Math.max(...days.map(d=>d.hours),0);
+    if(!days.length){
+      els.dayChart.innerHTML='<div class="labor-empty" style="width:100%;align-self:center">No hay fechas para graficar con el filtro actual.</div>';
+      return;
+    }
+    els.dayChart.innerHTML=days.map(d=>{
+      const key=isoDate(d.date);
+      const h=max?Math.max(3,(d.hours/max)*145):3;
+      return `<button class="day-col ${state.activeDay===key?'active':''}" data-day="${key}" type="button" title="${escapeHtml(displayDate(d.date))}: ${fmtHours(d.hours)} h · Toca para filtrar este día"><div class="bar-value">${fmtHours(d.hours)}</div><div class="bar-wrap"><div class="bar" style="height:${h}px"></div></div><div class="day-label">${escapeHtml(shortDate(d.date))}</div></button>`;
+    }).join('');
+    els.dayChart.querySelectorAll('[data-day]').forEach(btn=>btn.addEventListener('click',()=>{
+      state.activeDay=state.activeDay===btn.dataset.day?'':btn.dataset.day;
+      renderDetail();
+    }));
+  }
+
+  function renderLaborList(rows){
+    const map=new Map();
+    let total=0;
+    for(const r of rows){
+      const key=laborKey(r);
+      if(!map.has(key)) map.set(key,{code:r.labor||'',name:r.laborName||'',hours:0,records:0});
+      const item=map.get(key); item.hours+=r.hours; item.records++; total+=r.hours;
+    }
+    const list=[...map.entries()].sort((a,b)=>b[1].hours-a[1].hours).slice(0,12);
+    if(!list.length){ els.laborList.innerHTML='<div class="labor-empty">No hay labores para mostrar.</div>';return; }
+    els.laborList.innerHTML=list.map(([key,item])=>{
+      const label=item.name||item.code||'Sin labor';
+      return `<button class="labor-row ${state.activeLabor===key?'active':''}" data-labor="${escapeHtml(key)}" type="button" title="Toca para ver los días en que se realizó ${escapeHtml(label)}"><div><div class="labor-name">${escapeHtml(label)}</div>${item.code&&item.name?`<div class="labor-code">${escapeHtml(item.code)} · ${fmtInt(item.records)} registros</div>`:`<div class="labor-code">${fmtInt(item.records)} registros</div>`}</div><div class="labor-hours">${fmtHours(item.hours)} h</div><div class="progress"><span style="width:${total?Math.min(100,item.hours/total*100):0}%"></span></div></button>`;
+    }).join('');
+    els.laborList.querySelectorAll('[data-labor]').forEach(btn=>btn.addEventListener('click',()=>{
+      state.activeLabor=state.activeLabor===btn.dataset.labor?'':btn.dataset.labor;
+      renderDetail();
+    }));
+  }
+
+  function renderTable(rows){
+    const sorted=[...rows].sort((a,b)=>(b.date?.getTime()||0)-(a.date?.getTime()||0));
+    els.recordsNote.textContent=`${fmtInt(sorted.length)} registros`;
+    els.tableEmpty.hidden=sorted.length>0;
+    els.detailTable.innerHTML=sorted.map(r=>`<tr>
+      <td>${escapeHtml(displayDate(r.date))}</td>
+      <td>${escapeHtml(r.unit||'—')}</td>
+      <td><span class="labor-code">${escapeHtml(r.labor||'—')}</span></td>
+      <td>${escapeHtml(r.laborName||'—')}</td>
+      <td><span class="hours-pill">${fmtHours(r.hours)} h</span></td>
+      <td>${escapeHtml(r.producer||'—')}</td>
+      <td>${escapeHtml(r.owner||r.operator||r.employee||'—')}</td>
+    </tr>`).join('');
+  }
+
+  const openPicker=()=>els.fileInput.click();
+  els.loadBtn.addEventListener('click',openPicker); els.emptyLoadBtn.addEventListener('click',openPicker);
+  els.fileInput.addEventListener('change',e=>{ const file=e.target.files?.[0]; if(file)loadFile(file); });
+  els.searchInput.addEventListener('input',renderEquipmentList);
+  els.activeFilterBtn.addEventListener('click',()=>setEquipmentStatusFilter('active'));
+  els.inactiveFilterBtn.addEventListener('click',()=>setEquipmentStatusFilter('inactive'));
+
+  if(window.flatpickr){
+    const defaultRange=currentMonthRange();
+    syncDateInputs(defaultRange);
+    dateRangePicker=flatpickr(els.dateRange,{
+      mode:'range',
+      dateFormat:'Y-m-d',
+      altInput:true,
+      altFormat:'d/m/Y',
+      defaultDate:defaultRange,
+      locale:(flatpickr.l10ns && flatpickr.l10ns.es) ? flatpickr.l10ns.es : 'default',
+      disableMobile:true,
+      monthSelectorType:'static',
+      showMonths:1,
+      onChange:selectedDates=>{
+        syncDateInputs(selectedDates);
+        if(selectedDates.length===2){
+          state.activeDay=''; state.activeLabor='';
+          renderEquipmentList();
+          if(state.selected) renderDetail();
+        }
+      },
+      onClose:selectedDates=>{
+        if(selectedDates.length===1){
+          syncDateInputs([selectedDates[0],selectedDates[0]]);
+          dateRangePicker.setDate([selectedDates[0],selectedDates[0]],false);
+          state.activeDay=''; state.activeLabor='';
+          renderEquipmentList();
+          if(state.selected) renderDetail();
+        }
+      }
+    });
+  }else{
+    applyCurrentMonthRange(false);
+    els.dateRange.value=`${els.dateFrom.value} a ${els.dateTo.value}`;
+  }
+
+  els.clearDates.addEventListener('click',()=>{
+    els.dateFrom.value=''; els.dateTo.value='';
+    state.activeDay=''; state.activeLabor='';
+    if(dateRangePicker) dateRangePicker.clear(false); else els.dateRange.value='';
+    renderEquipmentList();
+    if(state.selected) renderDetail();
+  });
+  els.reportBtn.addEventListener('click',generateReport);
+
+  document.addEventListener('dragover',e=>e.preventDefault());
+  document.addEventListener('drop',e=>{ e.preventDefault(); const file=e.dataTransfer?.files?.[0]; if(file)loadFile(file); });
+})();
+</script>
+</body>
+</html>
