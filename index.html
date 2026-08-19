@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f172a" />
   <title>Registro de horas</title>
+  <meta name="application-name" content="Registro de horas" />
+  <meta name="apple-mobile-web-app-title" content="Registro de horas" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA8ElEQVR4nO2W7RHCIAyGg+cGMkLtHN3FnjM4gjP0GKZzcN3AOkP9ZS9UGkiwH3q8PynwPgkhRZ0vjwE21GFL8wyQAXYBcJQutEZ/jJV1z95HcfuAzzgFJBogxlgCEgUQm27JsbBrAG+IDcu6H79xshW8BVOTFEgRwNIiASTR++ZTWRBnYLqp5JYkAfhkjWaD7LsGKE1rAl9DrLaj20ywEUkL0RrtmF/vT++8VY5gzhxA0IqpLDS3EwAAVIUao6fMAQQZmKv0tzlA+Nyxkv+G2KwqlDMeip4FQIG03eCYL/IeiAFZ5UX0bf1uJ8wAfwPwAqFLdPkIhmS3AAAAAElFTkSuQmCC" />
+  <link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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" />
+  <link rel="apple-touch-icon" sizes="192x192" href="data:image/png;base64,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" />
+  <link rel="icon" type="image/png" sizes="512x512" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAR2ElEQVR4nO3c0ZEkNRaG0ZwJPAATYOzAFyawAROwgcAY7CDwgMGG2Qe2h57uquqsSqV0pf+cR3Zjqe1K6X6pzO53P/z09+cNAIjyfvQHAAD6EwAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAIAEAAIEEAAAEEgAAEEgAAEAgAQAAgQQAAAQSAAAQSAAAQCABAACBBAAABBIAABBIAABAoG9GfwCgnT9//+70f8eHj59O/3cA53v3w09/fx79IYC39RjurYgEqE8AQDEzDfp7CQOoQwDAYCsP/LcIAhhHAEBHycN+L1EAfQgAOJmh/zgxAOcRANCYgX8eQQDtCABowNDvTwzAMQIAHmTo1yEG4H4CAO5g6NcnBmAfAQA7GPzzEQJwmwCAKwz9dYgBeE0AwAsG/7qEAPxHAMD/Gfw5hAAIADD4gwkBkgkAYhn8PBECJBIAxDH4uUYIkEQAEMPgZy8hQAIBwPIMfh4lBFiZAGBZBj+tCAFWJABYjsHPWYQAK3k/+gNAS4Y/Z3J9sRInACzBxkxvTgOYnQBgagb/a2cOJj/v14QAsxIATCt1GFUeOL4TmIcAYDpJQ2aFweL7gpoEAFNZeZgkDQ/fI4wnAJjGakPDoPiP7xb6EwCUt9JwMBje5vuGPgQApa0wDAyBx/n+4TwCgLJm3vxt+u25HqAtAUA5s270Nvl+XCNwnACglBk3dpv6OK4XeJwAoIyZNnObeD2uH7iPAKCEWTZvG3d9riXYRwAwlM2as7i24DYBwDAzbNA25/m5zuAyAcAQ1TdlG/J6XHPwNQFAd5U3Ypvw+lx/8C8BQFdVN18bbx7XIukEAN1U3HBttrguSfV+9Acgg02WqipeBxXXC+txAsDpqm1mFTd8anCtksQJAKeyoTKTatdHtfXDWpwAcJpKm1e1jZ36XL+szgkAp7B5MrtK102l9cQ6nADQXJXNqtIGztxc06zICQBN2ShZUZXrqcr6Yg0CgGaqbE5VNmvWUuW6qrLOmJ9HADRRYVOqskGzPtc7K3ACwGE2Q9JUuN4qrDvmJgA4pMImVGEzJk+F667C+mNeHgHwsNGbT4UNGLbNWmBOTgCYkg2PSlyPzEgA8JCRdzw2WyoaeV2OPoFgTgKAuxn+cJkIYCYCgLsY/nCbCGAWAoDdDH/YRwQwAwFAeYY/M3LdUp0AYJdRdxU2UWY26vp1CsAeAoA3Gf7wOBFAVQKAmwx/OE4EUJEAoBzDnxW5rqnGnwLmqhF3DzbJ48783nw/x1lXVOEEgItsUnCOEde5RwFcIgB4xfCHc4kAKhAADGf4k8h1z2gCgK/0vkuwCZKs9/XvFIDnBABf2BxgfdY5TwQAw7j7B+uAcQQA27Y5+oeRPApgBAFAd4Y/vGZd0JsAwN0ABLLuEQDhHP1DHR4F0JMAoBvDH95mndCLAAjWs/5tarBfz/XiFCCXAACAQAIglLt/qM0pAGcTAJzK8IfHWT+cSQAEUvvAS/aFPAKA07h7geOsI84iAML0qnybFrTTaz05BcgiAAAgkAAI4u4f5uUUgNYEAE0Z/nAe64uWBEAIVQ/sZb/IIABoxt0JnM86oxUBEEDNA/eyb6xPANCEuxLox3qjBQGwOBUPPMr+sTYBwGHuRqA/646jBMDC1DtwlH1kXQKAQ9yFwDjWH0cIAAAIJAAW1ePYzt0HjNdjHXoMsCYBAACBBMCC3P1DFqcAPEIAAEAgAcDd3P1DPdYl9xIAi3FMB5zF/rIWAQAAgQQAd3HMCHVZn9xDACzE8RxwNvvMOgQAu7m7gPqsU/YSAAAQSAAswrEc0Iv9Zg0CgF0cK8I8rFf2EAAAEEgAAEAgAbCAs5/HOU6E+Zy9br0HMD8BAACBBAAABBIAk3P8D1zjMQC3CAAACCQAACCQAOAqx/8wP+uYawQAAAQSABPzAg4wmn1oXgIAAAIJAC7y3BDWYT1ziQAAgEACYFKeuwFV2I/mJAAAIJAAAIBAAoBXvDAE67GueUkAAEAgAQAAgQTAhLxxC1RjX5qPAACAQAKAr3hRCNZlffOcAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgmAyfhjG0BV9qe5CAC+8DvCsD7rnCcCAAACCQAACPTN6A8AzOPSM15HyjAnAQAc8jIKBAHMQQAATQkCmIMAAE4lCKAmAQB0JQigBgEAC5nxD7EIAhhDAACl+E0D6EMAAOU5JYD2BAAwHUEAxwkAYHqCAO4nAIDlCAJ4mwAAlicI4DUBAAv58PHTlL8K2JvfNAABALBtm1MC8ggAWIxTgDYEAat7P/oDAAD9CQBYkLvVtvw8WZEAgEUZWsAtAgAWJgKAawQALO7Dx09CAHhFAPCFN8fXJgQes9rPzDrniV8DnIxf8eKotwaa64tHrRZLqxMAwFcubeKiANYjAIA3vYwCQQDzEwDA3VKCwJE2KxMAwGEpQQArEQBAc4IA6hMAwOlmDALH/6xOAPCVP3//zsbH6fymwRh+xjwnAIASZjwlgJkJgAn5Y0AkEARzcXI4HwEATKFnEBhmJBAAwJScEMAxAoBXvAjIjATBbX4evCQAgCX5TQO4TQAAMfacEjj9IoUAmJTfBIDjPDZoQzTN6f3oDwBQhUFGEgHARe6EYB3WM5cIAAAIJAAm5rgSGM0+NC8BAACBBABXeW4I87OOuUYAAEAgAQAAgQTA5M5+AcfxIczr7PXrBcC5CQAACCQAACCQAFiAxwDAS47/eYsAAIBAAgCAJn775dvRH4E7CAB28RgA5jFivT4NfxEwDwGwCM/jgF5e7jcvh74ImIMAAKC53375VggUJwDYzWMAqK/3On1ryIuAugTAQjwGAM72fJ/ZO9xFQE0CgLs4BYC6eq7Pe4e6CKhHAABwl0eHufcCahEAi/EYADjLh4+fmgxwEVCDAOBuHgNAPTOty59//Wf0R2ATAADs1OLO3fCvQwAsqMdjgJnuNmB1PdbjH399Pv3fQV8CAICbWg1/d/+1CIBFOQWADGevQ8N/XQIAgFMZ/jUJAA5xCgDjzHD3b/jXJQAW5m8CAI8y/NcnADjMKQD0d+a688Z/BgGwOKcAwD289JdDANCEUwDo56z1ZvhnEQABnAIAvRj+8xAANOMUAM5X+e7f8J+LAAjhFAC4xvDPJABoyikAnOeM9eWN/1wCIEivUwARAO1VHv7u/uckAAACGf4IgDBOAWA+VdeT4T83AcBpqm5aMJOqR/+G//wEQCC/EQC5vPTHEwHAqZwCwONarx/P/XlOAITqeQogAuB+hj9nEwAA7GL4r0UABHMKADVVvPs3/NfzzegPQI4/f//OC4iU99sv3776Zz2Hn+FPL04AwvUeyE4CqOzS8H/659f+s5YqDn/W5QSA7cPHTwYz0fYO96f/3gx3xF764y1OAOhObFDJI3f2Z5wGtFwXhj97CAC2bfMogExHBnnLxwIV14Phvz4BwDAVNz1ytBreR0Og4nN/wz+DAOALb+iT4owj/F4vCt7ipT/u8e6Hn/52xfCV3nfmwoNeeg3ovXfQnvszkhMAhvMogB563p3vOQ0w/BlNAPDKiDtyEcCZRh3NXwuBite74Z9HAHCRCGAVo5/Lv/wMXvqjCu8AcNOIoeydAFqpMPxf+vH7d83+twx/jnACQDlOAmih4vDftn+HdovB7Y1/jhIA3DTqblwEcETV4f/ckRDw0h8tCADeJAKYyQzD/7l7h7nhTysCgF1EANWd8Yd4eg3JVo8F9jL82TYvAXKHkcPYi4Hc0mPw9zxZuPaioJf+aEkAcBcRQDW97/p7hcDLCDD8ac0jAO4ycgh7HMBLI478RzwW8MY/Z3ACwEOcBDBahef9M71w6O6flwQADxMBjFJh+D9XPQQMfy7xCIApeRyQq9rw37a2f92vNcOfa5wAcEiFQew0IEe14X/p+q/0vN7w5xYnABxSYfhWiBDOVfF3/K9ddz9+/670iQA8cQJAExWGcIUYob1qg3/b7rveR50IuPvnLQKAZipEwLYJgZVUG/6PXuO9I8DwZw+PAGimyuCtEiIcs8rw37a+jwUMf/YSADQlAmhhpeH/3NkhYPhzD48AOEWlAVwlStin0vA/8zpu/VjA8OdeTgA4RaWhWylGuC1l+G+b3xZgPCcAnKra8K0UJnytyvAfdc0eORFw988jBACnEwHccsaf0Z1t+D93bwgY/jxKANBFhY31JSEwXvpd/zV7IsDg5yjvANBFxWFbbdNPY/hf9/Ov/9z8/2P404ITALqquNluW81AWVmF4e9aJJ0AoLuqG++22Xx7GD38XX/wLwHAEJU34W2zEZ9l5PB3zcHXBADDVN+Qt82m3NKo4e86g8sEAEPNsDlvmw36qBHD37UFtwkASrBZr2nE7/i7lmAfAUAZs2zc22bz3qP3Xb/rB+4jAChlpk38ic38tV7D3/UCjxMAlDPjpr5tNvYnPYa/awSOEwCUNesmv225G/2Zw9/1AG0JAEqbedN/krb5t4qAn3/9x/cPJxIAlLfCEHiSMgyORsCP379r9EnGSvm+mZMAYBorhcC2rT8cHo2AFYb/6t8taxAATGW1CHhuxaFxbwQY/tCPAGA6K0fASysMkz0RsMLg37Y1vi9yCACmlRQCz1UeMte+kz/+ur7NrDD8K38ncI0AYGqpEXDLmcPoyM/7UgQY/jCOAGAJQmAOzyNg9uFv8DM7AcBShEB9f/z1eerhb/CzivejPwC0ZHOuz/CHGpwAsCynAbRi8LMiAcDyhACPMvhZmQAghhBgL4OfBAKAOEKAawx+kggAYgkBnhj8JBIAxBMCuQx+kgkA+D8hkMPgBwEArwiBdRn88B8BAFcIgXUY/PCaAIAdxMB8DH24TQDAHYRAfQY/7CMA4EFioA5DH+4nAKABMdCfoQ/HCABoTAycx9CHdgQAnEwQPM7Ah/MIAOhIDLzN0Ic+BAAMlhwFhj2MIwCgmJWDwMCHOgQATGKmMDDooT4BAAvpEQmGO6xBAABAoPejPwAA0J8AAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQAIAAAIJAAAIJAAAIJAAAIBAAgAAAgkAAAgkAAAgkAAAgEACAAACCQAACCQAACCQAACAQP8DFpaMajdsC1YAAAAASUVORK5CYII=" />
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
@@ -135,6 +143,10 @@
 
     .kpis{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:12px;margin-bottom:14px}
     .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(16,24,40,.025)}
+    .kpi.kpi-filter{cursor:pointer;transition:.18s;user-select:none}
+    .kpi.kpi-filter:hover{border-color:#84adff;box-shadow:0 5px 15px rgba(37,99,235,.09);transform:translateY(-1px)}
+    .kpi.kpi-filter.active{background:#eff8ff;border-color:#2e90fa;box-shadow:0 0 0 2px rgba(46,144,250,.10)}
+    .kpi.kpi-filter:focus-visible{outline:3px solid rgba(46,144,250,.22);outline-offset:2px}
     .kpi-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
     .kpi-label{font-size:12px;color:var(--muted);font-weight:700}
     .kpi-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
@@ -294,7 +306,7 @@
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Meta de horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="m9 12 2 2 4-5"/></svg></div></div><div class="kpi-value" id="kpiTarget">0.00 h</div><div class="kpi-note">8 horas × días del período</div></article>
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Tiempo perdido</div><div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M4.5 4.5 19.5 19.5"/></svg></div></div><div class="kpi-value" id="kpiLost">0.00 h</div><div class="kpi-note">Horas faltantes para llegar a 8 h/día</div></article>
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Promedio de horas por día</div><div class="kpi-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div></div><div class="kpi-value" id="kpiAverage">0.00 h</div><div class="kpi-note">Horas trabajadas ÷ días del período</div></article>
-          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Días que cumplen las 8 horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="m8 16 2 2 5-5"/></svg></div></div><div class="kpi-value" id="kpiMetDays">0</div><div class="kpi-note" id="kpiMetDaysNote">0 de 0 días del período</div></article>
+          <article class="kpi kpi-filter" id="kpiMetDaysCard" role="button" tabindex="0" aria-pressed="false" title="Toca para mostrar solo los días que cumplen 8 horas"><div class="kpi-top"><div class="kpi-label">Días que cumplen las 8 horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="m8 16 2 2 5-5"/></svg></div></div><div class="kpi-value" id="kpiMetDays">0</div><div class="kpi-note" id="kpiMetDaysNote">0 de 0 días del período</div></article>
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Cumplimiento</div><div class="kpi-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></div></div><div class="kpi-compliance"><div class="kpi-compliance-copy"><div class="kpi-value" id="kpiCompliance">0.00%</div><div class="kpi-note" id="kpiComplianceNote">0.00 h cumplidas de 0.00 h</div></div><div class="mini-donut" id="complianceDonut" style="--pct:0%"><span id="donutPct">0%</span></div></div><div class="donut-legend"><span><i class="donut-dot green"></i>Cumplido</span><span><i class="donut-dot red"></i>Faltante</span></div></article>
         </div>
 
@@ -329,13 +341,13 @@
 (() => {
   'use strict';
 
-  const state = { rows: [], byEquipment: new Map(), selected: null, sourceSheet: '', fileName: '', activeDay: '', activeLabor: '', equipmentStatus: 'all' };
+  const state = { rows: [], byEquipment: new Map(), selected: null, sourceSheet: '', fileName: '', activeDay: '', activeLabor: '', activeMetDays: false, equipmentStatus: 'all' };
   const $ = id => document.getElementById(id);
   const els = {
     fileInput:$('fileInput'), loadBtn:$('loadBtn'), emptyLoadBtn:$('emptyLoadBtn'), fileStatus:$('fileStatus'), fileStatusText:$('fileStatusText'),
     equipmentList:$('equipmentList'), equipmentCount:$('equipmentCount'), activeFilterBtn:$('activeFilterBtn'), inactiveFilterBtn:$('inactiveFilterBtn'), activeCount:$('activeCount'), inactiveCount:$('inactiveCount'), searchInput:$('searchInput'), emptyState:$('emptyState'), detailView:$('detailView'),
     detailEquipment:$('detailEquipment'), detailRange:$('detailRange'), dateRange:$('dateRange'), dateFrom:$('dateFrom'), dateTo:$('dateTo'), clearDates:$('clearDates'), reportBtn:$('reportBtn'),
-    kpiHours:$('kpiHours'), kpiAverage:$('kpiAverage'), kpiTarget:$('kpiTarget'), kpiLost:$('kpiLost'), kpiMetDays:$('kpiMetDays'), kpiMetDaysNote:$('kpiMetDaysNote'), kpiCompliance:$('kpiCompliance'), kpiComplianceNote:$('kpiComplianceNote'), complianceDonut:$('complianceDonut'), donutPct:$('donutPct'), dayChart:$('dayChart'), laborList:$('laborList'),
+    kpiHours:$('kpiHours'), kpiAverage:$('kpiAverage'), kpiTarget:$('kpiTarget'), kpiLost:$('kpiLost'), kpiMetDaysCard:$('kpiMetDaysCard'), kpiMetDays:$('kpiMetDays'), kpiMetDaysNote:$('kpiMetDaysNote'), kpiCompliance:$('kpiCompliance'), kpiComplianceNote:$('kpiComplianceNote'), complianceDonut:$('complianceDonut'), donutPct:$('donutPct'), dayChart:$('dayChart'), laborList:$('laborList'),
     detailTable:$('detailTable'), tableEmpty:$('tableEmpty'), recordsNote:$('recordsNote'), activeFilters:$('activeFilters'), toast:$('toast')
   };
 
@@ -389,7 +401,10 @@
     const d = new Date(s); return Number.isNaN(d.getTime()) ? null : new Date(d.getFullYear(),d.getMonth(),d.getDate());
   }
   function isoDate(d){ return d ? `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}` : ''; }
-  function displayDate(d){ return d ? new Intl.DateTimeFormat('es-PA',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d) : '—'; }
+  function displayDate(d){
+    if(!d || Number.isNaN(d.getTime?.())) return '—';
+    return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+  }
   function shortDate(d){ return d ? new Intl.DateTimeFormat('es-PA',{day:'2-digit',month:'short'}).format(d).replace('.','') : '—'; }
 
   function showToast(message, isError=false){
@@ -471,7 +486,7 @@
       const dataset=detectDataset(workbook);
       if(!dataset) throw new Error('No encontré una tabla con las columnas Equipo y Horas.');
       const rows=buildRows(dataset);
-      state.rows=rows; state.byEquipment=groupRows(rows); state.sourceSheet=dataset.sheetName; state.fileName=file.name; state.selected=null; state.activeDay=''; state.activeLabor=''; state.equipmentStatus='all';
+      state.rows=rows; state.byEquipment=groupRows(rows); state.sourceSheet=dataset.sheetName; state.fileName=file.name; state.selected=null; state.activeDay=''; state.activeLabor=''; state.activeMetDays=false; state.equipmentStatus='all';
       els.fileStatus.classList.add('ok'); els.fileStatusText.textContent=`${file.name} · ${dataset.sheetName}`;
       els.searchInput.value='';
       setGlobalDateLimits(rows);
@@ -579,7 +594,7 @@
 
   function selectEquipment(eq){
     state.selected=eq;
-    state.activeDay=''; state.activeLabor='';
+    state.activeDay=''; state.activeLabor=''; state.activeMetDays=false;
     renderEquipmentList();
     els.emptyState.style.display='none'; els.detailView.classList.add('visible');
     renderDetail();
@@ -589,8 +604,25 @@
     return rowsInDateRange(state.byEquipment.get(state.selected)||[]);
   }
 
+  function getMetDayKeys(rows){
+    const totals=new Map();
+    for(const r of rows){
+      if(!r.date) continue;
+      const key=isoDate(r.date);
+      totals.set(key,(totals.get(key)||0)+r.hours);
+    }
+    return new Set([...totals.entries()].filter(([,hours])=>hours>=8).map(([key])=>key));
+  }
+
+  function onlyMetDays(rows,baseRows=rows){
+    if(!state.activeMetDays) return rows;
+    const metDays=getMetDayKeys(baseRows);
+    return rows.filter(r=>r.date&&metDays.has(isoDate(r.date)));
+  }
+
   function filteredRows(){
-    let rows=dateRangeRows();
+    const baseRows=dateRangeRows();
+    let rows=onlyMetDays(baseRows,baseRows);
     if(state.activeDay) rows=rows.filter(r=>r.date&&isoDate(r.date)===state.activeDay);
     if(state.activeLabor) rows=rows.filter(r=>laborKey(r)===state.activeLabor);
     return rows;
@@ -605,15 +637,19 @@
     if(state.activeLabor){
       chips.push(`<span class="filter-chip">Labor: ${escapeHtml(laborLabelFromKey(state.activeLabor))}<button type="button" data-clear-filter="labor" aria-label="Quitar filtro de labor">×</button></span>`);
     }
+    if(state.activeMetDays){
+      chips.push(`<span class="filter-chip">Días que cumplen 8 h<button type="button" data-clear-filter="metdays" aria-label="Quitar filtro de días cumplidos">×</button></span>`);
+    }
     if(!chips.length){ els.activeFilters.className='active-filters'; els.activeFilters.innerHTML=''; return; }
     els.activeFilters.className='active-filters visible';
     els.activeFilters.innerHTML=`<span class="active-filter-label">Filtros activos</span>${chips.join('')}<button class="clear-interactive" id="clearInteractive" type="button">Quitar filtros</button>`;
     els.activeFilters.querySelectorAll('[data-clear-filter]').forEach(btn=>btn.addEventListener('click',()=>{
       if(btn.dataset.clearFilter==='day') state.activeDay='';
       if(btn.dataset.clearFilter==='labor') state.activeLabor='';
+      if(btn.dataset.clearFilter==='metdays') state.activeMetDays=false;
       renderDetail();
     }));
-    const clearAll=$('clearInteractive'); if(clearAll) clearAll.addEventListener('click',()=>{ state.activeDay='';state.activeLabor='';renderDetail(); });
+    const clearAll=$('clearInteractive'); if(clearAll) clearAll.addEventListener('click',()=>{ state.activeDay='';state.activeLabor='';state.activeMetDays=false;renderDetail(); });
   }
 
   function getSelectedPeriod(rows){
@@ -702,7 +738,8 @@
       const avg=uniqueDays?total/uniqueDays:0;
       const fromLabel=els.dateFrom.value?displayDate(new Date(els.dateFrom.value+'T00:00:00')):(dated.length?displayDate(dated[0]):'—');
       const toLabel=els.dateTo.value?displayDate(new Date(els.dateTo.value+'T00:00:00')):(dated.length?displayDate(dated[dated.length-1]):'—');
-      const generated=new Intl.DateTimeFormat('es-PA',{dateStyle:'short',timeStyle:'short'}).format(new Date());
+      const generatedDate=new Date();
+      const generated=`${displayDate(generatedDate)} ${pad2(generatedDate.getHours())}:${pad2(generatedDate.getMinutes())}`;
       const safeFile=(state.fileName||'').replace(/[^a-zA-Z0-9._-]+/g,' ');
 
       const addPageHeader=()=>{
@@ -838,6 +875,8 @@
     els.kpiAverage.textContent=`${fmtHours(average)} h`;
     els.kpiMetDays.textContent=fmtInt(target.metDays);
     els.kpiMetDaysNote.textContent=`${fmtInt(target.metDays)} de ${fmtInt(target.periodDays)} días del período`;
+    els.kpiMetDaysCard.classList.toggle('active',state.activeMetDays);
+    els.kpiMetDaysCard.setAttribute('aria-pressed',state.activeMetDays?'true':'false');
     const roundedCompliance=Math.round(compliance);
     els.kpiCompliance.textContent=`${roundedCompliance}%`;
     els.kpiComplianceNote.textContent=`${fmtHours(fulfilledHours)} h cumplidas de ${fmtHours(target.targetHours)} h`;
@@ -845,12 +884,12 @@
     els.donutPct.textContent=`${roundedCompliance}%`;
 
     // La gráfica conserva el rango completo; al seleccionar una labor muestra sus días.
-    let chartRows=rangeRows;
+    let chartRows=onlyMetDays(rangeRows,rangeRows);
     if(state.activeLabor) chartRows=chartRows.filter(r=>laborKey(r)===state.activeLabor);
     renderDayChart(chartRows);
 
-    // La lista de labores conserva todas las opciones del período o del día seleccionado.
-    let laborRows=rangeRows;
+    // La lista de labores respeta el filtro de días cumplidos y, si aplica, el día seleccionado.
+    let laborRows=onlyMetDays(rangeRows,rangeRows);
     if(state.activeDay) laborRows=laborRows.filter(r=>r.date&&isoDate(r.date)===state.activeDay);
     renderLaborList(laborRows);
     renderTable(rows);
@@ -939,7 +978,7 @@
       onChange:selectedDates=>{
         syncDateInputs(selectedDates);
         if(selectedDates.length===2){
-          state.activeDay=''; state.activeLabor='';
+          state.activeDay=''; state.activeLabor=''; state.activeMetDays=false;
           renderEquipmentList();
           if(state.selected) renderDetail();
         }
@@ -948,7 +987,7 @@
         if(selectedDates.length===1){
           syncDateInputs([selectedDates[0],selectedDates[0]]);
           dateRangePicker.setDate([selectedDates[0],selectedDates[0]],false);
-          state.activeDay=''; state.activeLabor='';
+          state.activeDay=''; state.activeLabor=''; state.activeMetDays=false;
           renderEquipmentList();
           if(state.selected) renderDetail();
         }
@@ -956,16 +995,27 @@
     });
   }else{
     applyCurrentMonthRange(false);
-    els.dateRange.value=`${els.dateFrom.value} a ${els.dateTo.value}`;
+    const [fallbackFrom,fallbackTo]=currentMonthRange();
+    els.dateRange.value=`${displayDate(fallbackFrom)} a ${displayDate(fallbackTo)}`;
   }
 
   els.clearDates.addEventListener('click',()=>{
     els.dateFrom.value=''; els.dateTo.value='';
-    state.activeDay=''; state.activeLabor='';
+    state.activeDay=''; state.activeLabor=''; state.activeMetDays=false;
     if(dateRangePicker) dateRangePicker.clear(false); else els.dateRange.value='';
     renderEquipmentList();
     if(state.selected) renderDetail();
   });
+  const toggleMetDaysFilter=()=>{
+    state.activeMetDays=!state.activeMetDays;
+    state.activeDay='';
+    renderDetail();
+  };
+  els.kpiMetDaysCard.addEventListener('click',toggleMetDaysFilter);
+  els.kpiMetDaysCard.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleMetDaysFilter(); }
+  });
+
   els.reportBtn.addEventListener('click',generateReport);
 
   document.addEventListener('dragover',e=>e.preventDefault());
