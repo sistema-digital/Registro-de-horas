@@ -303,10 +303,10 @@
 
         <div class="kpis">
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Total de horas trabajadas</div><div class="kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div></div><div class="kpi-value" id="kpiHours">0.00 h</div><div class="kpi-note">Horas del período seleccionado</div></article>
-          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Meta de horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="m9 12 2 2 4-5"/></svg></div></div><div class="kpi-value" id="kpiTarget">0.00 h</div><div class="kpi-note">8 horas × días del período</div></article>
-          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Tiempo perdido</div><div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M4.5 4.5 19.5 19.5"/></svg></div></div><div class="kpi-value" id="kpiLost">0.00 h</div><div class="kpi-note">Horas faltantes para llegar a 8 h/día</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Meta de horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="m9 12 2 2 4-5"/></svg></div></div><div class="kpi-value" id="kpiTarget">0.00 h</div><div class="kpi-note">6.4 horas × días del período</div></article>
+          <article class="kpi"><div class="kpi-top"><div class="kpi-label">Tiempo perdido</div><div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M4.5 4.5 19.5 19.5"/></svg></div></div><div class="kpi-value" id="kpiLost">0.00 h</div><div class="kpi-note">Horas faltantes para llegar a 6.4 h/día</div></article>
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Promedio de horas por día</div><div class="kpi-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div></div><div class="kpi-value" id="kpiAverage">0.00 h</div><div class="kpi-note">Horas trabajadas ÷ días del período</div></article>
-          <article class="kpi kpi-filter" id="kpiMetDaysCard" role="button" tabindex="0" aria-pressed="false" title="Toca para mostrar solo los días que cumplen 8 horas"><div class="kpi-top"><div class="kpi-label">Días que cumplen las 8 horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="m8 16 2 2 5-5"/></svg></div></div><div class="kpi-value" id="kpiMetDays">0</div><div class="kpi-note" id="kpiMetDaysNote">0 de 0 días del período</div></article>
+          <article class="kpi kpi-filter" id="kpiMetDaysCard" role="button" tabindex="0" aria-pressed="false" title="Toca para mostrar solo los días que cumplen 6.4 horas"><div class="kpi-top"><div class="kpi-label">Días que cumplen las 6.4 horas</div><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="m8 16 2 2 5-5"/></svg></div></div><div class="kpi-value" id="kpiMetDays">0</div><div class="kpi-note" id="kpiMetDaysNote">0 de 0 días del período</div></article>
           <article class="kpi"><div class="kpi-top"><div class="kpi-label">Cumplimiento</div><div class="kpi-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></div></div><div class="kpi-compliance"><div class="kpi-compliance-copy"><div class="kpi-value" id="kpiCompliance">0.00%</div><div class="kpi-note" id="kpiComplianceNote">0.00 h cumplidas de 0.00 h</div></div><div class="mini-donut" id="complianceDonut" style="--pct:0%"><span id="donutPct">0%</span></div></div><div class="donut-legend"><span><i class="donut-dot green"></i>Cumplido</span><span><i class="donut-dot red"></i>Faltante</span></div></article>
         </div>
 
@@ -340,6 +340,8 @@
 <script>
 (() => {
   'use strict';
+
+  const DAILY_TARGET = 6.4;
 
   const state = { rows: [], byEquipment: new Map(), selected: null, sourceSheet: '', fileName: '', activeDay: '', activeLabor: '', activeMetDays: false, equipmentStatus: 'all' };
   const $ = id => document.getElementById(id);
@@ -626,7 +628,7 @@
       const key=isoDate(r.date);
       totals.set(key,(totals.get(key)||0)+r.hours);
     }
-    return new Set([...totals.entries()].filter(([,hours])=>hours>=8).map(([key])=>key));
+    return new Set([...totals.entries()].filter(([,hours])=>hours>=DAILY_TARGET).map(([key])=>key));
   }
 
   function onlyMetDays(rows,baseRows=rows){
@@ -653,7 +655,7 @@
       chips.push(`<span class="filter-chip">Labor: ${escapeHtml(laborLabelFromKey(state.activeLabor))}<button type="button" data-clear-filter="labor" aria-label="Quitar filtro de labor">×</button></span>`);
     }
     if(state.activeMetDays){
-      chips.push(`<span class="filter-chip">Días que cumplen 8 h<button type="button" data-clear-filter="metdays" aria-label="Quitar filtro de días cumplidos">×</button></span>`);
+      chips.push(`<span class="filter-chip">Días que cumplen 6.4 h<button type="button" data-clear-filter="metdays" aria-label="Quitar filtro de días cumplidos">×</button></span>`);
     }
     if(!chips.length){ els.activeFilters.className='active-filters'; els.activeFilters.innerHTML=''; return; }
     els.activeFilters.className='active-filters visible';
@@ -689,10 +691,10 @@
     for(let d=new Date(from); d<=to; d.setDate(d.getDate()+1)){
       periodDays++;
       const h=byDay.get(isoDate(d))||0;
-      if(h>=8) metDays++;
-      else lostHours+=8-h;
+      if(h>=DAILY_TARGET) metDays++;
+      else lostHours+=DAILY_TARGET-h;
     }
-    return {periodDays,targetHours:periodDays*8,lostHours,metDays};
+    return {periodDays,targetHours:periodDays*DAILY_TARGET,lostHours,metDays};
   }
 
   function getDailyReportData(rows){
@@ -711,8 +713,8 @@
     const result=[];
     for(let d=new Date(from); d<=to; d.setDate(d.getDate()+1)){
       const key=isoDate(d); const info=byDay.get(key)||{hours:0,records:0,labors:new Set()};
-      const lost=Math.max(0,8-info.hours);
-      result.push({date:new Date(d),hours:info.hours,records:info.records,lost,difference:info.hours-8,status:info.hours>=8?'Cumple':(info.hours>0?'No cumple':'Sin registro'),labors:[...info.labors].join(' / ')||'—'});
+      const lost=Math.max(0,DAILY_TARGET-info.hours);
+      result.push({date:new Date(d),hours:info.hours,records:info.records,lost,difference:info.hours-DAILY_TARGET,status:info.hours>=DAILY_TARGET?'Cumple':(info.hours>0?'No cumple':'Sin registro'),labors:[...info.labors].join(' / ')||'—'});
     }
     return result;
   }
@@ -787,7 +789,7 @@
         ['Registros',fmtInt(rows.length)],
         ['Días con registro',fmtInt(uniqueDays)],
         ['Días del período',fmtInt(target.periodDays)],
-        ['Días que cumplen 8 h',`${fmtInt(target.metDays)} (${fmtHours(metPct)}%)`],
+        ['Días que cumplen 6.4 h',`${fmtInt(target.metDays)} (${fmtHours(metPct)}%)`],
         ['Promedio por día trabajado',`${fmtHours(avg)} h`]
       ];
       const gap=2.2, boxW=(pageW-margin*2-gap*8)/9, boxH=19;
@@ -806,7 +808,7 @@
         doc.autoTable({
           startY:y, margin:{left:margin,right:margin},
           head:[['Fecha','Horas trabajadas','Meta','Tiempo perdido','Estado','Labores registradas']],
-          body:below.map(d=>[displayDate(d.date),`${fmtHours(d.hours)} h`,'8.00 h',`${fmtHours(d.lost)} h`,d.status,d.labors]),
+          body:below.map(d=>[displayDate(d.date),`${fmtHours(d.hours)} h`,`${fmtHours(DAILY_TARGET)} h`,`${fmtHours(d.lost)} h`,d.status,d.labors]),
           theme:'grid', tableWidth:'auto',
           styles:{font:'helvetica',fontSize:6.5,cellPadding:1.6,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.2},
           headStyles:{fillColor:[242,244,247],textColor:[52,64,84],fontStyle:'bold',fontSize:6.3},
@@ -820,7 +822,7 @@
       doc.autoTable({
         startY:y, margin:{left:margin,right:margin,top:23,bottom:11},
         head:[['Fecha','Registros','Horas','Meta','Diferencia','Tiempo perdido','Estado','Labores']],
-        body:daily.map(d=>[displayDate(d.date),fmtInt(d.records),fmtHours(d.hours),'8.00',`${d.difference>=0?'+':''}${fmtHours(d.difference)}`,fmtHours(d.lost),d.status,d.labors]),
+        body:daily.map(d=>[displayDate(d.date),fmtInt(d.records),fmtHours(d.hours),fmtHours(DAILY_TARGET),`${d.difference>=0?'+':''}${fmtHours(d.difference)}`,fmtHours(d.lost),d.status,d.labors]),
         theme:'grid', showHead:'everyPage',
         styles:{font:'helvetica',fontSize:6.2,cellPadding:1.35,textColor:[52,64,84],lineColor:[229,234,241],lineWidth:.18,overflow:'linebreak'},
         headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontStyle:'bold',fontSize:6.2},
