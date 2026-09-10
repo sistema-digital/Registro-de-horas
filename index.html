@@ -139,6 +139,8 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlc3l4aGpmcGdkbWFlbG12eG1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDMxMTYsImV4cCI6MjEwMzc3OTExNn0.iHGdhCT3fcGt6bzoo4o8TRjF4XJzkp1lOM2o2186rSM';
   const PAGE_SIZE = 1000;
   const INSERT_BATCH_SIZE = 500;
+  const SYNC_START_DATE = '2026-09-10';
+  const EXISTING_QUERY_BATCH_SIZE = 200;
 
   const db = window.supabase?.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -266,7 +268,7 @@
         selectEquipment(next);
         if(!silent) showToast(`Base actualizada: ${fmtInt(rows.length)} registros en ${fmtInt(state.byEquipment.size)} equipos.`);
       }else{
-        state.selected=null;els.detailView.classList.remove('visible');els.emptyState.style.display='grid';els.emptyTitle.textContent='Base de datos sin registros';els.emptyText.textContent='Supabase está conectado. Importa un archivo Excel para cargar los equipos 840 y 841.';
+        state.selected=null;els.detailView.classList.remove('visible');els.emptyState.style.display='grid';els.emptyTitle.textContent='Base de datos sin registros';els.emptyText.textContent='Supabase está conectado. Importa un archivo Excel; desde el 10/09/2026 se sincroniza usando ID_Taller.';
       }
       return rows;
     }catch(error){
@@ -276,138 +278,450 @@
 
   function detectDataset(workbook){
     let best=null;
+
     for(const sheetName of workbook.SheetNames){
-      const ws=workbook.Sheets[sheetName],matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false});
+      const ws=workbook.Sheets[sheetName];
+      const matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,blankrows:false});
+
       for(let r=0;r<Math.min(matrix.length,25);r++){
-        const headers=(matrix[r]||[]).map(norm),hasIdKey=headers.some(h=>h==='id key'||h==='idkey'||h==='key id'),hasEq=headers.some(h=>h==='equipo'||h.includes('equipo')),hasDate=headers.some(h=>h==='fecha'||h.startsWith('fecha ')),hasHours=headers.some(h=>h==='cantidad'||h.includes('horas o ha')||h.includes('horas maquinas')||h.includes('hectareas horas maquinas')||h==='horas'||h==='ha');
-        if(!hasIdKey||!hasEq||!hasHours)continue;let score=(hasIdKey?8:0)+(hasEq?6:0)+(hasHours?6:0)+(hasDate?3:0);if(norm(sheetName)==='data26')score+=8;if(headers.some(h=>h==='labor'))score+=2;if(headers.some(h=>h.includes('nombre de labor')||h==='nombre labor'))score+=2;
-        if(!best||score>best.score)best={sheetName,ws,matrix,headerRow:r,headersRaw:matrix[r],headers,score};
+        const headers=(matrix[r]||[]).map(norm);
+
+        const hasIdTaller=headers.some(h=>h==='id taller'||h==='idtaller');
+        const hasEq=headers.some(h=>h==='equipo'||h.includes('equipo'));
+        const hasDate=headers.some(h=>h==='fecha'||h.startsWith('fecha '));
+        const hasHours=headers.some(h=>
+          h==='cantidad'||
+          h.includes('horas o ha')||
+          h.includes('horas maquinas')||
+          h.includes('hectareas horas maquinas')||
+          h==='horas'||
+          h==='ha'
+        );
+
+        if(!hasIdTaller||!hasEq||!hasDate||!hasHours) continue;
+
+        let score=(hasIdTaller?12:0)+(hasEq?6:0)+(hasHours?6:0)+(hasDate?4:0);
+        if(norm(sheetName)==='data26') score+=8;
+        if(headers.some(h=>h==='labor')) score+=2;
+        if(headers.some(h=>h.includes('nombre de labor')||h==='nombre labor')) score+=2;
+
+        if(!best||score>best.score){
+          best={sheetName,ws,matrix,headerRow:r,headersRaw:matrix[r],headers,score};
+        }
       }
     }
+
     return best;
   }
-  function findIndex(headers,aliases){for(const alias of aliases){const a=norm(alias),idx=headers.findIndex(h=>h===a);if(idx>=0)return idx;}for(const alias of aliases){const a=norm(alias),idx=headers.findIndex(h=>h.includes(a)||(a.includes(h)&&h.length>2));if(idx>=0)return idx;}return -1;}
+
+  function findIndex(headers,aliases){
+    for(const alias of aliases){
+      const a=norm(alias);
+      const idx=headers.findIndex(h=>h===a);
+      if(idx>=0) return idx;
+    }
+    for(const alias of aliases){
+      const a=norm(alias);
+      const idx=headers.findIndex(h=>h.includes(a)||(a.includes(h)&&h.length>2));
+      if(idx>=0) return idx;
+    }
+    return -1;
+  }
+
   function buildRows(dataset){
-    const h=dataset.headers,idx={
-      idKey:findIndex(h,['ID Key','IDKey','Id Key','IdKey','ID_KEY','Key ID']),
-      date:findIndex(h,['Fecha']),unit:findIndex(h,['Unidad de Produccion','Unidad Produccion','Up']),equipment:findIndex(h,['Número Equipo','Numero Equipo','Equipo']),labor:findIndex(h,['No Labor','N° Labor','Nº Labor','Labor']),laborName:findIndex(h,['Nombre de Labor','Nombre Labor']),hours:findIndex(h,['Cantidad','Horas o Ha','Horas Maquinas','Hectareas/ Horas Maquinas','Horas','Ha']),producer:findIndex(h,['Productor']),owner:findIndex(h,['Propietario','NombreDueñoOEq','Nombre Dueno O Eq','Dueño de Contrato','Dueno de Contrato']),operator:findIndex(h,['Operador']),employee:findIndex(h,['NomEmpleado','Nombre Empleado'])
+    const h=dataset.headers;
+    const idx={
+      // NUEVA FUENTE DE VERDAD: ID_Taller
+      idKey:findIndex(h,['ID_Taller','ID Taller','IDTaller']),
+      date:findIndex(h,['Fecha']),
+      unit:findIndex(h,['Unidad de Produccion','Unidad Produccion','Up']),
+      equipment:findIndex(h,['Número Equipo','Numero Equipo','Equipo']),
+      labor:findIndex(h,['No Labor','N° Labor','Nº Labor','Labor']),
+      laborName:findIndex(h,['Nombre de Labor','Nombre Labor']),
+      hours:findIndex(h,['Cantidad','Horas o Ha','Horas Maquinas','Hectareas/ Horas Maquinas','Horas','Ha']),
+      producer:findIndex(h,['Productor']),
+      owner:findIndex(h,['Propietario','NombreDueñoOEq','Nombre Dueno O Eq','Dueño de Contrato','Dueno de Contrato']),
+      operator:findIndex(h,['Operador']),
+      employee:findIndex(h,['NomEmpleado','Nombre Empleado'])
     };
-    if(idx.idKey<0)throw new Error('No pude identificar la columna ID Key. Esta columna es obligatoria para evitar registros duplicados.');
-    if(idx.equipment<0||idx.hours<0)throw new Error('No pude identificar las columnas Número Equipo y Cantidad/Horas.');
+
+    if(idx.idKey<0){
+      throw new Error('No pude identificar la columna ID_Taller. Esta columna es obligatoria para sincronizar los registros.');
+    }
+    if(idx.date<0||idx.equipment<0||idx.hours<0){
+      throw new Error('No pude identificar las columnas Fecha, Número Equipo y Cantidad/Horas.');
+    }
+
     const rows=[];
     let missingIdKeys=0;
+    let beforeStartDate=0;
+    let outsideFleet=0;
+
     for(let r=dataset.headerRow+1;r<dataset.matrix.length;r++){
-      const arr=dataset.matrix[r]||[],equipment=equipmentText(arr[idx.equipment]);if(!/^(840|841)/.test(equipment))continue;
+      const arr=dataset.matrix[r]||[];
+      const date=parseDate(arr[idx.date]);
+
+      if(!date) continue;
+
+      // La nueva sincronización SOLO comienza el 10/09/2026.
+      if(isoDate(date)<SYNC_START_DATE){
+        beforeStartDate++;
+        continue;
+      }
+
+      const equipment=equipmentText(arr[idx.equipment]);
+      if(!/^(840|841)/.test(equipment)){
+        outsideFleet++;
+        continue;
+      }
+
       const idKey=idKeyText(arr[idx.idKey]);
-      if(!idKey){missingIdKeys++;continue;}
-      const hours=num(arr[idx.hours]),date=idx.date>=0?parseDate(arr[idx.date]):null;if(!equipment||!date)continue;
-      rows.push({idKey,sourceRow:r+1,equipment,date,hours,unit:idx.unit>=0?text(arr[idx.unit]):'',labor:idx.labor>=0?text(arr[idx.labor]):'',laborName:idx.laborName>=0?text(arr[idx.laborName]):'',producer:idx.producer>=0?text(arr[idx.producer]):'',owner:idx.owner>=0?text(arr[idx.owner]):'',operator:idx.operator>=0?text(arr[idx.operator]):'',employee:idx.employee>=0?text(arr[idx.employee]):''});
+      if(!idKey){
+        missingIdKeys++;
+        continue;
+      }
+
+      rows.push({
+        idKey,
+        sourceRow:r+1,
+        equipment,
+        date,
+        hours:num(arr[idx.hours]),
+        unit:idx.unit>=0?text(arr[idx.unit]):'',
+        labor:idx.labor>=0?text(arr[idx.labor]):'',
+        laborName:idx.laborName>=0?text(arr[idx.laborName]):'',
+        producer:idx.producer>=0?text(arr[idx.producer]):'',
+        owner:idx.owner>=0?text(arr[idx.owner]):'',
+        operator:idx.operator>=0?text(arr[idx.operator]):'',
+        employee:idx.employee>=0?text(arr[idx.employee]):''
+      });
     }
-    if(missingIdKeys) console.warn(`${missingIdKeys} filas 840/841 fueron omitidas porque no tenían ID Key.`);
-    return rows;
+
+    console.info('[Sincronización ID_Taller]',{
+      desde:SYNC_START_DATE,
+      registrosValidos:rows.length,
+      anterioresOmitidos:beforeStartDate,
+      sinIdTaller:missingIdKeys,
+      fueraEquipos840841:outsideFleet
+    });
+
+    return {rows,missingIdKeys,beforeStartDate,outsideFleet};
   }
 
   function dedupeRowsByIdKey(rows){
     const unique=new Map();
     let duplicateInFile=0;
+
     for(const row of rows){
-      if(unique.has(row.idKey)){ duplicateInFile++; continue; }
+      if(unique.has(row.idKey)) duplicateInFile++;
+
+      // Si el mismo ID_Taller aparece más de una vez en el archivo,
+      // se conserva la última aparición porque representa la versión más reciente.
       unique.set(row.idKey,row);
     }
+
     return {rows:[...unique.values()],duplicateInFile};
   }
 
-  async function fetchExistingIdKeys(idKeys){
-    const existing=new Set();
-    const QUERY_BATCH_SIZE=200;
-    for(let i=0;i<idKeys.length;i+=QUERY_BATCH_SIZE){
-      const batch=idKeys.slice(i,i+QUERY_BATCH_SIZE);
-      els.loadingText.textContent=`Comprobando ID Key existentes ${fmtInt(i+1)}–${fmtInt(Math.min(i+QUERY_BATCH_SIZE,idKeys.length))} de ${fmtInt(idKeys.length)}...`;
-      const {data,error}=await db.from('registros_horas').select('id_key').in('id_key',batch);
+  function rowToPayload(r,importId=null){
+    return {
+      // id_key de Supabase almacena el ID_Taller del Excel.
+      id_key:r.idKey,
+      importacion_id:importId,
+      fila_origen:r.sourceRow,
+      fecha:isoDate(r.date),
+      unidad_produccion:r.unit||null,
+      equipo_numero:r.equipment,
+      labor:r.labor||null,
+      nombre_labor:r.laborName||null,
+      cantidad:r.hours,
+      productor:r.producer||null,
+      propietario:r.owner||null,
+      operador:r.operator||null,
+      empleado:r.employee||null
+    };
+  }
+
+  function comparableText(v){
+    return String(v??'').trim();
+  }
+
+  function comparableNumber(v){
+    return num(v);
+  }
+
+  function recordHasChanged(dbRow,payload){
+    if(!dbRow) return true;
+
+    const dbDate=dbRow.fecha ? String(dbRow.fecha).slice(0,10) : '';
+    if(dbDate!==payload.fecha) return true;
+
+    if(comparableText(dbRow.unidad_produccion)!==comparableText(payload.unidad_produccion)) return true;
+    if(equipmentText(dbRow.equipo_numero)!==equipmentText(payload.equipo_numero)) return true;
+    if(comparableText(dbRow.labor)!==comparableText(payload.labor)) return true;
+    if(comparableText(dbRow.nombre_labor)!==comparableText(payload.nombre_labor)) return true;
+    if(Math.abs(comparableNumber(dbRow.cantidad)-comparableNumber(payload.cantidad))>0.0000001) return true;
+    if(comparableText(dbRow.productor)!==comparableText(payload.productor)) return true;
+    if(comparableText(dbRow.propietario)!==comparableText(payload.propietario)) return true;
+    if(comparableText(dbRow.operador)!==comparableText(payload.operador)) return true;
+    if(comparableText(dbRow.empleado)!==comparableText(payload.empleado)) return true;
+
+    return false;
+  }
+
+  async function fetchExistingRecords(idKeys){
+    const existingGroups=new Map();
+
+    for(let i=0;i<idKeys.length;i+=EXISTING_QUERY_BATCH_SIZE){
+      const batch=idKeys.slice(i,i+EXISTING_QUERY_BATCH_SIZE);
+
+      els.loadingText.textContent=
+        `Comparando ID_Taller ${fmtInt(i+1)}–${fmtInt(Math.min(i+EXISTING_QUERY_BATCH_SIZE,idKeys.length))} `+
+        `de ${fmtInt(idKeys.length)} con Supabase...`;
+
+      const {data,error}=await db.from('registros_horas')
+        .select('id,id_key,fecha,unidad_produccion,equipo_numero,labor,nombre_labor,cantidad,productor,propietario,operador,empleado')
+        .in('id_key',batch);
+
       if(error) throw error;
+
       for(const row of (data||[])){
         const key=idKeyText(row.id_key);
-        if(key) existing.add(key);
+        if(!key) continue;
+        if(!existingGroups.has(key)) existingGroups.set(key,[]);
+        existingGroups.get(key).push(row);
       }
+    }
+
+    const duplicated=[...existingGroups.entries()].filter(([,records])=>records.length>1);
+    if(duplicated.length){
+      const sample=duplicated.slice(0,5).map(([key,records])=>`${key} (${records.length})`).join(', ');
+      throw new Error(
+        `Se encontraron ${duplicated.length} ID_Taller duplicados en Supabase. `+
+        `La sincronización se detuvo para no actualizar un registro incorrecto. Ejemplos: ${sample}.`
+      );
+    }
+
+    const existing=new Map();
+    for(const [key,records] of existingGroups){
+      existing.set(key,records[0]);
     }
     return existing;
   }
 
   async function sha256(buffer){
     if(!crypto?.subtle) return null;
-    const digest=await crypto.subtle.digest('SHA-256',buffer);return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+    const digest=await crypto.subtle.digest('SHA-256',buffer);
+    return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
   }
 
-  async function saveImportToSupabase(file,dataset,rows,buffer){
-    if(!db) throw new Error('Supabase no está disponible.');
-
-    // 1) El ID Key es la fuente de verdad para evitar duplicados.
-    const localDedupe=dedupeRowsByIdKey(rows);
-    const uniqueRows=localDedupe.rows;
-    const existingIdKeys=await fetchExistingIdKeys(uniqueRows.map(r=>r.idKey));
-    const newRows=uniqueRows.filter(r=>!existingIdKeys.has(r.idKey));
-    const alreadyInDb=uniqueRows.length-newRows.length;
-
-    // Si todas las ID Key ya existen, no se crea una importación vacía.
-    if(!newRows.length){
-      return {inserted:0,alreadyInDb,duplicateInFile:localDedupe.duplicateInFile,importId:null};
-    }
-
-    // 2) El hash solo identifica el archivo/importación; ya NO decide qué filas se insertan.
+  async function getOrCreateImport(file,dataset,affectedRows,buffer){
     const hash=await sha256(buffer);
     let importId=null;
+
     if(hash){
-      const {data:existingImport,error:existingError}=await db.from('importaciones_horas').select('id').eq('hash_archivo',hash).maybeSingle();
+      const {data:existingImport,error:existingError}=await db.from('importaciones_horas')
+        .select('id')
+        .eq('hash_archivo',hash)
+        .maybeSingle();
+
       if(existingError) throw existingError;
       importId=existingImport?.id||null;
     }
 
     if(!importId){
-      const dates=newRows.map(r=>r.date).filter(Boolean).sort((a,b)=>a-b);
-      const importPayload={nombre_archivo:file.name,nombre_hoja:dataset.sheetName,hash_archivo:hash,fecha_desde:dates.length?isoDate(dates[0]):null,fecha_hasta:dates.length?isoDate(dates[dates.length-1]):null,total_registros:newRows.length};
-      const {data:importRow,error:importError}=await db.from('importaciones_horas').insert(importPayload).select('id').single();
+      const dates=affectedRows.map(r=>r.date).filter(Boolean).sort((a,b)=>a-b);
+      const importPayload={
+        nombre_archivo:file.name,
+        nombre_hoja:dataset.sheetName,
+        hash_archivo:hash,
+        fecha_desde:dates.length?isoDate(dates[0]):null,
+        fecha_hasta:dates.length?isoDate(dates[dates.length-1]):null,
+        total_registros:affectedRows.length
+      };
+
+      const {data:importRow,error:importError}=await db.from('importaciones_horas')
+        .insert(importPayload)
+        .select('id')
+        .single();
+
       if(importError) throw importError;
       importId=importRow.id;
     }
 
-    const equipos=[...new Set(newRows.map(r=>r.equipment))].map(numero=>({numero,activo:true}));
+    return importId;
+  }
+
+  async function saveImportToSupabase(file,dataset,rows,buffer){
+    if(!db) throw new Error('Supabase no está disponible.');
+
+    // 1) Un único registro por ID_Taller dentro del archivo.
+    const localDedupe=dedupeRowsByIdKey(rows);
+    const uniqueRows=localDedupe.rows;
+
+    // 2) Traer únicamente los ID_Taller involucrados y comparar su contenido.
+    const existingMap=await fetchExistingRecords(uniqueRows.map(r=>r.idKey));
+
+    const newRows=[];
+    const changedRows=[];
+    let unchanged=0;
+
+    for(const row of uniqueRows){
+      const payload=rowToPayload(row,null);
+      const existing=existingMap.get(row.idKey);
+
+      if(!existing){
+        newRows.push({row,payload});
+      }else if(recordHasChanged(existing,payload)){
+        changedRows.push({row,payload,dbId:existing.id});
+      }else{
+        unchanged++;
+      }
+    }
+
+    // Si no existe ningún cambio real, no se crea importación ni se escribe en Supabase.
+    if(!newRows.length&&!changedRows.length){
+      return {
+        inserted:0,
+        updated:0,
+        unchanged,
+        duplicateInFile:localDedupe.duplicateInFile,
+        importId:null
+      };
+    }
+
+    // 3) Crear/reutilizar la importación solamente para registros nuevos o modificados.
+    const affectedRows=[
+      ...newRows.map(item=>item.row),
+      ...changedRows.map(item=>item.row)
+    ];
+    const importId=await getOrCreateImport(file,dataset,affectedRows,buffer);
+
+    // 4) Mantener actualizado el catálogo de equipos afectados.
+    const equipos=[...new Set(affectedRows.map(r=>r.equipment))].map(numero=>({numero,activo:true}));
     if(equipos.length){
-      const {error:eqError}=await db.from('equipos_horas').upsert(equipos,{onConflict:'numero',ignoreDuplicates:true});
+      const {error:eqError}=await db.from('equipos_horas')
+        .upsert(equipos,{onConflict:'numero',ignoreDuplicates:true});
       if(eqError) throw eqError;
     }
 
-    const payload=newRows.map(r=>({
-      id_key:r.idKey,importacion_id:importId,fila_origen:r.sourceRow,fecha:isoDate(r.date),unidad_produccion:r.unit||null,equipo_numero:r.equipment,labor:r.labor||null,nombre_labor:r.laborName||null,cantidad:r.hours,productor:r.producer||null,propietario:r.owner||null,operador:r.operator||null,empleado:r.employee||null
-    }));
-
+    // 5) INSERT únicamente para ID_Taller que todavía no existen.
     let inserted=0;
-    for(let i=0;i<payload.length;i+=INSERT_BATCH_SIZE){
-      els.loadingText.textContent=`Guardando solo registros nuevos ${fmtInt(i+1)}–${fmtInt(Math.min(i+INSERT_BATCH_SIZE,payload.length))} de ${fmtInt(payload.length)}...`;
-      // ignoreDuplicates + índice UNIQUE en id_key = segunda protección en la base de datos.
-      const {data,error}=await db.from('registros_horas').upsert(payload.slice(i,i+INSERT_BATCH_SIZE),{onConflict:'id_key',ignoreDuplicates:true}).select('id_key');
+    const newPayload=newRows.map(item=>rowToPayload(item.row,importId));
+
+    for(let i=0;i<newPayload.length;i+=INSERT_BATCH_SIZE){
+      els.loadingText.textContent=
+        `Guardando registros nuevos ${fmtInt(i+1)}–${fmtInt(Math.min(i+INSERT_BATCH_SIZE,newPayload.length))} `+
+        `de ${fmtInt(newPayload.length)}...`;
+
+      const {data,error}=await db.from('registros_horas')
+        .upsert(newPayload.slice(i,i+INSERT_BATCH_SIZE),{
+          onConflict:'id_key',
+          ignoreDuplicates:true
+        })
+        .select('id_key');
+
       if(error) throw error;
       inserted+=(data||[]).length;
     }
 
-    return {inserted,alreadyInDb,duplicateInFile:localDedupe.duplicateInFile,importId};
+    // 6) UPDATE únicamente para ID_Taller cuyo contenido realmente cambió.
+    let updated=0;
+    for(let i=0;i<changedRows.length;i++){
+      const item=changedRows[i];
+
+      els.loadingText.textContent=
+        `Actualizando registros editados ${fmtInt(i+1)} de ${fmtInt(changedRows.length)} `+
+        `· ID_Taller ${item.row.idKey}...`;
+
+      const payload=rowToPayload(item.row,importId);
+
+      const {data,error}=await db.from('registros_horas')
+        .update(payload)
+        .eq('id',item.dbId)
+        .select('id');
+
+      if(error) throw error;
+      if((data||[]).length) updated++;
+    }
+
+    return {
+      inserted,
+      updated,
+      unchanged,
+      duplicateInFile:localDedupe.duplicateInFile,
+      importId
+    };
   }
 
   async function loadFile(file){
-    if(!window.XLSX){showToast('No se pudo cargar el lector de Excel.',true);return;}
-    setLoading(true,'Importando Excel','Leyendo el archivo...');
+    if(!window.XLSX){
+      showToast('No se pudo cargar el lector de Excel.',true);
+      return;
+    }
+
+    setLoading(true,'Sincronizando Excel','Leyendo registros desde el 10/09/2026...');
+
     try{
-      const buffer=await file.arrayBuffer(),workbook=XLSX.read(buffer,{type:'array',cellDates:true,cellNF:true}),dataset=detectDataset(workbook);
-      if(!dataset)throw new Error('No encontré una tabla con las columnas ID Key, Número Equipo y Cantidad/Horas.');
-      const rows=buildRows(dataset);if(!rows.length)throw new Error('El archivo no contiene registros válidos 840/841 con Fecha e ID Key.');
-      els.loadingText.textContent=`Preparando ${fmtInt(rows.length)} registros y comprobando ID Key...`;
+      const buffer=await file.arrayBuffer();
+      const workbook=XLSX.read(buffer,{type:'array',cellDates:true,cellNF:true});
+      const dataset=detectDataset(workbook);
+
+      if(!dataset){
+        throw new Error(
+          'No encontré una tabla con las columnas ID_Taller, Fecha, Número Equipo y Cantidad/Horas.'
+        );
+      }
+
+      const parsed=buildRows(dataset);
+      const rows=parsed.rows;
+
+      if(!rows.length){
+        const extras=[];
+        if(parsed.beforeStartDate) extras.push(`${fmtInt(parsed.beforeStartDate)} filas anteriores al 10/09/2026 ignoradas`);
+        if(parsed.missingIdKeys) extras.push(`${fmtInt(parsed.missingIdKeys)} filas sin ID_Taller`);
+
+        showToast(
+          'No hay registros válidos 840/841 desde el 10/09/2026 en adelante.'+
+          (extras.length?' · '+extras.join(' · '):'')
+        );
+
+        await loadFromSupabase({keepSelection:true,silent:true});
+        return;
+      }
+
+      els.loadingText.textContent=
+        `Preparando ${fmtInt(rows.length)} registros y comparando ID_Taller con Supabase...`;
+
       const result=await saveImportToSupabase(file,dataset,rows,buffer);
-      const parts=[`${fmtInt(result.inserted)} nuevos guardados`];
-      if(result.alreadyInDb) parts.push(`${fmtInt(result.alreadyInDb)} ya existían`);
-      if(result.duplicateInFile) parts.push(`${fmtInt(result.duplicateInFile)} ID Key repetidos dentro del Excel`);
-      showToast(parts.join(' · ') + '.');
+
+      const parts=[
+        `${fmtInt(result.inserted)} nuevos`,
+        `${fmtInt(result.updated)} actualizados`,
+        `${fmtInt(result.unchanged)} sin cambios`
+      ];
+
+      if(result.duplicateInFile){
+        parts.push(`${fmtInt(result.duplicateInFile)} ID_Taller repetidos dentro del Excel`);
+      }
+      if(parsed.beforeStartDate){
+        parts.push(`${fmtInt(parsed.beforeStartDate)} anteriores al 10/09/2026 ignorados`);
+      }
+      if(parsed.missingIdKeys){
+        parts.push(`${fmtInt(parsed.missingIdKeys)} sin ID_Taller omitidos`);
+      }
+
+      showToast(parts.join(' · ')+'.');
       await loadFromSupabase({keepSelection:true,silent:true});
-    }catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);setStatus('error','Error al guardar');}
-    finally{setLoading(false);els.fileInput.value='';}
+
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+      setStatus('error','Error al sincronizar');
+    }finally{
+      setLoading(false);
+      els.fileInput.value='';
+    }
   }
 
   function currentPeriodLabel(){const from=els.dateFrom.value?new Date(els.dateFrom.value+'T00:00:00'):null,to=els.dateTo.value?new Date(els.dateTo.value+'T00:00:00'):null;if(from&&to)return `${displayDate(from)} - ${displayDate(to)}`;if(from)return `Desde ${displayDate(from)}`;if(to)return `Hasta ${displayDate(to)}`;return 'Todo el período';}
