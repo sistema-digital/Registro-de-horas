@@ -34,6 +34,44 @@
     .brand-icon svg{width:23px;height:23px}.brand-title{font-weight:800;letter-spacing:-.02em}.brand-sub{font-size:11px;color:var(--muted);margin-top:3px}
     .top-actions{margin-left:auto;display:flex;align-items:center;gap:9px}.db-status{display:flex;align-items:center;gap:7px;max-width:290px;padding:8px 11px;border-radius:10px;background:#f8fafc;color:#475467;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .status-dot{width:8px;height:8px;border-radius:50%;background:#98a2b3;flex:0 0 auto}.db-status.ok .status-dot{background:#12b76a}.db-status.error .status-dot{background:#f04438}.db-status.loading .status-dot{background:#f79009}
+    .missing-days-wrap{position:relative;flex:0 0 auto}
+    .missing-days-btn{
+      min-height:38px;border:1px solid #fedf89;border-radius:10px;background:#fffaeb;color:#93370d;
+      padding:8px 11px;display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;
+      white-space:nowrap;cursor:pointer
+    }
+    .missing-days-btn svg{width:16px;height:16px;flex:0 0 auto}
+    .missing-days-btn .missing-count{
+      min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#f79009;color:#fff;
+      display:inline-grid;place-items:center;font-size:10px;font-weight:900
+    }
+    .missing-days-btn.ok{border-color:#abefc6;background:#ecfdf3;color:#067647}
+    .missing-days-btn.ok .missing-count{background:#12b76a}
+    .missing-days-btn.loading{border-color:#d0d5dd;background:#f8fafc;color:#667085}
+    .missing-days-btn.loading .missing-count{background:#98a2b3}
+    .missing-days-popover{
+      position:absolute;right:0;top:calc(100% + 8px);width:min(360px,calc(100vw - 24px));max-height:330px;overflow:auto;
+      background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 42px rgba(16,24,40,.16);
+      padding:12px;z-index:50
+    }
+    .missing-days-popover[hidden]{display:none}
+    .missing-days-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:2px 2px 10px}
+    .missing-days-title{font-size:12px;font-weight:850;color:#101828}
+    .missing-days-note{font-size:10px;color:#667085;line-height:1.45;margin-top:3px}
+    .missing-days-close{border:0;background:#f2f4f7;color:#475467;width:28px;height:28px;border-radius:8px;font-size:18px;line-height:1}
+    .missing-days-list{display:grid;gap:6px}
+    .missing-day-item{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;
+      border:1px solid #fee4e2;border-radius:10px;background:#fff7f6
+    }
+    .missing-day-item strong{font-size:11px;color:#b42318}
+    .missing-day-item span{font-size:10px;color:#667085}
+    .missing-days-empty{padding:17px 10px;text-align:center;color:#067647;font-size:12px;font-weight:800}
+    @media(max-width:760px){
+      .missing-days-btn{padding:8px 9px}
+      .missing-days-btn .missing-days-label{display:none}
+      .missing-days-popover{position:fixed;top:76px;right:12px;left:12px;width:auto;max-height:55vh}
+    }
     .btn-primary,.btn-soft,.btn-report{border:0;border-radius:11px;padding:10px 14px;font-weight:750;display:inline-flex;align-items:center;gap:8px}.btn-primary{background:var(--blue);color:#fff;box-shadow:0 5px 12px rgba(37,99,235,.2)}.btn-soft{background:#f2f4f7;color:#344054}.btn-report{background:#101828;color:#fff}.btn-primary:disabled,.btn-soft:disabled,.btn-report:disabled{opacity:.55;cursor:not-allowed}.btn-primary svg,.btn-soft svg,.btn-report svg{width:17px;height:17px}
     .workspace{display:grid;grid-template-columns:310px 1fr;min-height:0}.sidebar{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}.side-head{padding:18px 16px 14px;border-bottom:1px solid var(--line)}
     .side-title-row{display:flex;align-items:center;gap:7px;margin-bottom:12px}.side-title{font-size:14px;font-weight:800}.status-filters{display:flex;gap:5px;margin-left:auto}.status-filter-btn{border:1px solid var(--line);background:#fff;color:#475467;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:800}.status-filter-btn.selected[data-status="active"]{background:#ecfdf3;border-color:#abefc6;color:#067647}.status-filter-btn.selected[data-status="inactive"]{background:#fef3f2;border-color:#fecdca;color:#b42318}.count-chip{font-size:12px;background:var(--blue-soft);color:#1d4ed8;padding:4px 8px;border-radius:999px;font-weight:800}
@@ -64,6 +102,27 @@
     </div>
     <div class="top-actions">
       <div class="db-status loading" id="dbStatus"><span class="status-dot"></span><span id="dbStatusText">Conectando...</span></div>
+      <div class="missing-days-wrap" id="missingDaysWrap">
+        <button class="missing-days-btn loading" id="missingDaysBtn" type="button" aria-expanded="false" aria-controls="missingDaysPopover" title="Días pendientes de cargar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M16 3v4M8 3v4M3 10h18"/>
+            <path d="m9 15 2 2 4-4"/>
+          </svg>
+          <span class="missing-days-label">Días pendientes</span>
+          <span class="missing-count" id="missingDaysCount">—</span>
+        </button>
+        <div class="missing-days-popover" id="missingDaysPopover" hidden>
+          <div class="missing-days-head">
+            <div>
+              <div class="missing-days-title" id="missingDaysTitle">Días pendientes de cargar</div>
+              <div class="missing-days-note">Desde el 10/09/2026. Se excluyen automáticamente el día actual y los domingos.</div>
+            </div>
+            <button class="missing-days-close" id="missingDaysClose" type="button" aria-label="Cerrar">×</button>
+          </div>
+          <div class="missing-days-list" id="missingDaysList"></div>
+        </div>
+      </div>
       <button class="btn-soft" id="refreshBtn" type="button" title="Actualizar desde Supabase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6v6h-6"/><path d="M4 18v-6h6"/><path d="M18.5 9A7 7 0 0 0 6.2 5.2L4 7"/><path d="M5.5 15A7 7 0 0 0 17.8 18.8L20 17"/></svg><span>Actualizar</span></button>
       <button class="btn-primary" id="loadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14a2 2 0 0 0 2-2v-4"/><path d="M3 15v4a2 2 0 0 0 2 2"/></svg><span>Cargar datos</span></button>
       <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden />
@@ -163,7 +222,9 @@
     detailEquipment:$('detailEquipment'), detailRange:$('detailRange'), dateRange:$('dateRange'), dateFrom:$('dateFrom'), dateTo:$('dateTo'), clearDates:$('clearDates'), reportBtn:$('reportBtn'),
     kpiHours:$('kpiHours'), kpiAverage:$('kpiAverage'), kpiTarget:$('kpiTarget'), kpiLost:$('kpiLost'), kpiMetDaysCard:$('kpiMetDaysCard'), kpiMetDays:$('kpiMetDays'), kpiMetDaysNote:$('kpiMetDaysNote'),
     kpiCompliance:$('kpiCompliance'), kpiComplianceNote:$('kpiComplianceNote'), complianceDonut:$('complianceDonut'), donutPct:$('donutPct'), dayChart:$('dayChart'), laborList:$('laborList'),
-    detailTable:$('detailTable'), tableEmpty:$('tableEmpty'), recordsNote:$('recordsNote'), activeFilters:$('activeFilters'), toast:$('toast'), loadingOverlay:$('loadingOverlay'), loadingTitle:$('loadingTitle'), loadingText:$('loadingText')
+    detailTable:$('detailTable'), tableEmpty:$('tableEmpty'), recordsNote:$('recordsNote'), activeFilters:$('activeFilters'), toast:$('toast'), loadingOverlay:$('loadingOverlay'), loadingTitle:$('loadingTitle'), loadingText:$('loadingText'),
+    missingDaysWrap:$('missingDaysWrap'), missingDaysBtn:$('missingDaysBtn'), missingDaysCount:$('missingDaysCount'),
+    missingDaysPopover:$('missingDaysPopover'), missingDaysClose:$('missingDaysClose'), missingDaysList:$('missingDaysList'), missingDaysTitle:$('missingDaysTitle')
   };
 
   let dateRangePicker = null;
@@ -209,6 +270,79 @@
     if(/column .*id_key.* does not exist|42703/i.test(raw)) return 'Falta la columna id_key en registros_horas. Ejecuta el SQL de actualización ID Key que acompaña este index.';
     if(/relation .* does not exist|42P01/i.test(raw)) return 'No encontré las tablas de Registro de horas en Supabase. Ejecuta primero el script de creación de tablas.';
     return raw;
+  }
+
+
+  function localDateFromIso(value){
+    const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? new Date(Number(m[1]),Number(m[2])-1,Number(m[3])) : null;
+  }
+
+  function missingDayLabel(iso){
+    const d=localDateFromIso(iso);
+    if(!d) return iso;
+    const weekday=new Intl.DateTimeFormat('es-PA',{weekday:'long'}).format(d);
+    const pretty=`${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+    return {weekday:weekday.charAt(0).toUpperCase()+weekday.slice(1),pretty};
+  }
+
+  function calculateMissingLoadDays(rows){
+    const start=localDateFromIso(SYNC_START_DATE);
+    const today=new Date();
+    const todayOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+
+    if(!start || start>=todayOnly) return [];
+
+    // Un día se considera cargado cuando existe al menos un registro 840/841 en esa fecha.
+    const loadedDates=new Set(
+      (rows||[])
+        .filter(r=>r?.date && /^(840|841)/.test(r.equipment||''))
+        .map(r=>isoDate(r.date))
+    );
+
+    const missing=[];
+    for(let d=new Date(start);d<todayOnly;d.setDate(d.getDate()+1)){
+      // Domingo = 0. Nunca se marca como pendiente.
+      if(d.getDay()===0) continue;
+
+      const key=isoDate(d);
+      if(!loadedDates.has(key)) missing.push(key);
+    }
+    return missing;
+  }
+
+  function updateMissingDaysIndicator(rows=state.rows){
+    if(!els.missingDaysBtn) return;
+
+    const missing=calculateMissingLoadDays(rows);
+    els.missingDaysCount.textContent=fmtInt(missing.length);
+    els.missingDaysBtn.classList.remove('loading','ok');
+    els.missingDaysBtn.classList.toggle('ok',missing.length===0);
+
+    if(missing.length===0){
+      els.missingDaysBtn.title='Todos los días requeridos están cargados.';
+      els.missingDaysTitle.textContent='Carga al día';
+      els.missingDaysList.innerHTML='<div class="missing-days-empty">✓ No hay días pendientes de cargar.</div>';
+      return;
+    }
+
+    els.missingDaysBtn.title=`${missing.length} día${missing.length===1?'':'s'} pendiente${missing.length===1?'':'s'} de cargar`;
+    els.missingDaysTitle.textContent=`${missing.length} día${missing.length===1?'':'s'} pendiente${missing.length===1?'':'s'} de cargar`;
+
+    els.missingDaysList.innerHTML=missing.map(iso=>{
+      const label=missingDayLabel(iso);
+      return `<div class="missing-day-item"><strong>${escapeHtml(label.pretty)}</strong><span>${escapeHtml(label.weekday)}</span></div>`;
+    }).join('');
+  }
+
+  function setMissingDaysLoading(){
+    if(!els.missingDaysBtn) return;
+    els.missingDaysBtn.classList.remove('ok');
+    els.missingDaysBtn.classList.add('loading');
+    els.missingDaysCount.textContent='—';
+    els.missingDaysBtn.title='Calculando días pendientes...';
+    els.missingDaysTitle.textContent='Calculando días pendientes';
+    els.missingDaysList.innerHTML='<div class="missing-days-empty" style="color:#667085">Consultando registros...</div>';
   }
 
   function dbRowToAppRow(r){
@@ -257,10 +391,12 @@
   async function loadFromSupabase({keepSelection=true,silent=false}={}){
     const previous=state.selected;
     setStatus('loading','Consultando Supabase...');
+    setMissingDaysLoading();
     if(!silent) setLoading(true,'Actualizando datos','Consultando registros guardados en Supabase...');
     try{
       const rows=await fetchAllRecords();
       state.rows=rows;state.byEquipment=groupRows(rows);state.sourceSheet='registros_horas';state.fileName='Supabase';state.activeDay='';state.activeLabor='';state.activeMetDays=false;
+      updateMissingDaysIndicator(rows);
       setGlobalDateLimits(rows);renderEquipmentList();
       setStatus('ok',`Supabase · ${fmtInt(rows.length)} registros`);
       if(state.byEquipment.size){
@@ -272,7 +408,7 @@
       }
       return rows;
     }catch(error){
-      console.error(error);setStatus('error','Error de conexión');els.detailView.classList.remove('visible');els.emptyState.style.display='grid';els.emptyTitle.textContent='No se pudo leer Supabase';els.emptyText.textContent=supabaseErrorMessage(error);showToast(supabaseErrorMessage(error),true);return null;
+      console.error(error);setStatus('error','Error de conexión');setMissingDaysLoading();els.detailView.classList.remove('visible');els.emptyState.style.display='grid';els.emptyTitle.textContent='No se pudo leer Supabase';els.emptyText.textContent=supabaseErrorMessage(error);showToast(supabaseErrorMessage(error),true);return null;
     }finally{ if(!silent)setLoading(false); }
   }
 
@@ -767,6 +903,25 @@
       const sorted=[...rows].sort((a,b)=>(a.date?.getTime()||0)-(b.date?.getTime()||0));doc.autoTable({startY:33,margin:{left:8,right:8,bottom:10},head:[['Fecha','Unidad de producción','Labor','Nombre de labor','Horas','Productor','Operador']],body:sorted.map(r=>[displayDate(r.date),r.unit||'—',r.labor||'—',r.laborName||'—',fmtHours(r.hours),r.producer||'—',r.operator||'—']),theme:'grid',styles:{fontSize:6.4,cellPadding:1.5},headStyles:{fillColor:[37,99,235],textColor:[255,255,255]}});doc.save(`Reporte_Horas_Equipo_${state.selected}_${els.dateFrom.value||'inicio'}_${els.dateTo.value||'fin'}.pdf`);showToast('Reporte PDF generado.');
     }catch(e){console.error(e);showToast('No se pudo generar el reporte.',true);}
   }
+
+
+  function toggleMissingDaysPopover(force){
+    if(!els.missingDaysPopover||!els.missingDaysBtn) return;
+    const shouldOpen=typeof force==='boolean' ? force : els.missingDaysPopover.hidden;
+    els.missingDaysPopover.hidden=!shouldOpen;
+    els.missingDaysBtn.setAttribute('aria-expanded',shouldOpen?'true':'false');
+  }
+
+  els.missingDaysBtn?.addEventListener('click',event=>{
+    event.stopPropagation();
+    toggleMissingDaysPopover();
+  });
+  els.missingDaysClose?.addEventListener('click',()=>toggleMissingDaysPopover(false));
+  els.missingDaysPopover?.addEventListener('click',event=>event.stopPropagation());
+  document.addEventListener('click',()=>toggleMissingDaysPopover(false));
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape') toggleMissingDaysPopover(false);
+  });
 
   const openPicker=()=>els.fileInput.click();
   els.loadBtn.addEventListener('click',openPicker);els.emptyLoadBtn.addEventListener('click',openPicker);els.fileInput.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)loadFile(f);});els.refreshBtn.addEventListener('click',()=>loadFromSupabase({keepSelection:true}));els.searchInput.addEventListener('input',renderEquipmentList);els.activeFilterBtn.addEventListener('click',()=>setEquipmentStatusFilter('active'));els.inactiveFilterBtn.addEventListener('click',()=>setEquipmentStatusFilter('inactive'));els.reportBtn.addEventListener('click',generateReport);
