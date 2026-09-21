@@ -14,7 +14,9 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/css/tom-select.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/js/tom-select.complete.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
 
@@ -74,7 +76,7 @@
     }
     .btn-primary,.btn-soft,.btn-report{border:0;border-radius:11px;padding:10px 14px;font-weight:750;display:inline-flex;align-items:center;gap:8px}.btn-primary{background:var(--blue);color:#fff;box-shadow:0 5px 12px rgba(37,99,235,.2)}.btn-soft{background:#f2f4f7;color:#344054}.btn-report{background:#101828;color:#fff}.btn-primary:disabled,.btn-soft:disabled,.btn-report:disabled{opacity:.55;cursor:not-allowed}.btn-primary svg,.btn-soft svg,.btn-report svg{width:17px;height:17px}
     .workspace{display:grid;grid-template-columns:310px 1fr;min-height:0}.sidebar{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}.side-head{padding:18px 16px 14px;border-bottom:1px solid var(--line)}
-    .side-title-row{display:flex;align-items:center;gap:7px;margin-bottom:12px}.side-title{font-size:14px;font-weight:800}.status-filters{display:flex;gap:5px;margin-left:auto}.status-filter-btn{border:1px solid var(--line);background:#fff;color:#475467;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:800}.status-filter-btn.selected[data-status="active"]{background:#ecfdf3;border-color:#abefc6;color:#067647}.status-filter-btn.selected[data-status="inactive"]{background:#fef3f2;border-color:#fecdca;color:#b42318}.count-chip{font-size:12px;background:var(--blue-soft);color:#1d4ed8;padding:4px 8px;border-radius:999px;font-weight:800}
+    .side-title-row{display:flex;align-items:center;gap:7px;margin-bottom:10px}.side-title{font-size:14px;font-weight:800}.equipment-source-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;padding:4px;background:#f2f4f7;border-radius:11px}.equipment-source-tab{height:34px;border:0;border-radius:8px;background:transparent;color:#667085;font-size:10.5px;font-weight:850}.equipment-source-tab.active{background:#fff;color:#175cd3;box-shadow:0 1px 4px rgba(16,24,40,.08)}.equipment-source-tab.workshop.active{color:#067647}.status-filters{display:flex;gap:5px;margin-left:auto}.status-filter-btn{border:1px solid var(--line);background:#fff;color:#475467;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:800}.status-filter-btn.selected[data-status="active"]{background:#ecfdf3;border-color:#abefc6;color:#067647}.status-filter-btn.selected[data-status="inactive"]{background:#fef3f2;border-color:#fecdca;color:#b42318}.count-chip{font-size:12px;background:var(--blue-soft);color:#1d4ed8;padding:4px 8px;border-radius:999px;font-weight:800}
     .search{position:relative}.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#98a2b3}.search input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 12px 0 37px;outline:none}.search input:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
     .equipment-list{padding:8px;overflow:auto;min-height:0}.equipment-item{width:100%;border:0;background:transparent;text-align:left;border-radius:12px;padding:12px 11px;display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;color:inherit;margin-bottom:3px}.equipment-item:hover{background:#f8fafc}.equipment-item.active{background:var(--blue-soft);box-shadow:inset 0 0 0 1px #dbeafe}.eq-icon{width:40px;height:40px;border-radius:11px;background:#f2f4f7;display:grid;place-items:center;color:#475467}.equipment-item.active .eq-icon{background:#dbeafe;color:#1d4ed8}.eq-icon svg{width:21px;height:21px}.eq-code{font-weight:800;font-size:14px}.eq-meta{font-size:11.5px;color:var(--muted);margin-top:3px}.eq-period{font-size:9px;color:#98a2b3;margin-top:3px;white-space:nowrap}.eq-hours{text-align:right}.eq-hours strong{font-size:14px;display:block}.eq-hours span{font-size:10.5px;color:var(--muted)}.side-empty{padding:34px 18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
     .main{overflow:auto;min-height:0;padding:22px 24px 34px}.empty-state{height:calc(100vh - 120px);display:grid;place-items:center}.empty-card{max-width:580px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:40px 34px;box-shadow:var(--shadow)}.empty-illustration{width:78px;height:78px;margin:0 auto 20px;border-radius:22px;background:var(--blue-soft);display:grid;place-items:center;color:var(--blue)}.empty-illustration svg{width:40px;height:40px}.empty-card h2{margin:0 0 10px;font-size:22px}.empty-card p{margin:0 auto 22px;color:var(--muted);line-height:1.6;font-size:14px;max-width:470px}
@@ -86,6 +88,477 @@
     .labor-list{display:flex;flex-direction:column;gap:8px}.labor-row{display:grid;grid-template-columns:1fr auto;gap:7px;width:100%;border:0;background:transparent;text-align:left;color:inherit;padding:7px 8px;border-radius:9px}.labor-row:hover{background:#f7faff}.labor-row.active{background:#eaf4ff;box-shadow:inset 0 0 0 1px #b2ddff}.labor-name{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.labor-hours{font-size:12px;font-weight:800}.labor-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#475467}.progress{height:6px;background:#f2f4f7;border-radius:999px;overflow:hidden;grid-column:1/-1}.progress span{display:block;height:100%;background:#84adff;border-radius:999px}.labor-empty{padding:35px 5px;text-align:center;color:var(--muted);font-size:13px}
     .table-card{margin-bottom:16px}.table-wrap{overflow:auto;max-height:440px}table{width:100%;border-collapse:collapse;min-width:850px}thead th{position:sticky;top:0;background:#f9fafb;z-index:1;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);font-size:10.5px;text-transform:uppercase;color:#667085}tbody td{padding:11px 14px;border-bottom:1px solid #f0f2f5;font-size:12px;vertical-align:top}.hours-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--blue-soft);color:#1d4ed8;font-weight:800}.no-data{padding:28px;text-align:center;color:var(--muted);font-size:13px}
     .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#101828;color:#fff;border-radius:12px;padding:11px 15px;box-shadow:0 12px 30px rgba(16,24,40,.25);font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:20;max-width:min(560px,calc(100vw - 32px));text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{background:#b42318}
+
+    /* ===== REGISTRO MANUAL DE HORAS · ESTILO REFERENCIA ===== */
+    .manual-overlay{position:fixed;inset:0;background:rgba(16,24,40,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:80}
+    .manual-overlay.visible{display:flex}
+    .manual-card{width:min(1260px,96vw);max-height:94vh;overflow:auto;background:#f8fbff;border:1px solid #e5eefb;border-radius:22px;box-shadow:0 24px 70px rgba(16,24,40,.28)}
+    .manual-head{position:sticky;top:0;z-index:5;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px;background:#f8fbff;border-bottom:1px solid #edf2f7}
+    .manual-title-wrap{display:flex;align-items:flex-start;gap:14px}
+    .manual-title-icon,.manual-section-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#eaf1ff;color:#2563eb;box-shadow:inset 0 0 0 1px #d7e4ff;font-size:22px;font-weight:900;flex:0 0 auto}
+    .manual-head h2{margin:0;font-size:20px;color:#172554}
+    .manual-head p{margin:5px 0 0;color:#51607a;font-size:12px}
+    .manual-close{width:40px;height:40px;border:1px solid #e4e7ec;border-radius:12px;background:#fff;color:#344054;font-size:22px}
+    .manual-body{padding:18px 20px 24px}
+    .manual-panel{background:#fff;border:1px solid #e6edf7;border-radius:18px;box-shadow:0 4px 14px rgba(16,24,40,.04);padding:14px 16px;margin-bottom:14px}
+    .manual-section-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .manual-section-title{font-size:13px;font-weight:900;margin:0;color:#172554}
+    .manual-section-note{font-size:11px;color:#667085;margin:0}
+    .manual-entry-list{display:flex;flex-direction:column;gap:12px}
+    .manual-entry-card{border:1px solid #e4eaf3;border-radius:16px;background:#fff;overflow:hidden}
+    .manual-entry-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#f8fafc;border-bottom:1px solid #eef2f7}
+    .manual-entry-card-title{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;color:#1f2a44}
+    .manual-entry-card-title .mini-icon{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#edf2ff;color:#3457d5;font-size:15px}
+    .manual-auto-chip{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:#eaf1ff;color:#2563eb;font-size:9px;font-weight:900}
+    .manual-remove-row{min-width:34px;height:34px;border:1px solid #fecaca;border-radius:10px;background:#fff;color:#ef4444;display:inline-grid;place-items:center;font-size:17px;font-weight:900}
+    .manual-entry-main{display:grid;grid-template-columns:320px 320px;gap:12px;padding:12px 14px 14px}
+    .manual-field{min-width:0}
+    .manual-field label{display:block;font-size:10px;line-height:1.2;color:#667085;font-weight:850;margin:0 0 6px}
+    .manual-field input{width:100%;height:42px;border:1px solid #d5ddea;border-radius:10px;padding:0 12px;background:#fff;color:#101828;outline:none;font-size:13px}
+    .manual-field input:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .manual-hours-row{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .manual-hours-group{min-width:0;border:1px solid #e4e7ec;border-radius:14px;padding:14px;background:#fcfcfd}
+    .manual-hours-group.machine{border-color:#bfdbfe;background:linear-gradient(180deg,#f6faff 0%,#eef6ff 100%)}
+    .manual-hours-group.stop{border-color:#fde68a;background:linear-gradient(180deg,#fffdf5 0%,#fff8e8 100%)}
+    .manual-hours-group-title{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px;font-weight:900}
+    .manual-hours-group.machine .manual-hours-group-title{color:#2563eb}
+    .manual-hours-group.stop .manual-hours-group-title{color:#b7791f}
+    .manual-hours-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:18px;font-weight:900;flex:0 0 auto}
+    .manual-hours-group.machine .manual-hours-icon{background:#dbeafe;color:#2563eb}
+    .manual-hours-group.stop .manual-hours-icon{background:#fef3c7;color:#eab308}
+    .manual-hours-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:10px;
+      align-items:end
+    }
+    .manual-hours-grid .manual-field:last-child{
+      grid-column:1 / -1;
+      width:100%;
+      min-width:0
+    }
+    .manual-field .ts-wrapper{
+      width:100%;
+      min-width:0;
+      max-width:100%
+    }
+    .manual-field .ts-control{
+      width:100%;
+      min-width:0
+    }
+    .manual-field .ts-dropdown{
+      width:100% !important;
+      min-width:100% !important;
+      max-width:100% !important
+    }
+    .manual-field .ts-control{min-height:42px;border:1px solid #d5ddea;border-radius:10px;padding:9px 11px;box-shadow:none;font-size:13px;background:#fff}
+    .manual-field .ts-wrapper.focus .ts-control{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .ts-dropdown{font-size:12px;border-color:#d0d5dd;z-index:120}
+    .ts-dropdown .option{padding:9px 10px}
+    .ts-dropdown .create{padding:10px;color:#175cd3;font-weight:800;background:#eff6ff}
+    .ts-dropdown .no-results{padding:10px;color:#667085}
+    .manual-entry-summary{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:0;
+      width:calc(100% - 28px);
+      border:1px solid #e8edf4;
+      border-radius:14px;
+      background:#f6f8fc;
+      overflow:hidden;
+      margin:0 14px 14px
+    }
+    .manual-summary-item{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 10px;min-width:0}
+    .manual-summary-item+.manual-summary-item{border-left:1px solid #dbe2ea}
+    .manual-summary-icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:18px;font-weight:900;flex:0 0 auto}
+    .manual-summary-item.machine .manual-summary-icon{background:#dbeafe;color:#2563eb}
+    .manual-summary-item.stop .manual-summary-icon{background:#fef3c7;color:#eab308}
+    .manual-summary-item.total .manual-summary-icon{background:#dbeafe;color:#2563eb}
+    .manual-summary-text small{display:block;font-size:10px;color:#667085;font-weight:700;line-height:1.2}
+    .manual-summary-text strong{display:block;font-size:16px;color:#172554;line-height:1.15}
+    .manual-entry-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:14px 0 12px}
+    .manual-actions-left{margin-right:auto;display:flex;align-items:center;gap:9px}
+    .manual-add-row{border:1px solid #bcd2ff;background:#fff;color:#2563eb;border-radius:12px;padding:10px 14px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:850}
+    .manual-entry-count{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 8px;border-radius:999px;background:#eaf2ff;color:#175cd3;font-size:10px;font-weight:900}
+    .manual-status{font-size:11px;color:#667085;margin:8px 0 0;min-height:16px}
+    .manual-status.error{color:#b42318}.manual-status.ok{color:#067647}
+    .manual-overall-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr .9fr;gap:0;align-items:center}
+    .manual-overall-title{display:flex;align-items:center;gap:12px;padding-right:12px}
+    .manual-overall-metric{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 10px;border-left:1px solid #e4e7ec}
+    .manual-overall-metric .manual-summary-text strong{font-size:15px}
+    .manual-saved-list{display:flex;flex-direction:column;gap:10px}
+    .manual-saved-card{display:grid;grid-template-columns:170px 120px 1.3fr 1.3fr 120px 48px;gap:0;align-items:center;border:1px solid #e6edf7;border-radius:14px;background:#fff;overflow:hidden}
+    .manual-saved-cell{padding:12px 14px;min-width:0}
+    .manual-saved-cell+.manual-saved-cell{border-left:1px solid #eef2f7}
+    .manual-saved-label{font-size:10px;color:#667085;font-weight:800;margin-bottom:2px}
+    .manual-saved-value{font-size:12px;color:#172554;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .manual-saved-sub{font-size:11px;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .manual-saved-badge{display:inline-flex;align-items:center;gap:7px}
+    .manual-mini-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px;font-weight:900;flex:0 0 auto}
+    .manual-mini-icon.equipment{background:#eef2ff;color:#4338ca}
+    .manual-mini-icon.machine{background:#dbeafe;color:#2563eb}
+    .manual-mini-icon.stop{background:#fef3c7;color:#eab308}
+    .manual-mini-icon.total{background:#dbeafe;color:#2563eb}
+    .manual-more-btn{width:34px;height:34px;border:0;border-radius:10px;background:#f2f4f7;color:#667085;font-size:18px;margin:0 auto}
+    .manual-empty{padding:24px;text-align:center;color:#667085;font-size:12px}
+    
+    .manual-section-head{display:none}
+    .manual-hours-grid{
+      display:grid;
+      grid-template-columns:120px minmax(0,1fr);
+      gap:10px;
+      align-items:end
+    }
+    .manual-hours-grid.simple .manual-field.full{
+      grid-column:auto;
+      width:100%;
+      min-width:0
+    }
+    .manual-hours-grid .manual-field:last-child{
+      grid-column:auto;
+      width:100%;
+      min-width:0
+    }
+    .manual-entry-actions{margin-top:10px}
+    .manual-entry-card{border-radius:14px}
+    .manual-entry-main{padding:10px 12px 12px}
+    .manual-hours-group{padding:12px}
+    .manual-section-title{margin-bottom:0}
+    .manual-section-note{display:none}
+    .manual-saved-list{margin-top:2px}
+
+    .source-pill{display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:850;white-space:nowrap}
+    .source-pill.imported{background:#eff6ff;color:#175cd3}
+    .source-pill.manual{background:#ecfdf3;color:#067647}
+    .stop-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#fffaeb;color:#93370d;font-weight:800}
+    @media(max-width:1100px){
+      .manual-entry-main{grid-template-columns:1fr 1fr}
+      .manual-saved-card{grid-template-columns:1fr 1fr}
+      .manual-saved-cell:nth-child(3),.manual-saved-cell:nth-child(5){border-left:0}
+      .manual-overall-grid{grid-template-columns:1fr 1fr}
+      .manual-overall-title{grid-column:1/-1;padding-bottom:10px}
+    }
+    @media(max-width:900px){
+      .manual-hours-row{grid-template-columns:1fr}
+    }
+    @media(max-width:760px){
+      .manual-overlay{padding:8px}
+      .manual-card{width:100%;max-height:96vh;border-radius:14px}
+      .manual-head{padding:14px}
+      .manual-body{padding:14px}
+      .manual-title-wrap{gap:10px}
+      .manual-title-icon,.manual-section-icon{width:40px;height:40px;border-radius:12px;font-size:18px}
+      .manual-entry-main{grid-template-columns:1fr}
+      .manual-hours-row{grid-template-columns:1fr}
+      .manual-hours-grid{grid-template-columns:1fr 1fr}
+      .manual-hours-grid .manual-field:last-child{grid-column:1/-1}
+      .manual-entry-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .manual-summary-item{padding:10px 6px;gap:6px}
+      .manual-summary-icon{width:32px;height:32px;font-size:15px}
+      .manual-summary-text strong{font-size:13px}
+      .manual-overall-grid{grid-template-columns:1fr}
+      .manual-overall-metric{border-left:0;border-top:1px solid #e4e7ec;justify-content:flex-start}
+      .manual-saved-card{grid-template-columns:1fr}
+      .manual-saved-cell+.manual-saved-cell{border-left:0;border-top:1px solid #eef2f7}
+    }
+    /* ===== AJUSTE COMPACTO PARA ESCRITORIO ===== */
+    .manual-card{width:min(1180px,95vw);max-height:92vh;border-radius:16px}
+    .manual-head{padding:10px 14px}
+    .manual-title-icon,.manual-section-icon{width:34px;height:34px;border-radius:10px;font-size:16px}
+    .manual-head h2{font-size:17px}
+    .manual-head p{font-size:10.5px;margin-top:2px}
+    .manual-close{width:32px;height:32px;border-radius:9px;font-size:18px}
+    .manual-body{padding:10px 12px 14px}
+    .manual-panel{padding:10px 12px;margin-bottom:9px;border-radius:13px}
+    .manual-section-head{gap:8px;margin-bottom:7px}
+    .manual-section-title{font-size:12px}
+    .manual-section-note{font-size:9.5px}
+    .manual-entry-list{gap:8px}
+    .manual-entry-card{border-radius:12px}
+    .manual-entry-card-head{padding:6px 10px}
+    .manual-entry-card-title{gap:7px;font-size:11px}
+    .manual-entry-card-title .mini-icon{width:24px;height:24px;border-radius:7px;font-size:12px}
+    .manual-auto-chip{height:20px;padding:0 7px;font-size:8px}
+    .manual-remove-row{min-width:28px;height:28px;border-radius:7px;font-size:13px}
+    .manual-entry-main{grid-template-columns:180px 180px;gap:8px;padding:8px 10px 9px}
+    .manual-field label{font-size:8.5px;margin-bottom:3px}
+    .manual-field input{height:34px;border-radius:8px;padding:0 9px;font-size:11px}
+    .manual-hours-row{gap:9px}
+    .manual-hours-group{border-radius:10px;padding:8px}
+    .manual-hours-group-title{gap:7px;margin-bottom:6px;font-size:10.5px}
+    .manual-hours-icon{width:28px;height:28px;font-size:13px}
+    .manual-hours-grid{grid-template-columns:82px 82px minmax(0,1fr);gap:6px}
+    .manual-hours-grid .manual-field:last-child{grid-column:auto}
+    .manual-field .ts-control{min-height:34px;height:34px;border-radius:8px;padding:5px 8px;font-size:11px;overflow:hidden}
+    .manual-field .ts-wrapper.single .ts-control{display:flex;align-items:center}
+    .manual-field .ts-wrapper.single .ts-control input{font-size:11px;min-width:0}
+    .ts-dropdown{font-size:11px}
+    .ts-dropdown .option,.ts-dropdown .create,.ts-dropdown .no-results{padding:7px 8px}
+    .manual-entry-summary{width:calc(100% - 20px);margin:0 10px 9px;border-radius:10px}
+    .manual-summary-item{padding:7px 6px;gap:6px}
+    .manual-summary-icon{width:28px;height:28px;font-size:13px}
+    .manual-summary-text small{font-size:8.5px}
+    .manual-summary-text strong{font-size:12.5px}
+    .manual-entry-actions{margin:8px 0 6px;gap:7px}
+    .manual-add-row,.manual-entry-actions .btn-soft,.manual-entry-actions .btn-primary{min-height:34px;padding:7px 10px;border-radius:9px;font-size:10.5px}
+    .manual-entry-count{min-width:22px;height:22px;font-size:9px}
+    .manual-status{font-size:9.5px;margin:5px 0 0;min-height:13px}
+    .manual-overall-grid{grid-template-columns:1.25fr .75fr .75fr .75fr}
+    .manual-overall-title{gap:8px}
+    .manual-overall-metric{gap:6px;padding:7px 8px}
+    .manual-overall-metric .manual-summary-icon{width:28px;height:28px}
+    .manual-overall-metric .manual-summary-text strong{font-size:12.5px}
+    .manual-saved-list{gap:6px}
+    .manual-saved-card{grid-template-columns:145px 100px 1.2fr 1.2fr 95px 40px;border-radius:10px}
+    .manual-saved-cell{padding:7px 9px}
+    .manual-saved-label{font-size:8.5px}
+    .manual-saved-value{font-size:10.5px}
+    .manual-saved-sub{font-size:9px}
+    .manual-mini-icon{width:27px;height:27px;font-size:12px}
+    .manual-more-btn{width:28px;height:28px;border-radius:8px;font-size:15px}
+    .manual-record-actions{display:flex;align-items:center;justify-content:center;gap:5px}.manual-edit-btn,.manual-delete-btn{width:28px;height:28px;border-radius:8px;background:#fff;display:grid;place-items:center;font-size:13px;font-weight:900}.manual-edit-btn{border:1px solid #b2ddff;color:#175cd3}.manual-delete-btn{border:1px solid #fecdca;color:#b42318}.manual-editing-banner{display:none;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin:0 0 8px;border:1px solid #b2ddff;background:#eff8ff;border-radius:9px;color:#175cd3;font-size:10.5px;font-weight:800}.manual-editing-banner.visible{display:flex}.manual-cancel-edit{border:0;background:transparent;color:#175cd3;text-decoration:underline;font-size:10px;font-weight:800}
+    .manual-empty{padding:14px;font-size:10px}
+
+    @media(min-width:901px){
+      .manual-hours-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+      .manual-entry-main{grid-template-columns:180px 180px minmax(0,1fr);align-items:end}
+      .manual-hours-row{grid-column:1/-1}
+    }
+    @media(max-width:900px){
+      .manual-entry-main{grid-template-columns:1fr 1fr}
+      .manual-hours-row{grid-column:1/-1;grid-template-columns:1fr}
+      .manual-hours-grid{grid-template-columns:90px 90px minmax(0,1fr)}
+    }
+    @media(max-width:620px){
+      .manual-entry-main{grid-template-columns:1fr}
+      .manual-hours-grid{grid-template-columns:1fr 1fr}
+      .manual-hours-grid .manual-field:last-child{grid-column:1/-1}
+      .manual-entry-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .manual-summary-text strong{font-size:11px}
+    }
+
+    /* ===== CORRECCIÓN FINAL LABOR ===== */
+    .manual-hours-grid.simple{
+      display:grid !important;
+      grid-template-columns:92px minmax(240px,1fr) !important;
+      gap:8px !important;
+      align-items:end !important;
+      width:100% !important;
+    }
+    .manual-hours-grid.simple .manual-field.full{
+      grid-column:2 !important;
+      width:100% !important;
+      min-width:0 !important;
+    }
+    .manual-hours-grid.simple .manual-field.full .ts-wrapper,
+    .manual-hours-grid.simple .manual-field.full .ts-control{
+      width:100% !important;
+      min-width:0 !important;
+      max-width:none !important;
+    }
+    .manual-hours-grid.simple .manual-field.full .ts-dropdown{
+      width:100% !important;
+      min-width:100% !important;
+      max-width:100% !important;
+      box-sizing:border-box !important;
+    }
+    @media(max-width:620px){
+      .manual-hours-grid.simple{
+        grid-template-columns:1fr !important;
+      }
+      .manual-hours-grid.simple .manual-field.full{
+        grid-column:1 !important;
+      }
+    }
+
+
+
+
+
+    /* ===== TOTAL DEL REGISTRO ===== */
+    .manual-entry-card-head{
+      position:relative;
+    }
+    .manual-entry-total{
+      margin-left:auto;
+      margin-right:42px;
+      min-width:150px;
+      height:42px;
+      padding:0 14px;
+      border:1px solid #d6e4ff;
+      border-radius:11px;
+      background:#f8fbff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+    }
+    .manual-entry-total-icon{
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#dbeafe;
+      color:#2563eb;
+      font-size:14px;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+    .manual-entry-total-text small{
+      display:block;
+      font-size:9px;
+      color:#667085;
+      font-weight:800;
+      line-height:1.1;
+    }
+    .manual-entry-total-text strong{
+      display:block;
+      font-size:14px;
+      color:#172554;
+      font-weight:900;
+      line-height:1.2;
+    }
+    @media(max-width:760px){
+      .manual-entry-total{
+        min-width:120px;
+        margin-right:36px;
+        padding:0 10px;
+      }
+    }
+
+    /* ===== CATÁLOGO BUSCABLE DE EQUIPOS ===== */
+    .manual-equipment-select + .ts-wrapper,
+    .manual-field .manual-equipment-select + .ts-wrapper{
+      width:100%;
+      min-width:0;
+    }
+    .manual-entry-main > .manual-field .ts-control{
+      min-height:34px;
+      border:1px solid #d5ddea;
+      border-radius:8px;
+      padding:6px 9px;
+      background:#fff;
+      font-size:11px;
+    }
+
+    /* ===== MÚLTIPLES LABORES POR REGISTRO ===== */
+    .manual-hours-group-title{
+      justify-content:space-between !important;
+    }
+    .manual-hours-title-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .manual-add-segment{
+      height:30px;
+      padding:0 10px;
+      border:1px solid #bcd2ff;
+      border-radius:8px;
+      background:#fff;
+      color:#2563eb;
+      font-size:10px;
+      font-weight:850;
+      cursor:pointer;
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+    .manual-hours-group.stop .manual-add-segment{
+      border-color:#f6cf72;
+      color:#b7791f;
+    }
+    .manual-segment-list{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+    .manual-segment-row{
+      display:grid;
+      grid-template-columns:92px minmax(0,1fr) 28px;
+      gap:8px;
+      align-items:end;
+      width:100%;
+      min-width:0;
+    }
+    .manual-segment-row.first{
+      grid-template-columns:92px minmax(0,1fr);
+    }
+    .manual-segment-row .manual-field{
+      min-width:0;
+    }
+    .manual-segment-row .ts-wrapper,
+    .manual-segment-row .ts-control{
+      width:100% !important;
+      min-width:0 !important;
+      max-width:none !important;
+    }
+    .manual-remove-segment{
+      width:28px;
+      height:34px;
+      border:1px solid #fecaca;
+      border-radius:8px;
+      background:#fff;
+      color:#ef4444;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+    }
+    .manual-entry-actions .manual-actions-left{
+      display:none !important;
+    }
+    @media(max-width:620px){
+      .manual-segment-row,
+      .manual-segment-row.first{
+        grid-template-columns:1fr !important;
+      }
+      .manual-remove-segment{
+        width:100%;
+      }
+      .manual-add-segment{
+        height:32px;
+      }
+    }
+
+    /* ===== CORRECCIÓN DROPDOWN LABOR POR ENCIMA DE TODO ===== */
+    .manual-overlay,
+    .manual-card,
+    .manual-body,
+    .manual-panel,
+    .manual-entry-list,
+    .manual-entry-card,
+    .manual-entry-main,
+    .manual-hours-row,
+    .manual-hours-group,
+    .manual-field{
+      overflow:visible !important;
+    }
+
+    .manual-field .ts-wrapper{
+      position:relative !important;
+      z-index:5;
+    }
+
+    .manual-field .ts-wrapper.focus{
+      z-index:2200 !important;
+    }
+
+    .ts-wrapper.single .ts-control,
+    .ts-wrapper.multi .ts-control{
+      position:relative;
+      z-index:2201;
+    }
+
+    .ts-dropdown,
+    .tom-select-dropdown,
+    .plugin-dropdown_input .ts-dropdown{
+      z-index:99999 !important;
+      box-sizing:border-box !important;
+    }
+
     .loading-overlay{position:fixed;inset:0;background:rgba(244,247,251,.82);backdrop-filter:blur(2px);display:none;place-items:center;z-index:30}.loading-overlay.visible{display:grid}.loading-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 26px;box-shadow:var(--shadow);text-align:center;min-width:260px}.spinner{width:34px;height:34px;border:4px solid #e4e7ec;border-top-color:#2563eb;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}@keyframes spin{to{transform:rotate(360deg)}}.loading-title{font-weight:800}.loading-text{font-size:12px;color:var(--muted);margin-top:5px}
     @media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:1050px){.workspace{grid-template-columns:270px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.db-status{display:none}}
@@ -123,6 +596,7 @@
           <div class="missing-days-list" id="missingDaysList"></div>
         </div>
       </div>
+      <button class="btn-report" id="manualHoursBtn" type="button" title="Registrar horas manualmente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M17 16v5M14.5 18.5h5"/></svg><span>Registrar horas</span></button>
       <button class="btn-soft" id="refreshBtn" type="button" title="Actualizar desde Supabase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6v6h-6"/><path d="M4 18v-6h6"/><path d="M18.5 9A7 7 0 0 0 6.2 5.2L4 7"/><path d="M5.5 15A7 7 0 0 0 17.8 18.8L20 17"/></svg><span>Actualizar</span></button>
       <button class="btn-primary" id="loadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14a2 2 0 0 0 2-2v-4"/><path d="M3 15v4a2 2 0 0 0 2 2"/></svg><span>Cargar datos</span></button>
       <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden />
@@ -133,12 +607,16 @@
     <aside class="sidebar">
       <div class="side-head">
         <div class="side-title-row">
-          <div class="side-title">Equipos</div>
+          <div class="side-title" id="equipmentSourceTitle">Equipos · Horas campo</div>
           <div class="status-filters">
             <button class="status-filter-btn" id="activeFilterBtn" data-status="active" type="button">Activos <span id="activeCount">0</span></button>
             <button class="status-filter-btn" id="inactiveFilterBtn" data-status="inactive" type="button">Inactivos <span id="inactiveCount">0</span></button>
           </div>
           <div class="count-chip" id="equipmentCount">0</div>
+        </div>
+        <div class="equipment-source-tabs" role="tablist" aria-label="Fuente de horas">
+          <button class="equipment-source-tab active" id="fieldHoursTab" type="button" role="tab" aria-selected="true">Horas campo</button>
+          <button class="equipment-source-tab workshop" id="workshopHoursTab" type="button" role="tab" aria-selected="false">Horas taller</button>
         </div>
         <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="searchInput" type="search" placeholder="Buscar equipo..." autocomplete="off" /></div>
       </div>
@@ -180,7 +658,7 @@
           <article class="card"><div class="card-head"><div><div class="card-title">Horas por labor</div><div class="card-note">Toca una labor para ver sus registros</div></div></div><div class="card-body"><div class="labor-list" id="laborList"></div></div></article>
         </div>
 
-        <article class="card table-card"><div class="card-head"><div><div class="card-title">Detalle de registros</div><div class="card-note" id="recordsNote">0 registros</div></div></div><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Unidad de producción</th><th>Labor</th><th>Nombre de labor</th><th>Horas</th><th>Productor</th><th>Operador</th></tr></thead><tbody id="detailTable"></tbody></table><div class="no-data" id="tableEmpty" hidden>No hay registros para este período.</div></div></article>
+        <article class="card table-card"><div class="card-head"><div><div class="card-title">Detalle de registros</div><div class="card-note" id="recordsNote">0 registros</div></div></div><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Fuente</th><th>Unidad / Tipo</th><th>Labor máquina</th><th>Horas máquina</th><th>Horas parada</th><th>Labor parada</th><th>Productor</th><th>Operador</th></tr></thead><tbody id="detailTable"></tbody></table><div class="no-data" id="tableEmpty" hidden>No hay registros para este período.</div></div></article>
       </section>
     </main>
   </div>
@@ -189,6 +667,37 @@
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay"><div class="loading-box"><div class="spinner"></div><div class="loading-title" id="loadingTitle">Procesando</div><div class="loading-text" id="loadingText">Un momento...</div></div></div>
 
+<div class="manual-overlay" id="manualHoursOverlay" aria-hidden="true">
+  <section class="manual-card" role="dialog" aria-modal="true" aria-labelledby="manualHoursTitle">
+    <div class="manual-head"><div class="manual-title-wrap"><div class="manual-title-icon">◷</div><div><h2 id="manualHoursTitle">Registro manual de horas</h2><p>Agrega un nuevo registro de horas para un equipo.</p></div></div><button class="manual-close" id="manualHoursClose" type="button" aria-label="Cerrar">×</button></div>
+    <div class="manual-body">
+      <section class="manual-panel">
+<div class="manual-editing-banner" id="manualEditingBanner">
+        <span id="manualEditingText">Editando registro</span>
+        <button class="manual-cancel-edit" id="manualCancelEdit" type="button">Cancelar edición</button>
+      </div>
+      <div class="manual-entry-list" id="manualEntryBody"></div>
+
+        <div class="manual-entry-actions">
+          <button class="btn-soft" id="manualClearBtn" type="button">Limpiar todo</button>
+          <button class="btn-primary" id="manualSaveBtn" type="button">Guardar registros</button>
+        </div>
+
+        <div class="manual-status" id="manualStatus"></div>
+      </section>
+<section class="manual-panel" id="manualSavedPanel" style="display:none">
+        <div class="manual-section-head">
+          <div class="manual-section-icon">🗂</div>
+          <div>
+            <h3 class="manual-section-title">Registros manuales guardados</h3>
+            <p class="manual-section-note">Estos registros también aparecen en el listado de equipos y en la vista Detalle del equipo.</p>
+          </div>
+        </div>
+        <div class="manual-saved-list" id="manualRecordsBody"></div>
+      <div class="manual-empty" id="manualRecordsEmpty">No hay registros manuales guardados.</div>
+    </div>
+  </section>
+</div>
 <script>
 (() => {
   'use strict';
@@ -210,21 +719,26 @@
 
   const state = {
     rows:[], byEquipment:new Map(), selected:null, sourceSheet:'registros_horas', fileName:'Supabase',
-    activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false
+    activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false,
+    manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set()
   };
 
   const $ = id => document.getElementById(id);
   const els = {
     fileInput:$('fileInput'), loadBtn:$('loadBtn'), emptyLoadBtn:$('emptyLoadBtn'), refreshBtn:$('refreshBtn'),
     dbStatus:$('dbStatus'), dbStatusText:$('dbStatusText'), equipmentList:$('equipmentList'), equipmentCount:$('equipmentCount'),
-    activeFilterBtn:$('activeFilterBtn'), inactiveFilterBtn:$('inactiveFilterBtn'), activeCount:$('activeCount'), inactiveCount:$('inactiveCount'),
+    activeFilterBtn:$('activeFilterBtn'), inactiveFilterBtn:$('inactiveFilterBtn'), activeCount:$('activeCount'), inactiveCount:$('inactiveCount'), fieldHoursTab:$('fieldHoursTab'), workshopHoursTab:$('workshopHoursTab'), equipmentSourceTitle:$('equipmentSourceTitle'),
     searchInput:$('searchInput'), emptyState:$('emptyState'), emptyTitle:$('emptyTitle'), emptyText:$('emptyText'), detailView:$('detailView'),
     detailEquipment:$('detailEquipment'), detailRange:$('detailRange'), dateRange:$('dateRange'), dateFrom:$('dateFrom'), dateTo:$('dateTo'), clearDates:$('clearDates'), reportBtn:$('reportBtn'),
     kpiHours:$('kpiHours'), kpiAverage:$('kpiAverage'), kpiTarget:$('kpiTarget'), kpiLost:$('kpiLost'), kpiMetDaysCard:$('kpiMetDaysCard'), kpiMetDays:$('kpiMetDays'), kpiMetDaysNote:$('kpiMetDaysNote'),
     kpiCompliance:$('kpiCompliance'), kpiComplianceNote:$('kpiComplianceNote'), complianceDonut:$('complianceDonut'), donutPct:$('donutPct'), dayChart:$('dayChart'), laborList:$('laborList'),
     detailTable:$('detailTable'), tableEmpty:$('tableEmpty'), recordsNote:$('recordsNote'), activeFilters:$('activeFilters'), toast:$('toast'), loadingOverlay:$('loadingOverlay'), loadingTitle:$('loadingTitle'), loadingText:$('loadingText'),
     missingDaysWrap:$('missingDaysWrap'), missingDaysBtn:$('missingDaysBtn'), missingDaysCount:$('missingDaysCount'),
-    missingDaysPopover:$('missingDaysPopover'), missingDaysClose:$('missingDaysClose'), missingDaysList:$('missingDaysList'), missingDaysTitle:$('missingDaysTitle')
+    missingDaysPopover:$('missingDaysPopover'), missingDaysClose:$('missingDaysClose'), missingDaysList:$('missingDaysList'), missingDaysTitle:$('missingDaysTitle'),
+    manualHoursBtn:$('manualHoursBtn'), manualHoursOverlay:$('manualHoursOverlay'), manualHoursClose:$('manualHoursClose'),
+    manualEntryBody:$('manualEntryBody'), manualEditingBanner:$('manualEditingBanner'), manualEditingText:$('manualEditingText'), manualCancelEdit:$('manualCancelEdit'),
+    manualSaveBtn:$('manualSaveBtn'), manualClearBtn:$('manualClearBtn'), manualStatus:$('manualStatus'),
+    manualRecordsBody:$('manualRecordsBody'), manualRecordsEmpty:$('manualRecordsEmpty'), manualSavedPanel:$('manualSavedPanel')
   };
 
   let dateRangePicker = null;
@@ -244,6 +758,48 @@
   };
   const escapeHtml = s => String(s ?? '').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const fmtHours = n => new Intl.NumberFormat('es-PA',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n||0);
+  const fmtHoursMinutes = n => {
+    const totalMinutes = Math.max(0, Math.round((Number(n)||0) * 60));
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if(hours===0) return `${minutes} min`;
+    if(minutes===0) return `${hours} h`;
+    return `${hours} h ${String(minutes).padStart(2,'0')} min`;
+  };
+
+  const parseHoursMinutesInput = value => {
+    const raw=String(value??'').trim().toLowerCase();
+    if(!raw) return 0;
+
+    // 0:45, 1:30, 2:05
+    const hm=raw.match(/^(\d+):([0-5]?\d)$/);
+    if(hm){
+      return Number(hm[1]) + (Number(hm[2])/60);
+    }
+
+    // 45m, 45 min, 90m
+    const mins=raw.match(/^(\d+(?:[.,]\d+)?)\s*(m|min|mins|minuto|minutos)$/);
+    if(mins){
+      return Number(mins[1].replace(',','.'))/60;
+    }
+
+    // 1h, 1.5h, 1,5h
+    const hrs=raw.match(/^(\d+(?:[.,]\d+)?)\s*(h|hr|hrs|hora|horas)$/);
+    if(hrs){
+      return Number(hrs[1].replace(',','.'));
+    }
+
+    // Compatibilidad: 0.75 sigue significando 0.75 horas.
+    const n=Number(raw.replace(',','.'));
+    return Number.isFinite(n)&&n>=0 ? n : NaN;
+  };
+
+  const hoursToClockInput = value => {
+    const totalMinutes=Math.max(0,Math.round((Number(value)||0)*60));
+    const hours=Math.floor(totalMinutes/60);
+    const minutes=totalMinutes%60;
+    return `${hours}:${String(minutes).padStart(2,'0')}`;
+  };
   const fmtInt = n => new Intl.NumberFormat('es-PA',{maximumFractionDigits:0}).format(n||0);
   const pad2 = n => String(n).padStart(2,'0');
   const isoDate = d => d ? `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}` : '';
@@ -345,28 +901,1013 @@
     els.missingDaysList.innerHTML='<div class="missing-days-empty" style="color:#667085">Consultando registros...</div>';
   }
 
-  function dbRowToAppRow(r){
+
+  const MANUAL_HOURS_TABLE='registro_horas_manual';
+  const MANUAL_LABORS_TABLE='labores_horas_manual';
+  const MANUAL_EQUIPMENT_TABLE='equipos_horas_manual';
+
+  function setManualStatus(message,type=''){
+    if(!els.manualStatus) return;
+    els.manualStatus.textContent=message||'';
+    els.manualStatus.className='manual-status'+(type?' '+type:'');
+  }
+
+  function todayIsoLocal(){
+    return isoDate(new Date());
+  }
+
+  function normalizeLaborName(value){
+    return text(value).replace(/\s+/g,' ').toUpperCase();
+  }
+
+  function manualLaborNameById(id){
+    const item=state.manualLabors.find(l=>String(l.id)===String(id));
+    return item?.nombre||'—';
+  }
+
+  async function loadManualLabors(){
+    const {data,error}=await db.from(MANUAL_LABORS_TABLE)
+      .select('id,nombre,activo')
+      .order('nombre',{ascending:true});
+
+    if(error) throw error;
+    state.manualLabors=data||[];
+  }
+
+  function normalizeManualEquipment(value){
+    return equipmentText(value).replace(/\s+/g,'');
+  }
+
+  async function loadManualEquipments(){
+    const {data,error}=await db.from(MANUAL_EQUIPMENT_TABLE)
+      .select('id,numero,activo')
+      .order('numero',{ascending:true});
+
+    if(error) throw error;
+    state.manualEquipments=data||[];
+  }
+
+  async function saveOrGetManualEquipment(input){
+    const numero=normalizeManualEquipment(input);
+    if(!numero) throw new Error('Escribe el número del equipo.');
+
+    const existing=state.manualEquipments.find(
+      item=>normalizeManualEquipment(item.numero)===numero
+    );
+    if(existing) return existing;
+
+    const {data,error}=await db.from(MANUAL_EQUIPMENT_TABLE)
+      .insert({numero,activo:true})
+      .select('id,numero,activo')
+      .single();
+
+    if(error){
+      if(/duplicate key|23505/i.test(String(error.message||error))){
+        const {data:found,error:findError}=await db.from(MANUAL_EQUIPMENT_TABLE)
+          .select('id,numero,activo')
+          .eq('numero',numero)
+          .limit(1)
+          .maybeSingle();
+
+        if(findError) throw findError;
+        if(found){
+          if(!state.manualEquipments.some(e=>String(e.id)===String(found.id))){
+            state.manualEquipments.push(found);
+          }
+          return found;
+        }
+      }
+      throw error;
+    }
+
+    state.manualEquipments.push(data);
+
+    for(const control of state.manualEquipmentTomSelects){
+      if(!control.options[String(data.numero)]){
+        control.addOption({value:String(data.numero),text:String(data.numero)});
+        control.refreshOptions(false);
+      }
+    }
+
+    showToast(`Equipo ${data.numero} guardado.`);
+    return data;
+  }
+
+  function manualEquipmentOptions(){
+    return state.manualEquipments
+      .filter(item=>item.activo!==false)
+      .sort((a,b)=>String(a.numero||'').localeCompare(String(b.numero||''),undefined,{numeric:true}))
+      .map(item=>({value:String(item.numero),text:String(item.numero)}));
+  }
+
+  function initManualEquipmentSearch(select,selected=''){
+    if(!select) return null;
+
+    const selectedValue=normalizeManualEquipment(selected);
+    let options=manualEquipmentOptions();
+
+    // Permite editar un registro antiguo aunque el equipo aún no esté en el catálogo.
+    if(selectedValue && !options.some(o=>o.value===selectedValue)){
+      options=[{value:selectedValue,text:selectedValue},...options];
+    }
+
+    if(!window.TomSelect){
+      select.innerHTML='<option value="">SELECCIONE EQUIPO</option>'+
+        options.map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.text)}</option>`).join('');
+      if(selectedValue) select.value=selectedValue;
+      select.addEventListener('change',renderManualRows);
+      return null;
+    }
+
+    const control=new TomSelect(select,{
+      valueField:'value',
+      labelField:'text',
+      searchField:['text'],
+      options,
+      dropdownParent:'body',
+      items:selectedValue?[selectedValue]:[],
+      maxItems:1,
+      createOnBlur:false,
+      persist:true,
+      placeholder:'Buscar equipo...',
+      createFilter(input){
+        const value=normalizeManualEquipment(input);
+        return Boolean(value) && !state.manualEquipments.some(
+          item=>normalizeManualEquipment(item.numero)===value
+        );
+      },
+      create(input,callback){
+        const value=normalizeManualEquipment(input);
+        if(!value){callback();return;}
+
+        saveOrGetManualEquipment(value)
+          .then(item=>{
+            callback({value:String(item.numero),text:String(item.numero)});
+          })
+          .catch(error=>{
+            console.error(error);
+            showToast(supabaseErrorMessage(error),true);
+            callback();
+          });
+      },
+      render:{
+        option_create(data,escape){
+          return `<div class="create">＋ Guardar equipo <strong>${escape(data.input)}</strong></div>`;
+        },
+        no_results(data,escape){
+          return `<div class="no-results">No existe "${escape(data.input)}". Escríbelo completo para guardarlo.</div>`;
+        }
+      }
+    });
+
+    state.manualEquipmentTomSelects.add(control);
+    control.on('change',()=>renderManualRows());
+    control.on('destroy',()=>state.manualEquipmentTomSelects.delete(control));
+    return control;
+  }
+
+  function destroyManualEquipmentSearches(container=document){
+    container.querySelectorAll('.manual-equipment-select').forEach(select=>{
+      if(select.tomselect) select.tomselect.destroy();
+    });
+  }
+
+  function readManualEquipmentValue(select){
+    if(select?.tomselect) return normalizeManualEquipment(select.tomselect.getValue());
+    return normalizeManualEquipment(select?.value||'');
+  }
+
+  async function saveOrGetManualLabor(input){
+    const nombre=normalizeLaborName(input);
+    if(!nombre) throw new Error('Escribe el nombre de la labor.');
+
+    const existing=state.manualLabors.find(
+      labor=>normalizeLaborName(labor.nombre)===nombre
+    );
+    if(existing) return existing;
+
+    const {data,error}=await db.from(MANUAL_LABORS_TABLE)
+      .insert({nombre,activo:true})
+      .select('id,nombre,activo')
+      .single();
+
+    if(error){
+      if(/duplicate key|23505/i.test(String(error.message||error))){
+        const {data:found,error:findError}=await db.from(MANUAL_LABORS_TABLE)
+          .select('id,nombre,activo')
+          .ilike('nombre',nombre)
+          .limit(1)
+          .maybeSingle();
+
+        if(findError) throw findError;
+        if(found){
+          if(!state.manualLabors.some(l=>String(l.id)===String(found.id))){
+            state.manualLabors.push(found);
+          }
+          return found;
+        }
+      }
+      throw error;
+    }
+
+    state.manualLabors.push(data);
+
+    // La nueva labor se agrega inmediatamente a todos los buscadores abiertos.
+    for(const control of state.manualTomSelects){
+      if(!control.options[String(data.id)]){
+        control.addOption({value:String(data.id),text:data.nombre});
+        control.refreshOptions(false);
+      }
+    }
+
+    showToast(`Labor "${data.nombre}" guardada.`);
+    return data;
+  }
+
+  function laborOptions(){
+    return state.manualLabors
+      .filter(l=>l.activo!==false)
+      .sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es',{sensitivity:'base'}))
+      .map(l=>({value:String(l.id),text:String(l.nombre||'').toUpperCase()}));
+  }
+
+  function initLaborSearch(select,selected=''){
+    if(!select) return null;
+
+    if(!window.TomSelect){
+      select.innerHTML='<option value="">SELECCIONE LABOR</option>'+
+        laborOptions().map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.text)}</option>`).join('');
+      if(selected) select.value=String(selected);
+      return null;
+    }
+
+    const control=new TomSelect(select,{
+      valueField:'value',
+      labelField:'text',
+      searchField:['text'],
+      options:laborOptions(),
+      dropdownParent:'body',
+      items:selected?[String(selected)]:[],
+      maxItems:1,
+      createOnBlur:false,
+      persist:true,
+      placeholder:'Buscar labor...',
+      createFilter(input){
+        const value=normalizeLaborName(input);
+        return Boolean(value) && !state.manualLabors.some(
+          labor=>normalizeLaborName(labor.nombre)===value
+        );
+      },
+      create(input,callback){
+        const value=normalizeLaborName(input);
+        if(!value){callback();return;}
+
+        saveOrGetManualLabor(value)
+          .then(labor=>{
+            callback({value:String(labor.id),text:String(labor.nombre).toUpperCase()});
+          })
+          .catch(error=>{
+            console.error(error);
+            showToast(supabaseErrorMessage(error),true);
+            callback();
+          });
+      },
+      render:{
+        option_create(data,escape){
+          return `<div class="create">＋ Guardar nueva labor <strong>${escape(data.input)}</strong></div>`;
+        },
+        no_results(data,escape){
+          return `<div class="no-results">No hay coincidencias para "${escape(data.input)}". Escribe el nombre completo para agregarla.</div>`;
+        }
+      }
+    });
+
+    state.manualTomSelects.add(control);
+    control.on('destroy',()=>state.manualTomSelects.delete(control));
+    return control;
+  }
+
+  function destroyLaborSearches(container=document){
+    container.querySelectorAll('.manual-labor-select').forEach(select=>{
+      if(select.tomselect){
+        select.tomselect.destroy();
+      }
+    });
+  }
+
+  function manualSegmentHtml(type,index,preset={}){
+    const isMachine=type==='machine';
+    const hoursClass=isMachine?'manual-machine-hours':'manual-stop-hours';
+    const laborClass=isMachine?'manual-machine-labor':'manual-stop-labor';
+    const hoursValue=isMachine?preset.horasMaquina:preset.horasParada;
+    const first=index===0;
+
+    return `<div class="manual-segment-row ${first?'first':''}" data-segment-type="${type}">
+      <div class="manual-field">
+        <label>Horas</label>
+        ${isMachine
+          ? `<input class="${hoursClass}" type="text" inputmode="numeric" placeholder="0:45" autocomplete="off" value="${hoursValue!==undefined&&hoursValue!==''?escapeHtml(hoursToClockInput(hoursValue)):''}">`
+          : `<input class="${hoursClass}" type="text" inputmode="numeric" placeholder="0:45" autocomplete="off" value="${hoursValue!==undefined&&hoursValue!==''?escapeHtml(hoursToClockInput(hoursValue)):''}">`}
+      </div>
+      <div class="manual-field full">
+        <label>Labor</label>
+        <select class="${laborClass} manual-labor-select"></select>
+      </div>
+      ${first?'':`<button class="manual-remove-segment" type="button" title="Quitar esta línea" aria-label="Quitar esta línea">×</button>`}
+    </div>`;
+  }
+
+  function manualRowHtml(rowId,preset={}){
+    const fecha=preset.fecha||todayIsoLocal();
+    const equipo=preset.equipo||'';
+
+    return `<article class="manual-entry-card" data-manual-row="${rowId}">
+      <div class="manual-entry-card-head">
+        <div class="manual-entry-card-title">
+          <span class="mini-icon">🧾</span>
+          <span>Registro ${rowId}</span>
+          <span class="manual-auto-chip">ID AUTO</span>
+        </div>
+        <div class="manual-entry-total" title="Horas máquina + horas de parada">
+          <span class="manual-entry-total-icon">Σ</span>
+          <span class="manual-entry-total-text">
+            <small>Total horas</small>
+            <strong data-entry-total>0 h 00 min</strong>
+          </span>
+        </div>
+        <button class="manual-remove-row" type="button" title="Limpiar registro" aria-label="Limpiar registro">🗑</button>
+      </div>
+
+      <div class="manual-entry-main">
+        <div class="manual-field">
+          <label>Fecha</label>
+          <input class="manual-date" type="date" value="${escapeHtml(fecha)}" required>
+        </div>
+
+        <div class="manual-field">
+          <label># Equipo</label>
+          <select class="manual-equipment manual-equipment-select"></select>
+        </div>
+
+        <div class="manual-hours-row">
+          <section class="manual-hours-group machine">
+            <div class="manual-hours-group-title">
+              <div class="manual-hours-title-left"><span class="manual-hours-icon">⚙</span><span>Horas máquina <small style="font-weight:700;opacity:.7">(H:MM)</small></span></div>
+              <button class="manual-add-segment" data-add-segment="machine" type="button">＋ Agregar registro</button>
+            </div>
+            <div class="manual-segment-list" data-segment-list="machine">
+              ${manualSegmentHtml('machine',0,preset)}
+            </div>
+          </section>
+
+          <section class="manual-hours-group stop">
+            <div class="manual-hours-group-title">
+              <div class="manual-hours-title-left"><span class="manual-hours-icon">⏸</span><span>Horas de parada <small style="font-weight:700;opacity:.7">(H:MM)</small></span></div>
+              <button class="manual-add-segment" data-add-segment="stop" type="button">＋ Agregar registro</button>
+            </div>
+            <div class="manual-segment-list" data-segment-list="stop">
+              ${manualSegmentHtml('stop',0,preset)}
+            </div>
+          </section>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function updateManualEntryTotal(row){
+    if(!row) return;
+
+    const machineHours=[...row.querySelectorAll('.manual-machine-hours')]
+      .reduce((sum,input)=>{
+        const parsed=parseHoursMinutesInput(input.value);
+        return sum+(Number.isFinite(parsed)?parsed:0);
+      },0);
+
+    const stopHours=[...row.querySelectorAll('.manual-stop-hours')]
+      .reduce((sum,input)=>{
+        const parsed=parseHoursMinutesInput(input.value);
+        return sum+(Number.isFinite(parsed)?parsed:0);
+      },0);
+
+    const total=machineHours+stopHours;
+    const target=row.querySelector('[data-entry-total]');
+    if(target) target.textContent=fmtHoursMinutes(total);
+  }
+
+  function initManualSegment(row,segment,type,selectedLabor=''){
+    const select=segment.querySelector(type==='machine'?'.manual-machine-labor':'.manual-stop-labor');
+    initLaborSearch(select,selectedLabor||'');
+
+    const hours=segment.querySelector(type==='machine'?'.manual-machine-hours':'.manual-stop-hours');
+    hours?.addEventListener('input',()=>updateManualEntryTotal(row));
+    hours?.addEventListener('blur',()=>{
+      const parsed=parseHoursMinutesInput(hours.value);
+      if(Number.isFinite(parsed)&&parsed>=0&&String(hours.value||'').trim()!==''){
+        hours.value=hoursToClockInput(parsed);
+        updateManualEntryTotal(row);
+      }
+    });
+
+    segment.querySelector('.manual-remove-segment')?.addEventListener('click',()=>{
+      destroyLaborSearches(segment);
+      segment.remove();
+      updateManualEntryTotal(row);
+    });
+  }
+
+  function addManualSegment(row,type,preset={}){
+    const list=row.querySelector(`[data-segment-list="${type}"]`);
+    if(!list) return;
+
+    const index=list.querySelectorAll('[data-segment-type]').length;
+    const holder=document.createElement('div');
+    holder.innerHTML=manualSegmentHtml(type,index,preset);
+    const segment=holder.firstElementChild;
+    list.appendChild(segment);
+
+    const selectedLabor=type==='machine'
+      ? (preset.laborMaquina||'')
+      : (preset.laborParada||'');
+
+    initManualSegment(row,segment,type,selectedLabor);
+    updateManualEntryTotal(row);
+  }
+
+  function addManualEntryRow(preset={}){
+    const rowId=++state.manualRowSeq;
+    const holder=document.createElement('div');
+    holder.innerHTML=manualRowHtml(rowId,preset);
+    const row=holder.firstElementChild;
+    els.manualEntryBody.appendChild(row);
+
+    const firstMachine=row.querySelector('[data-segment-list="machine"] [data-segment-type="machine"]');
+    const firstStop=row.querySelector('[data-segment-list="stop"] [data-segment-type="stop"]');
+    const equipmentSelect=row.querySelector('.manual-equipment-select');
+    const dateInput=row.querySelector('.manual-date');
+
+    initManualEquipmentSearch(equipmentSelect,preset.equipo||'');
+    dateInput?.addEventListener('change',()=>renderManualRows());
+
+    initManualSegment(row,firstMachine,'machine',preset.laborMaquina||'');
+    initManualSegment(row,firstStop,'stop',preset.laborParada||'');
+    updateManualEntryTotal(row);
+
+    // Cargar líneas adicionales cuando corresponda.
+    for(const item of (preset.machineSegments||[])){
+      addManualSegment(row,'machine',{
+        horasMaquina:item.hours,
+        laborMaquina:item.laborId
+      });
+    }
+    for(const item of (preset.stopSegments||[])){
+      addManualSegment(row,'stop',{
+        horasParada:item.hours,
+        laborParada:item.laborId
+      });
+    }
+
+    row.querySelectorAll('[data-add-segment]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        addManualSegment(row,btn.dataset.addSegment,{});
+      });
+    });
+
+    row.querySelector('.manual-remove-row')?.addEventListener('click',()=>{
+      clearManualEntryRows();
+    });
+
+    return row;
+  }
+
+  function clearManualEntryRows(){
+    destroyLaborSearches(els.manualEntryBody);
+    destroyManualEquipmentSearches(els.manualEntryBody);
+    els.manualEntryBody.innerHTML='';
+    state.manualRowSeq=0;
+    addManualEntryRow({
+      fecha:todayIsoLocal(),
+      equipo:''
+    });
+    setManualStatus('');
+  }
+
+  function readLaborValue(select){
+    if(select?.tomselect) return String(select.tomselect.getValue()||'');
+    return String(select?.value||'');
+  }
+
+  function collectManualEntryRows(){
+    const payloads=[];
+    const rows=[...els.manualEntryBody.querySelectorAll('[data-manual-row]')];
+
+    for(let index=0;index<rows.length;index++){
+      const row=rows[index];
+      const n=index+1;
+      const fecha=text(row.querySelector('.manual-date')?.value);
+      const equipo=readManualEquipmentValue(row.querySelector('.manual-equipment-select'));
+
+      if(!fecha) throw new Error(`Registro ${n}: selecciona la fecha.`);
+      if(!equipo) throw new Error(`Registro ${n}: selecciona o agrega el número de equipo.`);
+
+      const machineSegments=[...row.querySelectorAll('[data-segment-type="machine"]')].map((segment,i)=>{
+        const raw=segment.querySelector('.manual-machine-hours')?.value||'';
+        const hours=parseHoursMinutesInput(raw);
+        const labor=readLaborValue(segment.querySelector('.manual-machine-labor'));
+
+        if(!Number.isFinite(hours)){
+          throw new Error(`Registro ${n}, Máquina ${i+1}: usa formato H:MM, por ejemplo 0:45 o 1:30.`);
+        }
+        if(hours<0) throw new Error(`Registro ${n}, Máquina ${i+1}: las horas no pueden ser negativas.`);
+        if(hours>0&&!labor) throw new Error(`Registro ${n}, Máquina ${i+1}: selecciona la labor.`);
+        return {hours,labor};
+      }).filter(item=>item.hours>0);
+
+      const stopSegments=[...row.querySelectorAll('[data-segment-type="stop"]')].map((segment,i)=>{
+        const raw=segment.querySelector('.manual-stop-hours')?.value||'';
+        const hours=parseHoursMinutesInput(raw);
+        const labor=readLaborValue(segment.querySelector('.manual-stop-labor'));
+
+        if(!Number.isFinite(hours)){
+          throw new Error(`Registro ${n}, Parada ${i+1}: usa formato H:MM, por ejemplo 0:45 o 1:30.`);
+        }
+        if(hours<0) throw new Error(`Registro ${n}, Parada ${i+1}: las horas no pueden ser negativas.`);
+        if(hours>0&&!labor) throw new Error(`Registro ${n}, Parada ${i+1}: selecciona la labor.`);
+        return {hours,labor};
+      }).filter(item=>item.hours>0);
+
+      if(!machineSegments.length&&!stopSegments.length){
+        throw new Error(`Registro ${n}: registra al menos una Hora Máquina o una Hora de Parada.`);
+      }
+
+      // La primera línea de Máquina y la primera de Parada comparten el registro principal.
+      const firstMachine=machineSegments.shift()||null;
+      const firstStop=stopSegments.shift()||null;
+
+      payloads.push({
+        fecha,
+        equipo,
+        horas_maquina:firstMachine?.hours||0,
+        total_maquina:firstMachine?.hours||0,
+        labor_maquina_id:firstMachine?Number(firstMachine.labor):null,
+        horas_parada:firstStop?.hours||0,
+        total_parada:firstStop?.hours||0,
+        labor_parada_id:firstStop?Number(firstStop.labor):null
+      });
+
+      // Cada labor adicional se guarda como otro registro con la misma fecha/equipo.
+      for(const item of machineSegments){
+        payloads.push({
+          fecha,
+          equipo,
+          horas_maquina:item.hours,
+          total_maquina:item.hours,
+          labor_maquina_id:Number(item.labor),
+          horas_parada:0,
+          total_parada:0,
+          labor_parada_id:null
+        });
+      }
+
+      for(const item of stopSegments){
+        payloads.push({
+          fecha,
+          equipo,
+          horas_maquina:0,
+          total_maquina:0,
+          labor_maquina_id:null,
+          horas_parada:item.hours,
+          total_parada:item.hours,
+          labor_parada_id:Number(item.labor)
+        });
+      }
+    }
+
+    return payloads;
+  }
+
+  function updateManualCardSummary(row){ return; }
+
+  function updateManualOverallTotals(){ return; }
+
+  function setManualEditMode(record=null){
+    if(record){
+      state.manualEditingId=record.id;
+      els.manualEditingBanner?.classList.add('visible');
+      if(els.manualEditingText) els.manualEditingText.textContent=`Editando registro #${record.id} · Equipo ${record.equipo}`;
+      if(els.manualSaveBtn) els.manualSaveBtn.textContent='Actualizar registro';
+    }else{
+      state.manualEditingId=null;
+      els.manualEditingBanner?.classList.remove('visible');
+      if(els.manualSaveBtn) els.manualSaveBtn.textContent='Guardar registros';
+    }
+  }
+
+  async function editManualRecord(id){
+    const record=state.manualRows.find(r=>String(r.id)===String(id));
+    if(!record) return;
+
+    if(!els.manualHoursOverlay.classList.contains('visible')){
+      els.manualHoursOverlay.classList.add('visible');
+      els.manualHoursOverlay.setAttribute('aria-hidden','false');
+    }
+
+    try{
+      if(!state.manualLabors.length) await loadManualLabors();
+      if(!state.manualEquipments.length) await loadManualEquipments();
+      destroyLaborSearches(els.manualEntryBody);
+      destroyManualEquipmentSearches(els.manualEntryBody);
+      els.manualEntryBody.innerHTML='';
+      state.manualRowSeq=0;
+      setManualEditMode(record);
+      addManualEntryRow({
+        fecha:String(record.fecha||''),
+        equipo:String(record.equipo||''),
+        horasMaquina:num(record.horas_maquina),
+        totalMaquina:num(record.total_maquina),
+        laborMaquina:record.labor_maquina_id?String(record.labor_maquina_id):'',
+        horasParada:num(record.horas_parada),
+        totalParada:num(record.total_parada),
+        laborParada:record.labor_parada_id?String(record.labor_parada_id):''
+      });
+      setManualStatus(`Editando el registro #${record.id}.`,'ok');
+      els.manualHoursOverlay.querySelector('.manual-card')?.scrollTo({top:0,behavior:'smooth'});
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+    }
+  }
+
+  async function deleteManualRecord(id){
+    const record=state.manualRows.find(r=>String(r.id)===String(id));
+    if(!record) return;
+    if(!confirm(`¿Eliminar el registro #${record.id} del equipo ${record.equipo}?`)) return;
+
+    try{
+      const {data,error}=await db.from(MANUAL_HOURS_TABLE)
+        .delete()
+        .eq('id',record.id)
+        .select('id');
+      if(error) throw error;
+      if(!(data||[]).length) throw new Error('Supabase no eliminó el registro. Verifica los permisos UPDATE/DELETE.');
+
+      if(String(state.manualEditingId)===String(record.id)){
+        setManualEditMode(null);
+        clearManualEntryRows();
+      }
+      await loadManualRows();
+      await loadFromSupabase({keepSelection:true,silent:true});
+      showToast(`Registro #${record.id} eliminado.`);
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+    }
+  }
+
+  function currentManualSavedContext(){
+    const row=els.manualEntryBody?.querySelector('[data-manual-row]');
+    if(!row) return {visible:false,equipo:'',fecha:''};
+
+    const fecha=text(row.querySelector('.manual-date')?.value);
+    const equipo=readManualEquipmentValue(row.querySelector('.manual-equipment-select'));
+    const hoy=todayIsoLocal();
+
     return {
-      id:r.id, idKey:idKeyText(r.id_key), importacionId:r.importacion_id||null, sourceRow:r.fila_origen||null,
-      equipment:equipmentText(r.equipo_numero), date:parseDate(r.fecha), hours:num(r.cantidad),
-      unit:text(r.unidad_produccion), labor:text(r.labor), laborName:text(r.nombre_labor),
-      producer:text(r.productor), owner:text(r.propietario), operator:text(r.operador), employee:text(r.empleado)
+      visible:Boolean(equipo) && fecha===hoy,
+      equipo,
+      fecha
     };
   }
 
-  async function fetchAllRecords(){
-    if(!db) throw new Error('No se pudo cargar la librería de Supabase. Verifica tu conexión a Internet.');
+  function renderManualRows(){
+    const context=currentManualSavedContext();
+
+    if(els.manualSavedPanel){
+      els.manualSavedPanel.style.display=context.visible?'block':'none';
+    }
+
+    if(!context.visible){
+      els.manualRecordsBody.innerHTML='';
+      els.manualRecordsEmpty.style.display='none';
+      return;
+    }
+
+    const rows=(state.manualRows||[]).filter(r=>
+      String(r.fecha||'').slice(0,10)===context.fecha &&
+      normalizeManualEquipment(r.equipo)===context.equipo
+    );
+
+    els.manualRecordsEmpty.style.display=rows.length?'none':'block';
+    els.manualRecordsEmpty.textContent=`No hay registros de ${context.equipo} para hoy.`;
+
+    els.manualRecordsBody.innerHTML=rows.map(r=>{
+      const total=num(r.horas_maquina)+num(r.horas_parada);
+      return `<article class="manual-saved-card">
+        <div class="manual-saved-cell">
+          <div class="manual-saved-badge"><span class="manual-mini-icon equipment">▣</span><div><div class="manual-saved-label">Equipo</div><div class="manual-saved-value">${escapeHtml(String(r.equipo||''))}</div></div></div>
+        </div>
+        <div class="manual-saved-cell">
+          <div class="manual-saved-label">Fecha</div>
+          <div class="manual-saved-value">${escapeHtml(displayDate(parseDate(r.fecha)))}</div>
+        </div>
+        <div class="manual-saved-cell">
+          <div class="manual-saved-badge"><span class="manual-mini-icon machine">⚙</span><div><div class="manual-saved-label">H. máquina</div><div class="manual-saved-value">${fmtHoursMinutes(num(r.horas_maquina))}</div><div class="manual-saved-sub">${escapeHtml(manualLaborNameById(r.labor_maquina_id))}</div></div></div>
+        </div>
+        <div class="manual-saved-cell">
+          <div class="manual-saved-badge"><span class="manual-mini-icon stop">⏸</span><div><div class="manual-saved-label">H. parada</div><div class="manual-saved-value">${fmtHoursMinutes(num(r.horas_parada))}</div><div class="manual-saved-sub">${escapeHtml(manualLaborNameById(r.labor_parada_id))}</div></div></div>
+        </div>
+        <div class="manual-saved-cell">
+          <div class="manual-saved-badge"><span class="manual-mini-icon total">Σ</span><div><div class="manual-saved-label">Total</div><div class="manual-saved-value">${fmtHoursMinutes(total)}</div></div></div>
+        </div>
+        <div class="manual-saved-cell"><div class="manual-record-actions"><button class="manual-edit-btn" data-manual-edit="${escapeHtml(String(r.id??''))}" type="button" title="Editar">✎</button><button class="manual-delete-btn" data-manual-delete="${escapeHtml(String(r.id??''))}" type="button" title="Eliminar">🗑</button></div></div>
+      </article>`;
+    }).join('');
+
+    els.manualRecordsBody.querySelectorAll('[data-manual-edit]').forEach(btn=>btn.addEventListener('click',()=>editManualRecord(btn.dataset.manualEdit)));
+    els.manualRecordsBody.querySelectorAll('[data-manual-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteManualRecord(btn.dataset.manualDelete)));
+  }
+
+  async function loadManualRows(){
+    const {data,error}=await db.from(MANUAL_HOURS_TABLE)
+      .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
+      .eq('fecha',todayIsoLocal())
+      .order('id',{ascending:false})
+      .limit(500);
+
+    if(error) throw error;
+    state.manualRows=data||[];
+    renderManualRows();
+  }
+
+  async function openManualHours(){
+    if(!db){
+      showToast('Supabase no está disponible.',true);
+      return;
+    }
+
+    els.manualHoursOverlay.classList.add('visible');
+    els.manualHoursOverlay.setAttribute('aria-hidden','false');
+    setManualEditMode(null);
+    setManualStatus('Cargando catálogo de labores y registros...');
+
+    try{
+      await Promise.all([loadManualLabors(),loadManualEquipments()]);
+      clearManualEntryRows();
+      await loadManualRows();
+      setManualStatus(
+        'Selecciona un equipo guardado o agrega uno nuevo. Los registros de hoy aparecerán debajo cuando elijas el equipo.',
+        'ok'
+      );
+    }catch(error){
+      console.error(error);
+      setManualStatus(
+        'No se pudieron cargar las tablas manuales. Verifica que el SQL de registro manual esté ejecutado en Supabase.',
+        'error'
+      );
+    }
+  }
+
+  function closeManualHours(){
+    els.manualHoursOverlay.classList.remove('visible');
+    els.manualHoursOverlay.setAttribute('aria-hidden','true');
+  }
+
+  async function saveManualHoursRecords(){
+    let payloads;
+
+    try{
+      payloads=collectManualEntryRows();
+    }catch(error){
+      showToast(String(error.message||error),true);
+      setManualStatus(String(error.message||error),'error');
+      return;
+    }
+
+    if(!payloads.length){
+      showToast('No hay registros para guardar.',true);
+      return;
+    }
+
+    els.manualSaveBtn.disabled=true;
+    setManualStatus(state.manualEditingId?'Actualizando registro...':`Guardando ${payloads.length} registro${payloads.length===1?'':'s'}...`);
+
+    try{
+      let saved=0;
+      if(state.manualEditingId){
+        const editingId=state.manualEditingId;
+        const {data,error}=await db.from(MANUAL_HOURS_TABLE)
+          .update(payloads[0])
+          .eq('id',editingId)
+          .select('id');
+        if(error) throw error;
+        if(!(data||[]).length) throw new Error('Supabase no actualizó el registro. Verifica los permisos UPDATE.');
+
+        saved=1;
+
+        if(payloads.length>1){
+          const {data:extraData,error:extraError}=await db.from(MANUAL_HOURS_TABLE)
+            .insert(payloads.slice(1))
+            .select('id');
+          if(extraError) throw extraError;
+          saved+=(extraData||[]).length;
+        }
+
+        setManualEditMode(null);
+        showToast(`Registro #${editingId} actualizado${payloads.length>1?' y líneas adicionales guardadas':''}.`);
+      }else{
+        const {data,error}=await db.from(MANUAL_HOURS_TABLE)
+          .insert(payloads)
+          .select('id');
+        if(error) throw error;
+        saved=(data||[]).length;
+        showToast(`${saved} registro${saved===1?'':'s'} guardado${saved===1?'':'s'}.`);
+      }
+
+      await loadManualRows();
+      clearManualEntryRows();
+      await loadFromSupabase({keepSelection:true,silent:true});
+      setManualStatus(
+        `${saved} registro${saved===1?'':'s'} procesado${saved===1?'':'s'} correctamente.`,
+        'ok'
+      );
+    }catch(error){
+      console.error(error);
+      const message=supabaseErrorMessage(error);
+      setManualStatus(message,'error');
+      showToast(message,true);
+    }finally{
+      els.manualSaveBtn.disabled=false;
+    }
+  }
+
+  function dbRowToAppRow(r){
+    return {
+      id:r.id,
+      idKey:idKeyText(r.id_key),
+      importacionId:r.importacion_id||null,
+      sourceRow:r.fila_origen||null,
+      source:'imported',
+      sourceLabel:'Importado',
+      equipment:equipmentText(r.equipo_numero),
+      date:parseDate(r.fecha),
+      hours:num(r.cantidad),
+      machineTotal:num(r.cantidad),
+      stopHours:0,
+      stopTotal:0,
+      stopLaborName:'',
+      unit:text(r.unidad_produccion),
+      labor:text(r.labor),
+      laborName:text(r.nombre_labor),
+      producer:text(r.productor),
+      owner:text(r.propietario),
+      operator:text(r.operador),
+      employee:text(r.empleado)
+    };
+  }
+
+  function manualDbRowToAppRow(r,laborMap){
+    const machineLabor=laborMap.get(String(r.labor_maquina_id))||'';
+    const stopLabor=laborMap.get(String(r.labor_parada_id))||'';
+
+    return {
+      id:`manual-${r.id}`,
+      manualId:r.id,
+      idKey:`MANUAL-${r.id}`,
+      importacionId:null,
+      sourceRow:null,
+      source:'manual',
+      sourceLabel:'Manual',
+      equipment:equipmentText(r.equipo),
+      date:parseDate(r.fecha),
+      hours:num(r.horas_maquina),
+      machineTotal:num(r.total_maquina),
+      stopHours:num(r.horas_parada),
+      stopTotal:num(r.total_parada),
+      stopLaborName:stopLabor,
+      unit:'Registro manual',
+      labor:r.labor_maquina_id?`M-${r.labor_maquina_id}`:'',
+      laborName:machineLabor,
+      producer:'',
+      owner:'',
+      operator:'',
+      employee:''
+    };
+  }
+
+  async function fetchImportedRecords(){
     const all=[];
     for(let from=0;;from+=PAGE_SIZE){
       const to=from+PAGE_SIZE-1;
       const {data,error}=await db.from('registros_horas')
         .select('id,id_key,importacion_id,fila_origen,fecha,unidad_produccion,equipo_numero,labor,nombre_labor,cantidad,productor,propietario,operador,empleado')
         .order('fecha',{ascending:true}).order('id',{ascending:true}).range(from,to);
+
       if(error) throw error;
       all.push(...(data||[]));
-      if(!data || data.length<PAGE_SIZE) break;
+      if(!data||data.length<PAGE_SIZE) break;
     }
+
     return all.map(dbRowToAppRow).filter(r=>/^(840|841)/.test(r.equipment));
+  }
+
+  async function fetchManualAnalysisRecords(){
+    // Se carga también el catálogo para mostrar el nombre real de las labores.
+    const [{data:labors,error:laborsError},{data:manual,error:manualError}]=await Promise.all([
+      db.from(MANUAL_LABORS_TABLE).select('id,nombre,activo').order('nombre',{ascending:true}),
+      db.from(MANUAL_HOURS_TABLE)
+        .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
+        .order('fecha',{ascending:true}).order('id',{ascending:true})
+    ]);
+
+    if(laborsError) throw laborsError;
+    if(manualError) throw manualError;
+
+    state.manualLabors=labors||[];
+    const laborMap=new Map((labors||[]).map(l=>[String(l.id),String(l.nombre||'')]));
+
+    // HORAS TALLER: mostrar TODOS los equipos guardados en registro_horas_manual.
+    // No se aplica el filtro 840/841 de Horas campo.
+    return (manual||[])
+      .map(r=>manualDbRowToAppRow(r,laborMap))
+      .filter(r=>r.equipment);
+  }
+
+  async function fetchAllRecords(){
+    if(!db) throw new Error('No se pudo cargar la librería de Supabase. Verifica tu conexión a Internet.');
+
+    const imported=await fetchImportedRecords();
+
+    let manual=[];
+    try{
+      manual=await fetchManualAnalysisRecords();
+    }catch(error){
+      // La vista principal sigue funcionando aunque las tablas manuales aún no existan.
+      console.warn('No se pudieron cargar los registros manuales para análisis:',error);
+      manual=[];
+    }
+
+    state.importedRows=imported;
+    state.manualAnalysisRows=manual;
+
+    return [...imported,...manual];
+  }
+
+  function rowsForCurrentSource(){
+    return state.dataSource==='workshop' ? state.manualAnalysisRows : state.importedRows;
+  }
+
+  function sourceLabel(){
+    return state.dataSource==='workshop' ? 'Horas taller' : 'Horas campo';
+  }
+
+  function applyCurrentDataSource({keepSelection=true,resetDates=false}={}){
+    const previous=state.selected;
+    const rows=rowsForCurrentSource();
+    state.rows=rows;
+    state.byEquipment=groupRows(rows);
+    state.activeDay='';
+    state.activeLabor='';
+    state.activeMetDays=false;
+
+    els.fieldHoursTab?.classList.toggle('active',state.dataSource==='field');
+    els.workshopHoursTab?.classList.toggle('active',state.dataSource==='workshop');
+    els.fieldHoursTab?.setAttribute('aria-selected',state.dataSource==='field'?'true':'false');
+    els.workshopHoursTab?.setAttribute('aria-selected',state.dataSource==='workshop'?'true':'false');
+    if(els.equipmentSourceTitle){
+      els.equipmentSourceTitle.textContent=state.dataSource==='workshop'?'Equipos · Horas taller':'Equipos · Horas campo';
+    }
+    if(els.searchInput){
+      els.searchInput.placeholder=state.dataSource==='workshop'?'Buscar equipo en Horas taller...':'Buscar equipo en Horas campo...';
+    }
+
+    if(resetDates) setGlobalDateLimits(rows);
+    renderEquipmentList();
+
+    if(state.byEquipment.size){
+      const next=(keepSelection&&previous&&state.byEquipment.has(previous))?previous:state.byEquipment.keys().next().value;
+      selectEquipment(next);
+    }else{
+      state.selected=null;
+      els.detailView.classList.remove('visible');
+      els.emptyState.style.display='grid';
+      els.emptyTitle.textContent=`${sourceLabel()} sin registros`;
+      els.emptyText.textContent=state.dataSource==='workshop'
+        ? 'No hay registros en registro_horas_manual para mostrar.'
+        : 'No hay registros de horas campo para mostrar.';
+    }
+  }
+
+  function setDataSource(source){
+    if(!['field','workshop'].includes(source)||state.dataSource===source) return;
+    state.dataSource=source;
+    state.equipmentStatus='all';
+    state.activeDay='';
+    state.activeLabor='';
+    state.activeMetDays=false;
+    // Se conserva exactamente el mismo filtro de fecha; solo cambia la tabla fuente.
+    applyCurrentDataSource({keepSelection:true,resetDates:false});
+    showToast(source==='workshop'
+      ? `Horas taller: ${fmtInt(state.manualAnalysisRows.length)} registros de registro_horas_manual.`
+      : `Horas campo: ${fmtInt(state.importedRows.length)} registros de registros_horas.`);
   }
 
   function groupRows(rows){
@@ -394,19 +1935,14 @@
     setMissingDaysLoading();
     if(!silent) setLoading(true,'Actualizando datos','Consultando registros guardados en Supabase...');
     try{
-      const rows=await fetchAllRecords();
-      state.rows=rows;state.byEquipment=groupRows(rows);state.sourceSheet='registros_horas';state.fileName='Supabase';state.activeDay='';state.activeLabor='';state.activeMetDays=false;
-      updateMissingDaysIndicator(rows);
-      setGlobalDateLimits(rows);renderEquipmentList();
-      setStatus('ok',`Supabase · ${fmtInt(rows.length)} registros`);
-      if(state.byEquipment.size){
-        const next=(keepSelection&&previous&&state.byEquipment.has(previous))?previous:state.byEquipment.keys().next().value;
-        selectEquipment(next);
-        if(!silent) showToast(`Base actualizada: ${fmtInt(rows.length)} registros en ${fmtInt(state.byEquipment.size)} equipos.`);
-      }else{
-        state.selected=null;els.detailView.classList.remove('visible');els.emptyState.style.display='grid';els.emptyTitle.textContent='Base de datos sin registros';els.emptyText.textContent='Supabase está conectado. Importa un archivo Excel; desde el 10/09/2026 se sincroniza usando ID_Taller.';
-      }
-      return rows;
+      await fetchAllRecords();
+      state.sourceSheet=state.dataSource==='workshop'?MANUAL_HOURS_TABLE:'registros_horas';state.fileName='Supabase';
+      updateMissingDaysIndicator(state.importedRows);
+      if(!els.dateFrom.value&&!els.dateTo.value) setGlobalDateLimits(rowsForCurrentSource());
+      applyCurrentDataSource({keepSelection,resetDates:false});
+      setStatus('ok',`Campo ${fmtInt(state.importedRows.length)} · Taller ${fmtInt(state.manualAnalysisRows.length)}`);
+      if(!silent) showToast(`${sourceLabel()}: ${fmtInt(state.rows.length)} registros en ${fmtInt(state.byEquipment.size)} equipos.`);
+      return state.rows;
     }catch(error){
       console.error(error);setStatus('error','Error de conexión');setMissingDaysLoading();els.detailView.classList.remove('visible');els.emptyState.style.display='grid';els.emptyTitle.textContent='No se pudo leer Supabase';els.emptyText.textContent=supabaseErrorMessage(error);showToast(supabaseErrorMessage(error),true);return null;
     }finally{ if(!silent)setLoading(false); }
@@ -886,20 +2422,44 @@
   function renderActiveFilters(){const chips=[];if(state.activeDay)chips.push(`<span class="filter-chip">Día: ${displayDate(new Date(state.activeDay+'T00:00:00'))}<button data-clear="day">×</button></span>`);if(state.activeLabor)chips.push(`<span class="filter-chip">Labor: ${escapeHtml(laborLabelFromKey(state.activeLabor))}<button data-clear="labor">×</button></span>`);if(state.activeMetDays)chips.push(`<span class="filter-chip">Días que cumplen 6.4 h<button data-clear="met">×</button></span>`);els.activeFilters.className='active-filters'+(chips.length?' visible':'');els.activeFilters.innerHTML=chips.length?`<span class="active-filter-label">Filtros activos</span>${chips.join('')}<button class="clear-interactive" id="clearInteractive">Quitar filtros</button>`:'';els.activeFilters.querySelectorAll('[data-clear]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.clear==='day')state.activeDay='';if(b.dataset.clear==='labor')state.activeLabor='';if(b.dataset.clear==='met')state.activeMetDays=false;renderDetail();}));$('clearInteractive')?.addEventListener('click',()=>{state.activeDay='';state.activeLabor='';state.activeMetDays=false;renderDetail();});}
 
   function renderDetail(){
-    if(!state.selected)return;const rangeRows=dateRangeRows(),rows=filteredRows();els.detailEquipment.textContent=`Equipo ${state.selected}`;els.detailRange.textContent=`Supabase · Período: ${currentPeriodLabel()}`;renderActiveFilters();
+    if(!state.selected)return;const rangeRows=dateRangeRows(),rows=filteredRows();els.detailEquipment.textContent=`Equipo ${state.selected}`;els.detailRange.textContent=state.dataSource==='workshop'
+      ? `registro_horas_manual · Período: ${currentPeriodLabel()}`
+      : `registros_horas · Período: ${currentPeriodLabel()}`;renderActiveFilters();
     const total=rangeRows.reduce((s,r)=>s+r.hours,0),target=calculateDailyTarget(rangeRows),fulfilled=Math.max(0,target.targetHours-target.lostHours),compliance=target.targetHours?Math.max(0,Math.min(100,fulfilled/target.targetHours*100)):0,average=target.periodDays?total/target.periodDays:0;
-    els.kpiHours.textContent=`${fmtHours(total)} h`;els.kpiTarget.textContent=`${fmtHours(target.targetHours)} h`;els.kpiLost.textContent=`${fmtHours(target.lostHours)} h`;els.kpiAverage.textContent=`${fmtHours(average)} h`;els.kpiMetDays.textContent=fmtInt(target.metDays);els.kpiMetDaysNote.textContent=`${fmtInt(target.metDays)} de ${fmtInt(target.periodDays)} días del período`;els.kpiMetDaysCard.classList.toggle('active',state.activeMetDays);const pct=Math.round(compliance);els.kpiCompliance.textContent=`${pct}%`;els.kpiComplianceNote.textContent=`${fmtHours(fulfilled)} h de ${fmtHours(target.targetHours)} h`;els.complianceDonut.style.setProperty('--pct',`${pct}%`);els.donutPct.textContent=`${pct}%`;
+    els.kpiHours.textContent=`${fmtHoursMinutes(total)}`;els.kpiTarget.textContent=`${fmtHours(target.targetHours)} h`;els.kpiLost.textContent=`${fmtHours(target.lostHours)} h`;els.kpiAverage.textContent=`${fmtHours(average)} h`;els.kpiMetDays.textContent=fmtInt(target.metDays);els.kpiMetDaysNote.textContent=`${fmtInt(target.metDays)} de ${fmtInt(target.periodDays)} días del período`;els.kpiMetDaysCard.classList.toggle('active',state.activeMetDays);const pct=Math.round(compliance);els.kpiCompliance.textContent=`${pct}%`;els.kpiComplianceNote.textContent=`${fmtHours(fulfilled)} h de ${fmtHours(target.targetHours)} h`;els.complianceDonut.style.setProperty('--pct',`${pct}%`);els.donutPct.textContent=`${pct}%`;
     let chartRows=onlyMetDays(rangeRows,rangeRows);if(state.activeLabor)chartRows=chartRows.filter(r=>laborKey(r)===state.activeLabor);renderDayChart(chartRows);let laborRows=onlyMetDays(rangeRows,rangeRows);if(state.activeDay)laborRows=laborRows.filter(r=>r.date&&isoDate(r.date)===state.activeDay);renderLaborList(laborRows);renderTable(rows);
   }
   function renderDayChart(rows){const map=new Map();for(const r of rows){if(!r.date)continue;const k=isoDate(r.date);if(!map.has(k))map.set(k,{date:r.date,hours:0});map.get(k).hours+=r.hours;}const days=[...map.values()].sort((a,b)=>a.date-b.date),max=Math.max(...days.map(d=>d.hours),0);if(!days.length){els.dayChart.innerHTML='<div class="labor-empty" style="width:100%">No hay fechas para graficar.</div>';return;}els.dayChart.innerHTML=days.map(d=>{const key=isoDate(d.date),h=max?Math.max(3,d.hours/max*145):3;return `<button class="day-col ${state.activeDay===key?'active':''}" data-day="${key}"><div class="bar-value">${fmtHours(d.hours)}</div><div class="bar-wrap"><div class="bar" style="height:${h}px"></div></div><div class="day-label">${escapeHtml(shortDate(d.date))}</div></button>`;}).join('');els.dayChart.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{state.activeDay=state.activeDay===b.dataset.day?'':b.dataset.day;renderDetail();}));}
   function renderLaborList(rows){const map=new Map();let total=0;for(const r of rows){const k=laborKey(r);if(!map.has(k))map.set(k,{code:r.labor,name:r.laborName,hours:0,records:0});const v=map.get(k);v.hours+=r.hours;v.records++;total+=r.hours;}const list=[...map.entries()].sort((a,b)=>b[1].hours-a[1].hours).slice(0,12);if(!list.length){els.laborList.innerHTML='<div class="labor-empty">No hay labores para mostrar.</div>';return;}els.laborList.innerHTML=list.map(([k,v])=>`<button class="labor-row ${state.activeLabor===k?'active':''}" data-labor="${escapeHtml(k)}"><div><div class="labor-name">${escapeHtml(v.name||v.code||'Sin labor')}</div><div class="labor-code">${escapeHtml(v.code||'')} · ${fmtInt(v.records)} registros</div></div><div class="labor-hours">${fmtHours(v.hours)} h</div><div class="progress"><span style="width:${total?Math.min(100,v.hours/total*100):0}%"></span></div></button>`).join('');els.laborList.querySelectorAll('[data-labor]').forEach(b=>b.addEventListener('click',()=>{state.activeLabor=state.activeLabor===b.dataset.labor?'':b.dataset.labor;renderDetail();}));}
-  function renderTable(rows){const sorted=[...rows].sort((a,b)=>(b.date?.getTime()||0)-(a.date?.getTime()||0));els.recordsNote.textContent=`${fmtInt(sorted.length)} registros`;els.tableEmpty.hidden=sorted.length>0;els.detailTable.innerHTML=sorted.map(r=>`<tr><td>${displayDate(r.date)}</td><td>${escapeHtml(r.unit||'—')}</td><td><span class="labor-code">${escapeHtml(r.labor||'—')}</span></td><td>${escapeHtml(r.laborName||'—')}</td><td><span class="hours-pill">${fmtHours(r.hours)} h</span></td><td>${escapeHtml(r.producer||'—')}</td><td>${escapeHtml(r.operator||'—')}</td></tr>`).join('');}
+  function renderTable(rows){
+    const sorted=[...rows].sort((a,b)=>(b.date?.getTime()||0)-(a.date?.getTime()||0));
+    els.recordsNote.textContent=`${fmtInt(sorted.length)} registros · ${sourceLabel()}`;
+
+    els.tableEmpty.hidden=sorted.length>0;
+
+    els.detailTable.innerHTML=sorted.map(r=>`
+      <tr>
+        <td>${displayDate(r.date)}</td>
+        <td><span class="source-pill ${r.source==='manual'?'manual':'imported'}">${r.source==='manual'?'Manual':'Importado'}</span></td>
+        <td>${escapeHtml(r.unit||'—')}</td>
+        <td>
+          <div>${escapeHtml(r.laborName||r.labor||'—')}</div>
+          ${r.labor&&r.laborName?`<div class="labor-code">${escapeHtml(r.labor)}</div>`:''}
+        </td>
+        <td><span class="hours-pill">${fmtHours(r.hours)} h</span></td>
+        <td>${r.source==='manual'?`<span class="stop-pill">${fmtHours(r.stopHours)} h</span>`:'—'}</td>
+        <td>${r.source==='manual'?escapeHtml(r.stopLaborName||'—'):'—'}</td>
+        <td>${escapeHtml(r.producer||'—')}</td>
+        <td>${escapeHtml(r.operator||'—')}</td>
+      </tr>
+    `).join('');
+  }
 
   function generateReport(){
     if(!state.selected){showToast('Selecciona un equipo.',true);return;}if(!window.jspdf?.jsPDF){showToast('No se pudo cargar el generador PDF.',true);return;}const rows=dateRangeRows();if(!rows.length){showToast('No hay registros para generar el reporte.',true);return;}
     try{const{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'landscape',unit:'mm',format:[215.9,330.2],compress:true}),total=rows.reduce((s,r)=>s+r.hours,0),target=calculateDailyTarget(rows),uniqueDays=new Set(rows.filter(r=>r.date).map(r=>isoDate(r.date))).size,avg=target.periodDays?total/target.periodDays:0,pct=target.targetHours?Math.max(0,Math.min(100,(target.targetHours-target.lostHours)/target.targetHours*100)):0;
-      doc.setFillColor(16,24,40);doc.rect(0,0,330.2,20,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text('REGISTRO DE HORAS',8,9);doc.setFontSize(10);doc.text(`Equipo ${state.selected}`,8,15);doc.text(`Período: ${currentPeriodLabel()}`,322,11,{align:'right'});
-      doc.setTextColor(22,32,51);doc.setFontSize(9);doc.text(`Horas: ${fmtHours(total)} h   |   Meta: ${fmtHours(target.targetHours)} h   |   Perdido: ${fmtHours(target.lostHours)} h   |   Promedio: ${fmtHours(avg)} h   |   Cumplimiento: ${Math.round(pct)}%   |   Días con registro: ${uniqueDays}`,8,28);
+      doc.setFillColor(16,24,40);doc.rect(0,0,330.2,20,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text(`REGISTRO DE HORAS · ${sourceLabel().toUpperCase()}`,8,9);doc.setFontSize(10);doc.text(`Equipo ${state.selected}`,8,15);doc.text(`Período: ${currentPeriodLabel()}`,322,11,{align:'right'});
+      doc.setTextColor(22,32,51);doc.setFontSize(9);doc.text(`Horas: ${fmtHoursMinutes(total)}   |   Meta: ${fmtHours(target.targetHours)} h   |   Perdido: ${fmtHours(target.lostHours)} h   |   Promedio: ${fmtHours(avg)} h   |   Cumplimiento: ${Math.round(pct)}%   |   Días con registro: ${uniqueDays}`,8,28);
       const sorted=[...rows].sort((a,b)=>(a.date?.getTime()||0)-(b.date?.getTime()||0));doc.autoTable({startY:33,margin:{left:8,right:8,bottom:10},head:[['Fecha','Unidad de producción','Labor','Nombre de labor','Horas','Productor','Operador']],body:sorted.map(r=>[displayDate(r.date),r.unit||'—',r.labor||'—',r.laborName||'—',fmtHours(r.hours),r.producer||'—',r.operator||'—']),theme:'grid',styles:{fontSize:6.4,cellPadding:1.5},headStyles:{fillColor:[37,99,235],textColor:[255,255,255]}});doc.save(`Reporte_Horas_Equipo_${state.selected}_${els.dateFrom.value||'inicio'}_${els.dateTo.value||'fin'}.pdf`);showToast('Reporte PDF generado.');
     }catch(e){console.error(e);showToast('No se pudo generar el reporte.',true);}
   }
@@ -920,7 +2480,21 @@
   els.missingDaysPopover?.addEventListener('click',event=>event.stopPropagation());
   document.addEventListener('click',()=>toggleMissingDaysPopover(false));
   document.addEventListener('keydown',event=>{
-    if(event.key==='Escape') toggleMissingDaysPopover(false);
+    if(event.key==='Escape'){toggleMissingDaysPopover(false);if(els.manualHoursOverlay?.classList.contains('visible'))closeManualHours();}
+  });
+
+
+  els.fieldHoursTab?.addEventListener('click',()=>setDataSource('field'));
+  els.workshopHoursTab?.addEventListener('click',()=>setDataSource('workshop'));
+
+  els.manualHoursBtn?.addEventListener('click',openManualHours);
+  els.manualHoursClose?.addEventListener('click',closeManualHours);
+  els.manualCancelEdit?.addEventListener('click',()=>{setManualEditMode(null);clearManualEntryRows();setManualStatus('Edición cancelada.');});
+  els.manualClearBtn?.addEventListener('click',()=>{setManualEditMode(null);clearManualEntryRows();});
+  els.manualSaveBtn?.addEventListener('click',saveManualHoursRecords);
+
+  els.manualHoursOverlay?.addEventListener('click',event=>{
+    if(event.target===els.manualHoursOverlay) closeManualHours();
   });
 
   const openPicker=()=>els.fileInput.click();
