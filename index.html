@@ -573,7 +573,7 @@
     }
 
     /* ===== VISTA DE REGISTROS MANUALES ===== */
-    .records-overlay{position:fixed;inset:0;background:rgba(16,24,40,.52);display:none;align-items:center;justify-content:center;padding:18px;z-index:88}
+    .records-overlay{position:fixed;inset:0;background:rgba(16,24,40,.52);display:none;align-items:center;justify-content:center;padding:18px;z-index:96}
     .records-overlay.visible{display:flex}
     .records-card{width:min(1360px,97vw);max-height:94vh;display:flex;flex-direction:column;background:#f8fbff;border:1px solid #e5eefb;border-radius:18px;box-shadow:0 24px 70px rgba(16,24,40,.30);overflow:hidden}
     .records-head{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fff;border-bottom:1px solid #e4e7ec}
@@ -591,6 +591,54 @@
     .records-actions{display:flex;gap:6px;justify-content:center}.records-edit,.records-delete{height:31px;border-radius:8px;padding:0 9px;background:#fff;font-size:10px;font-weight:850;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.records-edit{border:1px solid #b2ddff;color:#175cd3}.records-delete{border:1px solid #fecdca;color:#b42318}
     .records-empty{padding:34px 16px;text-align:center;color:#667085;font-size:12px}
     @media(max-width:760px){.records-overlay{padding:7px}.records-card{width:100%;max-height:96vh;border-radius:13px}.records-head{padding:11px}.records-body{padding:9px}.records-toolbar{grid-template-columns:1fr 1fr}.records-toolbar .records-filter:first-child{grid-column:1/-1}.records-toolbar-actions{grid-column:1/-1}.records-clear{width:100%}.records-table-wrap{max-height:66vh}}
+
+    /* ===== CONTROL SEMANAL DE EQUIPOS ===== */
+    .weekly-overlay{position:fixed;inset:0;background:rgba(16,24,40,.54);display:none;align-items:center;justify-content:center;padding:16px;z-index:90}
+    .weekly-overlay.visible{display:flex}
+    .weekly-card{width:min(1500px,98vw);max-height:95vh;display:flex;flex-direction:column;background:#f8fbff;border:1px solid #e5eefb;border-radius:18px;box-shadow:0 24px 70px rgba(16,24,40,.30);overflow:hidden}
+    .weekly-head{display:flex;align-items:center;gap:12px;padding:13px 15px;background:#fff;border-bottom:1px solid #e4e7ec}
+    .weekly-head-icon{width:40px;height:40px;border-radius:11px;background:#ecfdf3;color:#067647;display:grid;place-items:center;font-size:19px;font-weight:900;flex:0 0 auto}
+    .weekly-head-copy{min-width:0}.weekly-head-copy h2{margin:0;font-size:18px;color:#172554}.weekly-head-copy p{margin:3px 0 0;font-size:10.5px;color:#667085}
+    .weekly-close{margin-left:auto;width:34px;height:34px;border:1px solid #e4e7ec;border-radius:9px;background:#fff;color:#344054;font-size:20px}
+    .weekly-body{padding:11px 13px 15px;overflow:auto;min-height:0}
+    .weekly-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 10px;margin-bottom:9px;background:#fff;border:1px solid #e6edf7;border-radius:12px}
+    .weekly-nav-btn,.weekly-current-btn{height:34px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#344054;padding:0 11px;font-size:10.5px;font-weight:850}
+    .weekly-current-btn{border-color:#b2ddff;background:#eff8ff;color:#175cd3}
+    .weekly-range{font-size:12px;font-weight:900;color:#172554;margin-right:auto;min-width:190px}
+    .weekly-filters{display:grid;grid-template-columns:minmax(180px,1.2fr) 170px 170px auto;gap:8px;align-items:end;padding:9px 10px;margin-bottom:9px;background:#fff;border:1px solid #e6edf7;border-radius:12px}
+    .weekly-filter{min-width:0}.weekly-filter label{display:block;margin:0 0 4px;font-size:8.8px;font-weight:850;color:#667085;text-transform:uppercase}
+    .weekly-filter input,.weekly-filter select{width:100%;height:35px;border:1px solid #d5ddea;border-radius:8px;padding:0 9px;background:#fff;color:#101828;outline:none;font-size:10.5px}
+    .weekly-filter input:focus,.weekly-filter select:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .weekly-filter-clear{height:35px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#475467;padding:0 11px;font-size:10px;font-weight:850}
+    .weekly-summary{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+    .weekly-chip{display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:0 9px;border-radius:999px;border:1px solid #e4e7ec;background:#fff;font-size:9.5px;font-weight:850;color:#475467}
+    .weekly-chip strong{font-size:11px;color:#101828}
+    .weekly-chip.pending{border-color:#fedf89;background:#fffaeb;color:#93370d}.weekly-chip.nowork{border-color:#d0d5dd;background:#f2f4f7;color:#475467}.weekly-chip.ok{border-color:#abefc6;background:#ecfdf3;color:#067647}
+    .weekly-note{font-size:10px;color:#667085;margin:0 0 9px;line-height:1.45}
+    .weekly-table-wrap{overflow:auto;border:1px solid #e4e7ec;border-radius:12px;background:#fff;max-height:66vh}
+    .weekly-table{width:100%;min-width:1240px;border-collapse:separate;border-spacing:0}
+    .weekly-table th{position:sticky;top:0;z-index:4;background:#f9fafb;border-bottom:1px solid #e4e7ec;padding:9px 7px;font-size:9px;text-transform:uppercase;color:#667085;text-align:center;white-space:nowrap}
+    .weekly-table th:first-child{left:0;z-index:6;text-align:left;min-width:120px}
+    .weekly-table td{padding:6px;border-bottom:1px solid #f0f2f5;border-right:1px solid #f6f7f9;vertical-align:middle;text-align:center;min-width:165px}
+    .weekly-table td:first-child{position:sticky;left:0;z-index:3;background:#fff;text-align:left;min-width:120px}
+    .weekly-table tbody tr:hover td{background:#fafcff}.weekly-table tbody tr:hover td:first-child{background:#fafcff}
+    .weekly-equipment{font-size:11px;font-weight:900;color:#172554}.weekly-equipment small{display:block;margin-top:2px;font-size:8.5px;color:#98a2b3;font-weight:700}
+    .weekly-equipment-btn{border:0;background:transparent;color:#175cd3;font:inherit;font-weight:900;padding:2px 4px;border-radius:6px;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+    .weekly-equipment-btn:hover{background:#eff8ff}.weekly-equipment-btn:focus{outline:2px solid #84adff;outline-offset:2px}
+    .weekly-equipment-week-actions{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:5px}
+    .weekly-all-nowork-btn{height:26px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#475467;padding:0 7px;font-size:8px;font-weight:900;cursor:pointer;white-space:nowrap}
+    .weekly-all-nowork-btn:hover{background:#f2f4f7}.weekly-all-nowork-btn:disabled{opacity:.55;cursor:not-allowed}
+    .weekly-filter-result{font-size:9px;color:#667085;margin-left:auto}
+    .weekly-cell{min-height:62px;border-radius:9px;padding:7px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+    .weekly-cell.record{background:#ecfdf3;color:#067647}.weekly-cell.missing{background:#fffaeb;color:#93370d}.weekly-cell.nowork{background:#f2f4f7;color:#475467}.weekly-cell.future{background:#f9fafb;color:#98a2b3}
+    .weekly-status{font-size:9.5px;font-weight:900;line-height:1.2}.weekly-sub{font-size:8.5px;opacity:.82;line-height:1.2}
+    .weekly-action{height:25px;border-radius:7px;padding:0 7px;background:#fff;font-size:8.5px;font-weight:900;cursor:pointer;white-space:nowrap}
+    .weekly-cell-actions{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap}
+    .weekly-action.mark{border:1px solid #f6cf72;color:#93370d}
+    .weekly-action.create{border:1px solid #b2ddff;color:#175cd3;background:#eff8ff}
+    .weekly-action.restore{border:1px solid #d0d5dd;color:#475467}
+    .weekly-empty{padding:30px;text-align:center;color:#667085;font-size:12px}
+    @media(max-width:760px){.weekly-overlay{padding:6px}.weekly-card{width:100%;max-height:97vh;border-radius:12px}.weekly-head{padding:10px}.weekly-body{padding:8px}.weekly-range{width:100%;order:-1}.weekly-filters{grid-template-columns:1fr 1fr}.weekly-filters .weekly-filter:first-child{grid-column:1/-1}.weekly-filter-clear{grid-column:1/-1;width:100%}.weekly-table-wrap{max-height:70vh}}
 
     .loading-overlay{position:fixed;inset:0;background:rgba(244,247,251,.82);backdrop-filter:blur(2px);display:none;place-items:center;z-index:30}.loading-overlay.visible{display:grid}.loading-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 26px;box-shadow:var(--shadow);text-align:center;min-width:260px}.spinner{width:34px;height:34px;border:4px solid #e4e7ec;border-top-color:#2563eb;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}@keyframes spin{to{transform:rotate(360deg)}}.loading-title{font-weight:800}.loading-text{font-size:12px;color:var(--muted);margin-top:5px}
     @media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}}
@@ -629,6 +677,7 @@
           <div class="missing-days-list" id="missingDaysList"></div>
         </div>
       </div>
+      <button class="btn-soft" id="weeklyControlBtn" type="button" title="Revisar equipos con y sin registros por semana"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h2M14 14h2M8 18h2M14 18h2"/></svg><span>Control semanal</span></button>
       <button class="btn-soft" id="manualRecordsViewBtn" type="button" title="Ver, editar y eliminar registros de horas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>Ver registros</span></button>
       <button class="btn-report" id="manualHoursBtn" type="button" title="Registrar horas manualmente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M17 16v5M14.5 18.5h5"/></svg><span>Registrar horas</span></button>
       <button class="btn-soft" id="refreshBtn" type="button" title="Actualizar desde Supabase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6v6h-6"/><path d="M4 18v-6h6"/><path d="M18.5 9A7 7 0 0 0 6.2 5.2L4 7"/><path d="M5.5 15A7 7 0 0 0 17.8 18.8L20 17"/></svg><span>Actualizar</span></button>
@@ -701,6 +750,63 @@
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay"><div class="loading-box"><div class="spinner"></div><div class="loading-title" id="loadingTitle">Procesando</div><div class="loading-text" id="loadingText">Un momento...</div></div></div>
 
+<div class="weekly-overlay" id="weeklyControlOverlay" aria-hidden="true">
+  <section class="weekly-card" role="dialog" aria-modal="true" aria-labelledby="weeklyControlTitle">
+    <div class="weekly-head">
+      <div class="weekly-head-icon">✓</div>
+      <div class="weekly-head-copy"><h2 id="weeklyControlTitle">Control semanal de equipos</h2><p>Revisa día por día qué equipo tiene registro, cuál está pendiente y cuál fue marcado como “No trabajó”.</p></div>
+      <button class="weekly-close" id="weeklyControlClose" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <div class="weekly-body">
+      <div class="weekly-toolbar">
+        <button class="weekly-nav-btn" id="weeklyPrevBtn" type="button">← Semana anterior</button>
+        <button class="weekly-current-btn" id="weeklyTodayBtn" type="button">Esta semana</button>
+        <button class="weekly-nav-btn" id="weeklyNextBtn" type="button">Semana siguiente →</button>
+        <div class="weekly-range" id="weeklyRangeLabel">Cargando semana...</div>
+      </div>
+      <div class="weekly-filters">
+        <div class="weekly-filter">
+          <label>Buscar equipo</label>
+          <input id="weeklyEquipmentSearch" type="search" placeholder="Ej. 458016..." autocomplete="off">
+        </div>
+        <div class="weekly-filter">
+          <label>Estado</label>
+          <select id="weeklyStatusFilter">
+            <option value="all">Todos los estados</option>
+            <option value="record">Con registro</option>
+            <option value="missing">Sin registro</option>
+            <option value="nowork">No trabajó</option>
+          </select>
+        </div>
+        <div class="weekly-filter">
+          <label>Día</label>
+          <select id="weeklyDayFilter">
+            <option value="all">Toda la semana</option>
+            <option value="0">Lunes</option>
+            <option value="1">Martes</option>
+            <option value="2">Miércoles</option>
+            <option value="3">Jueves</option>
+            <option value="4">Viernes</option>
+            <option value="5">Sábado</option>
+          </select>
+        </div>
+        <button class="weekly-filter-clear" id="weeklyClearFilters" type="button">Limpiar filtros</button>
+      </div>
+      <div class="weekly-summary">
+        <span class="weekly-chip"><strong id="weeklyEquipmentCount">0</strong> equipos</span>
+        <span class="weekly-chip ok"><strong id="weeklyRecordedCount">0</strong> con registro</span>
+        <span class="weekly-chip pending"><strong id="weeklyPendingCount">0</strong> pendientes</span>
+        <span class="weekly-chip nowork"><strong id="weeklyNoWorkCount">0</strong> no trabajó</span>
+      </div>
+      <p class="weekly-note">Se muestran lunes a sábado. Los días futuros no se consideran pendientes. “No trabajó” se guarda en Supabase y deja de contar como registro pendiente.</p>
+      <div class="weekly-table-wrap">
+        <table class="weekly-table"><thead id="weeklyControlHead"></thead><tbody id="weeklyControlBody"></tbody></table>
+        <div class="weekly-empty" id="weeklyControlEmpty" hidden>No hay equipos para mostrar.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <div class="records-overlay" id="manualRecordsViewOverlay" aria-hidden="true">
   <section class="records-card" role="dialog" aria-modal="true" aria-labelledby="manualRecordsViewTitle">
     <div class="records-head">
@@ -772,6 +878,7 @@
   const MANUAL_SHIFT_TARGET_MINUTES = 9 * 60 + 30; // 9:30
   const MANUAL_FOOD_MINUTES = 30; // 0:30 COMIDA
   const MANUAL_REQUEST_TIMEOUT_MS = 10000;
+  const NO_WORK_LABOR_NAME = 'NO TRABAJÓ';
 
   function withManualTimeout(promise,label='La operación') {
     let timer;
@@ -791,7 +898,8 @@
   const state = {
     rows:[], byEquipment:new Map(), selected:null, sourceSheet:'registros_horas', fileName:'Supabase',
     activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false,
-    manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set(), manualDuplicateCheckSeq:0, manualFixedDate:'', manualAutoStopSeq:0, manualRecordsViewRows:[]
+    manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set(), manualDuplicateCheckSeq:0, manualFixedDate:'', manualAutoStopSeq:0, manualRecordsViewRows:[],
+    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:''
   };
 
   const $ = id => document.getElementById(id);
@@ -812,7 +920,12 @@
     manualRecordsBody:$('manualRecordsBody'), manualRecordsEmpty:$('manualRecordsEmpty'), manualSavedPanel:$('manualSavedPanel'),
     manualRecordsViewBtn:$('manualRecordsViewBtn'), manualRecordsViewOverlay:$('manualRecordsViewOverlay'), manualRecordsViewClose:$('manualRecordsViewClose'),
     manualRecordsSearch:$('manualRecordsSearch'), manualRecordsFrom:$('manualRecordsFrom'), manualRecordsTo:$('manualRecordsTo'), manualRecordsClear:$('manualRecordsClear'),
-    manualRecordsViewCount:$('manualRecordsViewCount'), manualRecordsViewSummary:$('manualRecordsViewSummary'), manualRecordsViewBody:$('manualRecordsViewBody'), manualRecordsViewEmpty:$('manualRecordsViewEmpty')
+    manualRecordsViewCount:$('manualRecordsViewCount'), manualRecordsViewSummary:$('manualRecordsViewSummary'), manualRecordsViewBody:$('manualRecordsViewBody'), manualRecordsViewEmpty:$('manualRecordsViewEmpty'),
+    weeklyControlBtn:$('weeklyControlBtn'), weeklyControlOverlay:$('weeklyControlOverlay'), weeklyControlClose:$('weeklyControlClose'),
+    weeklyPrevBtn:$('weeklyPrevBtn'), weeklyTodayBtn:$('weeklyTodayBtn'), weeklyNextBtn:$('weeklyNextBtn'), weeklyRangeLabel:$('weeklyRangeLabel'),
+    weeklyEquipmentCount:$('weeklyEquipmentCount'), weeklyRecordedCount:$('weeklyRecordedCount'), weeklyPendingCount:$('weeklyPendingCount'), weeklyNoWorkCount:$('weeklyNoWorkCount'),
+    weeklyEquipmentSearch:$('weeklyEquipmentSearch'), weeklyStatusFilter:$('weeklyStatusFilter'), weeklyDayFilter:$('weeklyDayFilter'), weeklyClearFilters:$('weeklyClearFilters'),
+    weeklyControlHead:$('weeklyControlHead'), weeklyControlBody:$('weeklyControlBody'), weeklyControlEmpty:$('weeklyControlEmpty')
   };
 
   let dateRangePicker = null;
@@ -997,6 +1110,56 @@
   function manualLaborNameById(id){
     const item=state.manualLabors.find(l=>String(l.id)===String(id));
     return item?.nombre||'—';
+  }
+
+  function noWorkLaborId(){
+    const item=(state.manualLabors||[]).find(l=>normalizeLaborName(l.nombre)===normalizeLaborName(NO_WORK_LABOR_NAME));
+    return item?.id??null;
+  }
+
+  function isNoWorkRecord(record){
+    const markerId=noWorkLaborId();
+    if(markerId===null||markerId===undefined) return false;
+    return String(record?.labor_maquina_id||'')===String(markerId) && Math.abs(num(record?.horas_maquina))<1e-9 && Math.abs(num(record?.horas_parada))<1e-9;
+  }
+
+  function mondayOf(date){
+    const d=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+    const day=d.getDay();
+    d.setDate(d.getDate()+(day===0?-6:1-day));
+    return d;
+  }
+
+  function addLocalDays(date,days){
+    const d=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+    d.setDate(d.getDate()+days);
+    return d;
+  }
+
+  function weeklyDates(){
+    const start=localDateFromIso(state.weeklyStart)||mondayOf(new Date());
+    return Array.from({length:6},(_,i)=>addLocalDays(start,i));
+  }
+
+  function weeklyEquipmentNumbers(){
+    const set=new Set(
+      (state.manualEquipments||[])
+        .filter(item=>item.activo!==false)
+        .map(item=>normalizeManualEquipment(item.numero))
+        .filter(Boolean)
+    );
+
+    for(const row of (state.manualAnalysisRows||[])){
+      const eq=normalizeManualEquipment(row.equipment);
+      if(eq) set.add(eq);
+    }
+
+    for(const row of (state.weeklyRows||[])){
+      const eq=normalizeManualEquipment(row.equipo);
+      if(eq) set.add(eq);
+    }
+
+    return [...set].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
   }
 
   async function loadManualLabors(){
@@ -1412,6 +1575,35 @@
     return total;
   }
 
+  function isManagedAutoStopSegment(segment){
+    if(!segment) return false;
+    if(segment.dataset.autoStop==='true') return true;
+
+    const select=segment.querySelector('.manual-stop-labor');
+    const laborId=readLaborValue(select);
+    if(!laborId) return false;
+
+    const laborName=normalizeLaborName(manualLaborNameById(laborId));
+    return laborName==='COMIDA'||laborName==='PATIO';
+  }
+
+  function manualCustomStopMinutes(row){
+    let total=0;
+    for(const segment of row.querySelectorAll('[data-segment-type="stop"]')){
+      // COMIDA y PATIO son administrados por el cálculo automático.
+      if(isManagedAutoStopSegment(segment)) continue;
+
+      const input=segment.querySelector('.manual-stop-hours');
+      const raw=String(input?.value||'').trim();
+      if(!raw) continue;
+
+      const parsed=parseHoursMinutesInput(raw);
+      if(!Number.isFinite(parsed)||parsed<0) return null;
+      total+=Math.round(parsed*60);
+    }
+    return total;
+  }
+
   async function getManualLaborByName(name){
     const normalized=normalizeLaborName(name);
     const existing=state.manualLabors.find(
@@ -1421,36 +1613,54 @@
     return await saveOrGetManualLabor(normalized);
   }
 
-  function replaceManualStopSegments(row,segments=[]){
-    const list=row.querySelector('[data-segment-list="stop"]');
+  function removeManagedAutoStopSegments(row){
+    const list=row?.querySelector('[data-segment-list="stop"]');
     if(!list) return;
 
-    destroyLaborSearches(list);
-    list.innerHTML='';
+    for(const segment of [...list.querySelectorAll('[data-segment-type="stop"]')]){
+      const input=segment.querySelector('.manual-stop-hours');
+      const labor=segment.querySelector('.manual-stop-labor');
+      const isEmpty=!String(input?.value||'').trim() && !readLaborValue(labor);
 
-    // Mantener al menos una línea vacía si no hay horas de parada por completar.
-    const rows=segments.length ? segments : [{hours:'',laborId:''}];
-
-    rows.forEach((item,index)=>{
-      const holder=document.createElement('div');
-      holder.innerHTML=manualSegmentHtml('stop',index,{
-        horasParada:item.hours,
-        laborParada:item.laborId
-      });
-      const segment=holder.firstElementChild;
-      if(item.auto) segment.dataset.autoStop='true';
-      list.appendChild(segment);
-      initManualSegment(row,segment,'stop',item.laborId||'');
-    });
+      // Quitar solamente las líneas automáticas COMIDA/PATIO y líneas vacías de apoyo.
+      // Las paradas que el usuario agregó con otra labor se conservan intactas.
+      if(isManagedAutoStopSegment(segment)||isEmpty){
+        destroyLaborSearches(segment);
+        segment.remove();
+      }
+    }
 
     updateManualEntryTotal(row);
+  }
+
+  function appendManagedAutoStopSegment(row,{hours,laborId,kind}){
+    const list=row?.querySelector('[data-segment-list="stop"]');
+    if(!list||!(hours>0)||!laborId) return null;
+
+    const index=list.querySelectorAll('[data-segment-type="stop"]').length;
+    const holder=document.createElement('div');
+    holder.innerHTML=manualSegmentHtml('stop',index,{
+      horasParada:hours,
+      laborParada:laborId
+    });
+
+    const segment=holder.firstElementChild;
+    segment.dataset.autoStop='true';
+    segment.dataset.autoStopKind=kind||'';
+    list.appendChild(segment);
+    initManualSegment(row,segment,'stop',laborId);
+
+    // Las filas COMIDA/PATIO son resultado del cálculo; no se eliminan manualmente.
+    segment.querySelector('.manual-remove-segment')?.remove();
+    return segment;
   }
 
   async function autofillManualStopsTo930(row){
     if(!row||!row.isConnected) return;
 
     const machineMinutes=manualMachineMinutes(row);
-    if(machineMinutes===null) return;
+    const customStopMinutes=manualCustomStopMinutes(row);
+    if(machineMinutes===null||customStopMinutes===null) return;
 
     // Solo completar cuando realmente se haya escrito alguna hora máquina.
     const hasMachineValue=[...row.querySelectorAll('.manual-machine-hours')]
@@ -1460,22 +1670,29 @@
     const requestId=++state.manualAutoStopSeq;
     row.dataset.autoStopRequest=String(requestId);
 
-    const remaining=Math.max(0,MANUAL_SHIFT_TARGET_MINUTES-machineMinutes);
+    const usedMinutes=machineMinutes+customStopMinutes;
+    const remaining=Math.max(0,MANUAL_SHIFT_TARGET_MINUTES-usedMinutes);
+
+    // Eliminar el cálculo anterior ANTES de crear el nuevo.
+    // Las filas manuales con otras labores permanecen.
+    removeManagedAutoStopSegments(row);
 
     if(remaining===0){
-      replaceManualStopSegments(row,[]);
-      if(machineMinutes>MANUAL_SHIFT_TARGET_MINUTES){
+      if(usedMinutes>MANUAL_SHIFT_TARGET_MINUTES){
         setManualStatus(
-          `Las horas máquina (${hoursToClockInput(machineMinutes/60)}) superan la jornada de 9:30. No se agregaron horas de parada.`,
+          `El total de horas máquina + paradas manuales (${hoursToClockInput(usedMinutes/60)}) supera la jornada de 9:30. Reduce alguna hora para poder emparejar el tiempo.`,
           'error'
         );
       }else{
-        setManualStatus('Horas máquina completan las 9:30. No se requieren horas de parada.','ok');
+        setManualStatus('Horas máquina + paradas manuales completan exactamente las 9:30.','ok');
       }
+      updateManualEntryTotal(row);
       return;
     }
 
     try{
+      // COMIDA conserva 0:30 siempre que aún haya al menos 30 minutos disponibles.
+      // PATIO absorbe automáticamente todo el tiempo restante.
       const comidaMinutes=Math.min(MANUAL_FOOD_MINUTES,remaining);
       const patioMinutes=Math.max(0,remaining-comidaMinutes);
 
@@ -1487,28 +1704,41 @@
       // Evita aplicar un cálculo viejo si el usuario cambió las horas mientras se consultaba Supabase.
       if(!row.isConnected||row.dataset.autoStopRequest!==String(requestId)) return;
 
-      const segments=[];
       if(comidaMinutes>0){
-        segments.push({hours:comidaMinutes/60,laborId:String(comidaLabor.id),auto:true});
+        appendManagedAutoStopSegment(row,{
+          hours:comidaMinutes/60,
+          laborId:String(comidaLabor.id),
+          kind:'COMIDA'
+        });
       }
       if(patioMinutes>0&&patioLabor){
-        segments.push({hours:patioMinutes/60,laborId:String(patioLabor.id),auto:true});
+        appendManagedAutoStopSegment(row,{
+          hours:patioMinutes/60,
+          laborId:String(patioLabor.id),
+          kind:'PATIO'
+        });
       }
 
-      replaceManualStopSegments(row,segments);
+      updateManualEntryTotal(row);
 
       const machineClock=hoursToClockInput(machineMinutes/60);
-      const patioText=patioMinutes>0 ? ` + ${hoursToClockInput(patioMinutes/60)} PATIO` : '';
+      const customText=customStopMinutes>0
+        ? ` + ${hoursToClockInput(customStopMinutes/60)} parada manual`
+        : '';
+      const patioText=patioMinutes>0
+        ? ` + ${hoursToClockInput(patioMinutes/60)} PATIO`
+        : '';
       const adjustedFood=comidaMinutes<MANUAL_FOOD_MINUTES;
+
       setManualStatus(
         adjustedFood
-          ? `Para completar 9:30 desde ${machineClock}, COMIDA se ajustó a ${hoursToClockInput(comidaMinutes/60)}.`
-          : `${machineClock} máquina → 0:30 COMIDA${patioText} = 9:30.`,
+          ? `${machineClock} máquina${customText} → COMIDA se ajustó a ${hoursToClockInput(comidaMinutes/60)} para completar 9:30.`
+          : `${machineClock} máquina${customText} + 0:30 COMIDA${patioText} = 9:30.`,
         adjustedFood?'error':'ok'
       );
     }catch(error){
       console.error(error);
-      setManualStatus('No se pudieron completar automáticamente COMIDA y PATIO. Verifica el catálogo de labores.','error');
+      setManualStatus('No se pudieron recalcular automáticamente COMIDA y PATIO. Verifica el catálogo de labores.','error');
       showToast(supabaseErrorMessage(error),true);
     }
   }
@@ -1532,22 +1762,26 @@
       if(Number.isFinite(parsed)&&parsed>=0&&String(hours.value||'').trim()!==''){
         hours.value=hoursToClockInput(parsed);
         updateManualEntryTotal(row);
-        if(type==='machine') autofillManualStopsTo930(row);
+        if(type==='machine'||(type==='stop'&&segment.dataset.autoStop!=='true')){
+          autofillManualStopsTo930(row);
+        }
       }
     });
-    if(type==='machine'){
-      hours?.addEventListener('keydown',event=>{
-        if(event.key==='Enter'){
-          event.preventDefault();
-          hours.blur();
-        }
-      });
-    }
+
+    // Enter confirma tanto horas máquina como una nueva parada y ejecuta el recálculo.
+    hours?.addEventListener('keydown',event=>{
+      if(event.key==='Enter'){
+        event.preventDefault();
+        hours.blur();
+      }
+    });
 
     segment.querySelector('.manual-remove-segment')?.addEventListener('click',()=>{
+      const recalculate=type==='stop'&&segment.dataset.autoStop!=='true';
       destroyLaborSearches(segment);
       segment.remove();
       updateManualEntryTotal(row);
+      if(recalculate) autofillManualStopsTo930(row);
     });
   }
 
@@ -1593,7 +1827,7 @@
   async function findExistingManualRecords(fecha,equipo,{excludeId=null}={}){
     if(!db||!fecha||!equipo) return [];
     let query=db.from(MANUAL_HOURS_TABLE)
-      .select('id')
+      .select('id,labor_maquina_id,horas_maquina,horas_parada')
       .eq('fecha',fecha)
       .eq('equipo',normalizeManualEquipment(equipo));
     if(excludeId!==null&&excludeId!==undefined&&excludeId!==''){
@@ -1604,7 +1838,7 @@
       'La comprobación de registros existentes'
     );
     if(error) throw error;
-    return data||[];
+    return (data||[]).filter(record=>!isNoWorkRecord(record));
   }
 
   async function checkManualDuplicateForRow(row){
@@ -1903,8 +2137,8 @@
       all.push(...(data||[]));
       if(!data||data.length<PAGE_SIZE) break;
     }
-    state.manualRecordsViewRows=all;
-    return all;
+    state.manualRecordsViewRows=all.filter(record=>!isNoWorkRecord(record));
+    return state.manualRecordsViewRows;
   }
 
   function filteredManualRecordsViewRows(){
@@ -1953,6 +2187,21 @@
     els.manualRecordsViewBody.querySelectorAll('[data-records-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteManualRecord(btn.dataset.recordsDelete)));
   }
 
+
+  async function openManualRecordsForEquipment(equipo){
+    const dates=weeklyDates();
+    if(els.manualRecordsSearch) els.manualRecordsSearch.value=String(equipo||'');
+    if(els.manualRecordsFrom) els.manualRecordsFrom.value=isoDate(dates[0]);
+    if(els.manualRecordsTo) els.manualRecordsTo.value=isoDate(dates[dates.length-1]);
+
+    await openManualRecordsView();
+
+    if(els.manualRecordsViewSummary){
+      const current=els.manualRecordsViewSummary.textContent||'';
+      els.manualRecordsViewSummary.textContent=`Equipo ${equipo} · ${current}`;
+    }
+  }
+
   async function openManualRecordsView(){
     if(!db){showToast('Supabase no está disponible.',true);return;}
     els.manualRecordsViewOverlay.classList.add('visible');
@@ -1975,6 +2224,346 @@
   function closeManualRecordsView(){
     els.manualRecordsViewOverlay?.classList.remove('visible');
     els.manualRecordsViewOverlay?.setAttribute('aria-hidden','true');
+  }
+
+
+  async function loadWeeklyControlRows(){
+    const dates=weeklyDates();
+    const from=isoDate(dates[0]);
+    const to=isoDate(dates[dates.length-1]);
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_HOURS_TABLE)
+        .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
+        .gte('fecha',from).lte('fecha',to)
+        .order('fecha',{ascending:true}).order('equipo',{ascending:true}),
+      'La carga del control semanal'
+    );
+    if(error) throw error;
+    state.weeklyRows=data||[];
+    state.weeklyLoadedStart=state.weeklyStart;
+    return state.weeklyRows;
+  }
+
+
+  function hydrateWeeklyFromLoadedState(){
+    const dates=weeklyDates();
+    const from=isoDate(dates[0]);
+    const to=isoDate(dates[dates.length-1]);
+    const rows=[];
+
+    for(const r of (state.manualAnalysisRows||[])){
+      if(!r?.date) continue;
+      const fecha=isoDate(r.date);
+      if(fecha<from||fecha>to) continue;
+
+      rows.push({
+        id:r.manualId??String(r.id||'').replace(/^manual-/,''),
+        fecha,
+        equipo:normalizeManualEquipment(r.equipment),
+        horas_maquina:num(r.hours),
+        total_maquina:num(r.machineTotal),
+        labor_maquina_id:r.labor ? String(r.labor).replace(/^M-/,'') : null,
+        horas_parada:num(r.stopHours),
+        total_parada:num(r.stopTotal),
+        labor_parada_id:null
+      });
+    }
+
+    for(const r of (state.manualNoWorkRows||[])){
+      const fecha=String(r.fecha||'').slice(0,10);
+      if(fecha>=from&&fecha<=to) rows.push({...r});
+    }
+
+    state.weeklyRows=rows;
+    state.weeklyLoadedStart=state.weeklyStart;
+  }
+
+
+  function weeklyEquipmentMatchesFilters(equipo,dates){
+    const q=norm(state.weeklyEquipmentQuery||'');
+    if(q&&!norm(equipo).includes(q)) return false;
+
+    const selectedDay=state.weeklyDayFilter==='all'
+      ? null
+      : Number(state.weeklyDayFilter);
+
+    const relevantDates=selectedDay===null
+      ? dates
+      : (dates[selectedDay]?[dates[selectedDay]]:[]);
+
+    if(state.weeklyStatusFilter==='all') return true;
+
+    return relevantDates.some(d=>{
+      const status=weeklyCellState(equipo,isoDate(d));
+      return status.type===state.weeklyStatusFilter;
+    });
+  }
+
+  function clearWeeklyFilters(){
+    state.weeklyEquipmentQuery='';
+    state.weeklyStatusFilter='all';
+    state.weeklyDayFilter='all';
+    if(els.weeklyEquipmentSearch) els.weeklyEquipmentSearch.value='';
+    if(els.weeklyStatusFilter) els.weeklyStatusFilter.value='all';
+    if(els.weeklyDayFilter) els.weeklyDayFilter.value='all';
+    renderWeeklyControl();
+  }
+
+  function weeklyCellState(equipo,fecha){
+    const rows=(state.weeklyRows||[]).filter(r=>String(r.fecha||'').slice(0,10)===fecha&&normalizeManualEquipment(r.equipo)===equipo);
+    const actual=rows.filter(r=>!isNoWorkRecord(r));
+    const noWork=rows.filter(r=>isNoWorkRecord(r));
+    if(actual.length){
+      const total=actual.reduce((sum,r)=>sum+num(r.horas_maquina)+num(r.horas_parada),0);
+      return {type:'record',count:actual.length,total,markerId:noWork[0]?.id||null};
+    }
+    if(noWork.length) return {type:'nowork',count:noWork.length,total:0,markerId:noWork[0].id};
+    const d=localDateFromIso(fecha),today=localDateFromIso(todayIsoLocal());
+    if(d&&today&&d>today) return {type:'future',count:0,total:0,markerId:null};
+    return {type:'missing',count:0,total:0,markerId:null};
+  }
+
+  function renderWeeklyControl(){
+    if(!els.weeklyControlBody||!els.weeklyControlHead) return;
+    const dates=weeklyDates();
+    const allEquipments=weeklyEquipmentNumbers();
+    const equipments=allEquipments.filter(eq=>weeklyEquipmentMatchesFilters(eq,dates));
+
+    els.weeklyRangeLabel.textContent=`${displayDate(dates[0])} – ${displayDate(dates[dates.length-1])}`;
+
+    const selectedDay=state.weeklyDayFilter==='all' ? null : Number(state.weeklyDayFilter);
+    const visibleDateIndexes=selectedDay===null
+      ? dates.map((_,i)=>i)
+      : (dates[selectedDay]?[selectedDay]:[]);
+
+    els.weeklyControlHead.innerHTML=`<tr><th>Equipo</th>${visibleDateIndexes.map(i=>{
+      const d=dates[i];
+      const wd=new Intl.DateTimeFormat('es-PA',{weekday:'short'}).format(d).replace('.','');
+      return `<th>${escapeHtml(wd.toUpperCase())}<br>${escapeHtml(`${pad2(d.getDate())}/${pad2(d.getMonth()+1)}`)}</th>`;
+    }).join('')}</tr>`;
+
+    let recorded=0,pending=0,noWork=0;
+    const body=[];
+
+    for(const equipo of equipments){
+      const cells=visibleDateIndexes.map(i=>{
+        const d=dates[i];
+        const fecha=isoDate(d);
+        const status=weeklyCellState(equipo,fecha);
+
+        if(status.type==='record'){
+          recorded++;
+          return `<td><div class="weekly-cell record"><div class="weekly-status">✓ Registro</div><div class="weekly-sub">${status.count} reg. · ${escapeHtml(fmtHoursMinutes(status.total))}</div></div></td>`;
+        }
+        if(status.type==='nowork'){
+          noWork++;
+          return `<td><div class="weekly-cell nowork"><div class="weekly-status">— No trabajó</div><div class="weekly-sub">Descartado del pendiente</div><button class="weekly-action restore" type="button" data-weekly-restore="${escapeHtml(String(status.markerId||''))}" data-weekly-eq="${escapeHtml(equipo)}" data-weekly-date="${escapeHtml(fecha)}">Reactivar</button></div></td>`;
+        }
+        if(status.type==='future'){
+          return `<td><div class="weekly-cell future"><div class="weekly-status">Próximo día</div><div class="weekly-sub">Aún no se evalúa</div></div></td>`;
+        }
+        pending++;
+        return `<td><div class="weekly-cell missing">
+          <div class="weekly-status">⚠ Sin registro</div>
+          <div class="weekly-sub">Requiere revisión</div>
+          <div class="weekly-cell-actions">
+            <button class="weekly-action mark" type="button" data-weekly-nowork="1" data-weekly-eq="${escapeHtml(equipo)}" data-weekly-date="${escapeHtml(fecha)}">No trabajó</button>
+            <button class="weekly-action create" type="button" data-weekly-create="1" data-weekly-eq="${escapeHtml(equipo)}" data-weekly-date="${escapeHtml(fecha)}">Crear registro</button>
+          </div>
+        </div></td>`;
+      }).join('');
+
+      body.push(`<tr>
+        <td>
+          <div class="weekly-equipment">
+            <button class="weekly-equipment-btn" type="button" data-weekly-open-equipment="${escapeHtml(equipo)}" title="Ver registros del equipo ${escapeHtml(equipo)}">Equipo ${escapeHtml(equipo)}</button>
+            <small>Toca el número para ver sus registros</small>
+            <div class="weekly-equipment-week-actions">
+              <button class="weekly-all-nowork-btn" type="button" data-weekly-all-nowork="${escapeHtml(equipo)}" title="Marcar de una vez todos los días pendientes">No trabajó toda la semana</button>
+            </div>
+          </div>
+        </td>
+        ${cells}
+      </tr>`);
+    }
+
+    els.weeklyEquipmentCount.textContent=`${fmtInt(equipments.length)}/${fmtInt(allEquipments.length)}`;
+    els.weeklyRecordedCount.textContent=fmtInt(recorded);
+    els.weeklyPendingCount.textContent=fmtInt(pending);
+    els.weeklyNoWorkCount.textContent=fmtInt(noWork);
+    els.weeklyControlEmpty.hidden=equipments.length>0;
+    els.weeklyControlEmpty.textContent=allEquipments.length
+      ? 'No hay equipos que coincidan con los filtros seleccionados.'
+      : 'No hay equipos para mostrar.';
+    els.weeklyControlBody.innerHTML=body.join('');
+
+    els.weeklyControlBody.querySelectorAll('[data-weekly-nowork]').forEach(btn=>btn.addEventListener('click',()=>markWeeklyNoWork(btn.dataset.weeklyEq,btn.dataset.weeklyDate,btn)));
+    els.weeklyControlBody.querySelectorAll('[data-weekly-create]').forEach(btn=>btn.addEventListener('click',()=>createManualRecordFromWeekly(btn.dataset.weeklyEq,btn.dataset.weeklyDate)));
+    els.weeklyControlBody.querySelectorAll('[data-weekly-restore]').forEach(btn=>btn.addEventListener('click',()=>restoreWeeklyNoWork(btn.dataset.weeklyRestore,btn.dataset.weeklyEq,btn.dataset.weeklyDate,btn)));
+    els.weeklyControlBody.querySelectorAll('[data-weekly-open-equipment]').forEach(btn=>btn.addEventListener('click',()=>openManualRecordsForEquipment(btn.dataset.weeklyOpenEquipment)));
+    els.weeklyControlBody.querySelectorAll('[data-weekly-all-nowork]').forEach(btn=>btn.addEventListener('click',()=>markWholeWeekNoWork(btn.dataset.weeklyAllNowork,btn)));
+  }
+
+  function createManualRecordFromWeekly(equipo,fecha){
+    const normalizedEquipment=normalizeManualEquipment(equipo);
+    const normalizedDate=String(fecha||'').slice(0,10);
+
+    if(!normalizedEquipment||!normalizedDate){
+      showToast('No se pudo identificar el equipo o la fecha.',true);
+      return;
+    }
+
+    // Cerrar Control semanal y abrir directamente Registro manual.
+    closeWeeklyControl();
+
+    els.manualHoursOverlay.classList.add('visible');
+    els.manualHoursOverlay.setAttribute('aria-hidden','false');
+    setManualEditMode(null);
+
+    // No hacemos una carga completa adicional.
+    // Reutilizamos los catálogos y datos que ya están en memoria.
+    destroyLaborSearches(els.manualEntryBody);
+    destroyManualEquipmentSearches(els.manualEntryBody);
+    els.manualEntryBody.innerHTML='';
+    state.manualRowSeq=0;
+
+    const row=addManualEntryRow({
+      fecha:normalizedDate,
+      equipo:normalizedEquipment
+    });
+
+    setManualStatus(
+      `Nuevo registro · Equipo ${normalizedEquipment} · ${displayDate(parseDate(normalizedDate))}.`,
+      'ok'
+    );
+
+    // Verifica si en esa fecha/equipo apareció algún registro mientras la vista estaba abierta.
+    scheduleManualDuplicateCheck(row);
+
+    // Llevar el formulario al inicio.
+    els.manualHoursOverlay.querySelector('.manual-card')?.scrollTo({top:0,behavior:'smooth'});
+  }
+
+
+  async function markWholeWeekNoWork(equipo,button=null){
+    if(state.weeklyBusy||!equipo) return;
+
+    const dates=weeklyDates();
+    const today=localDateFromIso(todayIsoLocal());
+
+    const pending=dates
+      .filter(d=>!today||d<=today)
+      .map(d=>isoDate(d))
+      .filter(fecha=>weeklyCellState(equipo,fecha).type==='missing');
+
+    if(!pending.length){
+      showToast(`El equipo ${equipo} no tiene días pendientes para marcar en esta semana.`);
+      return;
+    }
+
+    state.weeklyBusy=true;
+    if(button) button.disabled=true;
+
+    try{
+      const labor=await saveOrGetManualLabor(NO_WORK_LABOR_NAME);
+
+      const payloads=pending.map(fecha=>({
+        fecha,
+        equipo:normalizeManualEquipment(equipo),
+        horas_maquina:0,
+        total_maquina:0,
+        labor_maquina_id:Number(labor.id),
+        horas_parada:0,
+        total_parada:0,
+        labor_parada_id:null
+      }));
+
+      const {data,error}=await withManualTimeout(
+        db.from(MANUAL_HOURS_TABLE)
+          .insert(payloads)
+          .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id'),
+        'El marcado semanal de No trabajó'
+      );
+
+      if(error) throw error;
+
+      const inserted=data||[];
+      state.weeklyRows.push(...inserted);
+      state.manualNoWorkRows.push(...inserted);
+      renderWeeklyControl();
+
+      showToast(`Equipo ${equipo}: ${inserted.length} día${inserted.length===1?'':'s'} marcado${inserted.length===1?'':'s'} como No trabajó.`);
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+    }finally{
+      state.weeklyBusy=false;
+      if(button) button.disabled=false;
+    }
+  }
+
+  async function markWeeklyNoWork(equipo,fecha,button=null){
+    if(state.weeklyBusy||!equipo||!fecha) return;
+    if(!confirm(`¿Confirmas que el equipo ${equipo} NO TRABAJÓ el ${displayDate(parseDate(fecha))}?`)) return;
+    state.weeklyBusy=true;if(button)button.disabled=true;
+    try{
+      const labor=await saveOrGetManualLabor(NO_WORK_LABOR_NAME);
+      const existing=weeklyCellState(equipo,fecha);
+      if(existing.type==='record'){showToast(`El equipo ${equipo} ya tiene registros ese día.`,true);return;}
+      if(existing.type==='nowork'){showToast('Ese día ya estaba marcado como No trabajó.');return;}
+      const payload={fecha,equipo:normalizeManualEquipment(equipo),horas_maquina:0,total_maquina:0,labor_maquina_id:Number(labor.id),horas_parada:0,total_parada:0,labor_parada_id:null};
+      const {data,error}=await withManualTimeout(db.from(MANUAL_HOURS_TABLE).insert(payload).select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id').single(),'El marcado de No trabajó');
+      if(error) throw error;if(data){state.weeklyRows.push(data);state.manualNoWorkRows.push(data);}renderWeeklyControl();showToast(`Equipo ${equipo}: ${displayDate(parseDate(fecha))} marcado como No trabajó.`);
+    }catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);}finally{state.weeklyBusy=false;if(button)button.disabled=false;}
+  }
+
+  async function restoreWeeklyNoWork(id,equipo,fecha,button=null){
+    if(state.weeklyBusy||!id)return;state.weeklyBusy=true;if(button)button.disabled=true;
+    try{
+      const {data,error}=await withManualTimeout(db.from(MANUAL_HOURS_TABLE).delete().eq('id',id).select('id'),'La reactivación del día');
+      if(error)throw error;if(!(data||[]).length)throw new Error('No se pudo quitar la marca “No trabajó”.');
+      state.weeklyRows=(state.weeklyRows||[]).filter(r=>String(r.id)!==String(id));
+      state.manualNoWorkRows=(state.manualNoWorkRows||[]).filter(r=>String(r.id)!==String(id));
+      renderWeeklyControl();showToast(`Equipo ${equipo}: ${displayDate(parseDate(fecha))} vuelve a quedar pendiente.`);
+    }catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);}finally{state.weeklyBusy=false;if(button)button.disabled=false;}
+  }
+
+  async function openWeeklyControl(){
+    if(!db){showToast('Supabase no está disponible.',true);return;}
+
+    els.weeklyControlOverlay?.classList.add('visible');
+    els.weeklyControlOverlay?.setAttribute('aria-hidden','false');
+
+    if(!state.weeklyStart) state.weeklyStart=isoDate(mondayOf(new Date()));
+    if(els.weeklyEquipmentSearch) els.weeklyEquipmentSearch.value=state.weeklyEquipmentQuery||'';
+    if(els.weeklyStatusFilter) els.weeklyStatusFilter.value=state.weeklyStatusFilter||'all';
+    if(els.weeklyDayFilter) els.weeklyDayFilter.value=state.weeklyDayFilter||'all';
+
+    // Abrir la vista NO consulta Supabase.
+    hydrateWeeklyFromLoadedState();
+    renderWeeklyControl();
+  }
+
+  function closeWeeklyControl(){els.weeklyControlOverlay?.classList.remove('visible');els.weeklyControlOverlay?.setAttribute('aria-hidden','true');}
+
+  async function changeWeeklyWeek(days){
+    const current=localDateFromIso(state.weeklyStart)||mondayOf(new Date());state.weeklyStart=isoDate(addLocalDays(current,days));
+    try{await loadWeeklyControlRows();renderWeeklyControl();}catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);}
+  }
+
+  async function goCurrentWeeklyWeek(){
+    state.weeklyStart=isoDate(mondayOf(new Date()));
+    hydrateWeeklyFromLoadedState();
+    renderWeeklyControl();
+  }
+
+  async function removeNoWorkMarkersForPayloads(payloads){
+    const markerId=noWorkLaborId();if(markerId===null||markerId===undefined)return;
+    const unique=new Map();for(const item of(payloads||[])){const key=`${item.fecha}|||${normalizeManualEquipment(item.equipo)}`;if(!unique.has(key))unique.set(key,{fecha:item.fecha,equipo:normalizeManualEquipment(item.equipo)});}
+    for(const item of unique.values()){
+      try{await withManualTimeout(db.from(MANUAL_HOURS_TABLE).delete().eq('fecha',item.fecha).eq('equipo',item.equipo).eq('labor_maquina_id',markerId).eq('horas_maquina',0).eq('horas_parada',0),'La limpieza de la marca No trabajó');}
+      catch(error){console.warn('No se pudo limpiar una marca No trabajó:',error);}
+    }
   }
 
   function setManualEditMode(record=null){
@@ -2149,7 +2738,7 @@
     );
 
     if(error) throw error;
-    state.manualRows=data||[];
+    state.manualRows=(data||[]).filter(record=>!isNoWorkRecord(record));
     renderManualRows();
   }
 
@@ -2267,6 +2856,9 @@
         showToast(`${saved} registro${saved===1?'':'s'} guardado${saved===1?'':'s'}.`);
       }
 
+      // Si el equipo estaba marcado como “No trabajó”, un registro real reactiva automáticamente ese día.
+      await removeNoWorkMarkersForPayloads(payloads);
+
       // Liberar el formulario inmediatamente después de guardar.
       // Las recargas de pantalla se hacen después y con control de error para evitar que la interfaz parezca congelada.
       try{ await loadManualRows(); }catch(refreshError){ console.warn('No se pudo refrescar la lista inmediata:',refreshError); }
@@ -2377,9 +2969,14 @@
     state.manualLabors=labors||[];
     const laborMap=new Map((labors||[]).map(l=>[String(l.id),String(l.nombre||'')]));
 
-    // HORAS TALLER: mostrar TODOS los equipos guardados en registro_horas_manual.
-    // No se aplica el filtro 840/841 de Horas campo.
+    // Mantener las marcas internas "No trabajó" en memoria.
+    // Control semanal puede abrirse sin hacer otra consulta.
+    state.manualNoWorkRows=(manual||[]).filter(r=>isNoWorkRecord(r));
+
+    // HORAS TALLER: mostrar todos los registros reales.
+    // "No trabajó" no participa en los cálculos de horas.
     return (manual||[])
+      .filter(r=>!isNoWorkRecord(r))
       .map(r=>manualDbRowToAppRow(r,laborMap))
       .filter(r=>r.equipment);
   }
@@ -3033,12 +3630,57 @@
   els.missingDaysPopover?.addEventListener('click',event=>event.stopPropagation());
   document.addEventListener('click',()=>toggleMissingDaysPopover(false));
   document.addEventListener('keydown',event=>{
-    if(event.key==='Escape'){toggleMissingDaysPopover(false);if(els.manualRecordsViewOverlay?.classList.contains('visible'))closeManualRecordsView();else if(els.manualHoursOverlay?.classList.contains('visible'))closeManualHours();}
+    if(event.key==='Escape'){toggleMissingDaysPopover(false);if(els.weeklyControlOverlay?.classList.contains('visible'))closeWeeklyControl();else if(els.manualRecordsViewOverlay?.classList.contains('visible'))closeManualRecordsView();else if(els.manualHoursOverlay?.classList.contains('visible'))closeManualHours();}
   });
 
 
   els.fieldHoursTab?.addEventListener('click',()=>setDataSource('field'));
   els.workshopHoursTab?.addEventListener('click',()=>setDataSource('workshop'));
+
+  els.weeklyControlBtn?.addEventListener('click',openWeeklyControl);
+  els.weeklyControlClose?.addEventListener('click',closeWeeklyControl);
+  els.weeklyControlOverlay?.addEventListener('click',event=>{if(event.target===els.weeklyControlOverlay)closeWeeklyControl();});
+  els.weeklyPrevBtn?.addEventListener('click',()=>changeWeeklyWeek(-7));
+  els.weeklyNextBtn?.addEventListener('click',()=>changeWeeklyWeek(7));
+  els.weeklyTodayBtn?.addEventListener('click',goCurrentWeeklyWeek);
+  let weeklyFilterTimer=null;
+
+  async function queryWeeklyForFilter(){
+    try{
+      await loadWeeklyControlRows();
+      renderWeeklyControl();
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+      renderWeeklyControl();
+    }
+  }
+
+  els.weeklyEquipmentSearch?.addEventListener('input',()=>{
+    state.weeklyEquipmentQuery=els.weeklyEquipmentSearch.value||'';
+    clearTimeout(weeklyFilterTimer);
+    weeklyFilterTimer=setTimeout(queryWeeklyForFilter,350);
+  });
+
+  els.weeklyStatusFilter?.addEventListener('change',()=>{
+    state.weeklyStatusFilter=els.weeklyStatusFilter.value||'all';
+    queryWeeklyForFilter();
+  });
+
+  els.weeklyDayFilter?.addEventListener('change',()=>{
+    state.weeklyDayFilter=els.weeklyDayFilter.value||'all';
+    queryWeeklyForFilter();
+  });
+
+  els.weeklyClearFilters?.addEventListener('click',async()=>{
+    state.weeklyEquipmentQuery='';
+    state.weeklyStatusFilter='all';
+    state.weeklyDayFilter='all';
+    if(els.weeklyEquipmentSearch) els.weeklyEquipmentSearch.value='';
+    if(els.weeklyStatusFilter) els.weeklyStatusFilter.value='all';
+    if(els.weeklyDayFilter) els.weeklyDayFilter.value='all';
+    await queryWeeklyForFilter();
+  });
 
   els.manualRecordsViewBtn?.addEventListener('click',openManualRecordsView);
   els.manualRecordsViewClose?.addEventListener('click',closeManualRecordsView);
@@ -3067,6 +3709,8 @@
   els.clearDates.addEventListener('click',()=>{els.dateFrom.value='';els.dateTo.value='';state.activeDay='';state.activeLabor='';state.activeMetDays=false;if(dateRangePicker)dateRangePicker.clear(false);renderEquipmentList();if(state.selected)renderDetail();});
   const toggleMet=()=>{state.activeMetDays=!state.activeMetDays;state.activeDay='';renderDetail();};els.kpiMetDaysCard.addEventListener('click',toggleMet);els.kpiMetDaysCard.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleMet();}});
   document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer?.files?.[0];if(f)loadFile(f);});
+
+  // La carga inicial no bloquea toda la interfaz. El usuario puede abrir Registro manual mientras Supabase responde.
   loadFromSupabase({keepSelection:false,silent:true});
 })();
 </script>
