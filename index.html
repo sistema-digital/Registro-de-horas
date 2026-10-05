@@ -116,6 +116,13 @@
     .manual-field label{display:block;font-size:10px;line-height:1.2;color:#667085;font-weight:850;margin:0 0 6px}
     .manual-field input{width:100%;height:42px;border:1px solid #d5ddea;border-radius:10px;padding:0 12px;background:#fff;color:#101828;outline:none;font-size:13px}
     .manual-field input:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .manual-date-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center}
+    .manual-date-pin{height:34px;min-width:88px;padding:0 10px;border:1px solid #bcd2ff;border-radius:8px;background:#fff;color:#175cd3;font-size:9.5px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;transition:.15s}
+    .manual-date-pin:hover{background:#eff6ff}
+    .manual-date-pin.active{border-color:#84adff;background:#eaf2ff;color:#1849a9;box-shadow:inset 0 0 0 1px #d1e0ff}
+    .manual-date-pin .pin-icon{font-size:11px}
+    .manual-date-pin-note{display:none;margin-top:4px;font-size:8.5px;font-weight:800;color:#175cd3}
+    .manual-date-pin-note.visible{display:block}
     .manual-hours-row{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .manual-hours-group{min-width:0;border:1px solid #e4e7ec;border-radius:14px;padding:14px;background:#fcfcfd}
     .manual-hours-group.machine{border-color:#bfdbfe;background:linear-gradient(180deg,#f6faff 0%,#eef6ff 100%)}
@@ -182,6 +189,10 @@
     .manual-entry-count{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 8px;border-radius:999px;background:#eaf2ff;color:#175cd3;font-size:10px;font-weight:900}
     .manual-status{font-size:11px;color:#667085;margin:8px 0 0;min-height:16px}
     .manual-status.error{color:#b42318}.manual-status.ok{color:#067647}
+    .manual-duplicate-warning{display:none;margin:0 10px 9px;padding:9px 11px;border:1px solid #fedf89;border-radius:10px;background:#fffaeb;color:#93370d;font-size:10.5px;line-height:1.45}
+    .manual-duplicate-warning.visible{display:flex;align-items:flex-start;gap:8px}
+    .manual-duplicate-warning strong{display:block;font-weight:900;color:#7a2e0e}
+    .manual-duplicate-warning span{display:block;margin-top:2px;color:#93370d}
     .manual-overall-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr .9fr;gap:0;align-items:center}
     .manual-overall-title{display:flex;align-items:center;gap:12px;padding-right:12px}
     .manual-overall-metric{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 10px;border-left:1px solid #e4e7ec}
@@ -252,6 +263,8 @@
       .manual-hours-row{grid-template-columns:1fr}
       .manual-hours-grid{grid-template-columns:1fr 1fr}
       .manual-hours-grid .manual-field:last-child{grid-column:1/-1}
+      .manual-date-control{grid-template-columns:minmax(0,1fr) auto}
+      .manual-date-pin{min-width:76px;padding:0 8px}
       .manual-entry-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
       .manual-summary-item{padding:10px 6px;gap:6px}
       .manual-summary-icon{width:32px;height:32px;font-size:15px}
@@ -559,6 +572,26 @@
       box-sizing:border-box !important;
     }
 
+    /* ===== VISTA DE REGISTROS MANUALES ===== */
+    .records-overlay{position:fixed;inset:0;background:rgba(16,24,40,.52);display:none;align-items:center;justify-content:center;padding:18px;z-index:88}
+    .records-overlay.visible{display:flex}
+    .records-card{width:min(1360px,97vw);max-height:94vh;display:flex;flex-direction:column;background:#f8fbff;border:1px solid #e5eefb;border-radius:18px;box-shadow:0 24px 70px rgba(16,24,40,.30);overflow:hidden}
+    .records-head{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fff;border-bottom:1px solid #e4e7ec}
+    .records-head-icon{width:38px;height:38px;border-radius:11px;background:#eaf1ff;color:#2563eb;display:grid;place-items:center;font-size:18px;font-weight:900;flex:0 0 auto}
+    .records-head-copy{min-width:0}.records-head-copy h2{margin:0;font-size:18px;color:#172554}.records-head-copy p{margin:3px 0 0;font-size:10.5px;color:#667085}
+    .records-close{margin-left:auto;width:34px;height:34px;border:1px solid #e4e7ec;border-radius:9px;background:#fff;color:#344054;font-size:20px}
+    .records-body{padding:12px 14px 16px;overflow:auto;min-height:0}
+    .records-toolbar{display:grid;grid-template-columns:minmax(180px,1.2fr) 150px 150px auto;gap:9px;align-items:end;margin-bottom:10px;background:#fff;border:1px solid #e6edf7;border-radius:12px;padding:10px}
+    .records-filter{min-width:0}.records-filter label{display:block;margin:0 0 4px;font-size:9px;font-weight:850;color:#667085;text-transform:uppercase}.records-filter input{width:100%;height:36px;border:1px solid #d5ddea;border-radius:8px;padding:0 10px;background:#fff;color:#101828;outline:none;font-size:11px}.records-filter input:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}
+    .records-toolbar-actions{display:flex;gap:7px;align-items:center}.records-clear{height:36px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#475467;padding:0 12px;font-size:10.5px;font-weight:800}
+    .records-summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 9px;font-size:10.5px;color:#667085}.records-count-chip{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:24px;padding:0 8px;border-radius:999px;background:#eaf2ff;color:#175cd3;font-weight:900}
+    .records-table-wrap{overflow:auto;border:1px solid #e4e7ec;border-radius:12px;background:#fff;max-height:62vh}
+    .records-table{width:100%;min-width:980px;border-collapse:collapse}.records-table thead th{position:sticky;top:0;z-index:2;background:#f9fafb;padding:10px 11px;border-bottom:1px solid #e4e7ec;font-size:9px;text-transform:uppercase;color:#667085;white-space:nowrap}.records-table tbody td{padding:9px 11px;border-bottom:1px solid #f0f2f5;font-size:11px;color:#344054;vertical-align:middle}.records-table tbody tr:hover{background:#f8fbff}.records-table tbody tr:last-child td{border-bottom:0}
+    .records-eq{font-weight:900;color:#172554}.records-labor{font-weight:750;color:#344054}.records-hours{font-weight:900;color:#175cd3;white-space:nowrap}.records-total{font-weight:900;color:#172554;white-space:nowrap}
+    .records-actions{display:flex;gap:6px;justify-content:center}.records-edit,.records-delete{height:31px;border-radius:8px;padding:0 9px;background:#fff;font-size:10px;font-weight:850;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.records-edit{border:1px solid #b2ddff;color:#175cd3}.records-delete{border:1px solid #fecdca;color:#b42318}
+    .records-empty{padding:34px 16px;text-align:center;color:#667085;font-size:12px}
+    @media(max-width:760px){.records-overlay{padding:7px}.records-card{width:100%;max-height:96vh;border-radius:13px}.records-head{padding:11px}.records-body{padding:9px}.records-toolbar{grid-template-columns:1fr 1fr}.records-toolbar .records-filter:first-child{grid-column:1/-1}.records-toolbar-actions{grid-column:1/-1}.records-clear{width:100%}.records-table-wrap{max-height:66vh}}
+
     .loading-overlay{position:fixed;inset:0;background:rgba(244,247,251,.82);backdrop-filter:blur(2px);display:none;place-items:center;z-index:30}.loading-overlay.visible{display:grid}.loading-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 26px;box-shadow:var(--shadow);text-align:center;min-width:260px}.spinner{width:34px;height:34px;border:4px solid #e4e7ec;border-top-color:#2563eb;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}@keyframes spin{to{transform:rotate(360deg)}}.loading-title{font-weight:800}.loading-text{font-size:12px;color:var(--muted);margin-top:5px}
     @media(max-width:1280px){.kpis{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:1050px){.workspace{grid-template-columns:270px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.db-status{display:none}}
@@ -596,6 +629,7 @@
           <div class="missing-days-list" id="missingDaysList"></div>
         </div>
       </div>
+      <button class="btn-soft" id="manualRecordsViewBtn" type="button" title="Ver, editar y eliminar registros de horas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>Ver registros</span></button>
       <button class="btn-report" id="manualHoursBtn" type="button" title="Registrar horas manualmente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M17 16v5M14.5 18.5h5"/></svg><span>Registrar horas</span></button>
       <button class="btn-soft" id="refreshBtn" type="button" title="Actualizar desde Supabase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6v6h-6"/><path d="M4 18v-6h6"/><path d="M18.5 9A7 7 0 0 0 6.2 5.2L4 7"/><path d="M5.5 15A7 7 0 0 0 17.8 18.8L20 17"/></svg><span>Actualizar</span></button>
       <button class="btn-primary" id="loadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14a2 2 0 0 0 2-2v-4"/><path d="M3 15v4a2 2 0 0 0 2 2"/></svg><span>Cargar datos</span></button>
@@ -667,6 +701,32 @@
 <div class="toast" id="toast"></div>
 <div class="loading-overlay" id="loadingOverlay"><div class="loading-box"><div class="spinner"></div><div class="loading-title" id="loadingTitle">Procesando</div><div class="loading-text" id="loadingText">Un momento...</div></div></div>
 
+<div class="records-overlay" id="manualRecordsViewOverlay" aria-hidden="true">
+  <section class="records-card" role="dialog" aria-modal="true" aria-labelledby="manualRecordsViewTitle">
+    <div class="records-head">
+      <div class="records-head-icon">🗂</div>
+      <div class="records-head-copy"><h2 id="manualRecordsViewTitle">Registros de horas</h2><p>Consulta los registros manuales guardados en Supabase. Puedes editarlos o eliminarlos.</p></div>
+      <button class="records-close" id="manualRecordsViewClose" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <div class="records-body">
+      <div class="records-toolbar">
+        <div class="records-filter"><label>Buscar equipo o labor</label><input id="manualRecordsSearch" type="search" placeholder="Ej. 458016, PATIO, COMIDA..." autocomplete="off"></div>
+        <div class="records-filter"><label>Desde</label><input id="manualRecordsFrom" type="date"></div>
+        <div class="records-filter"><label>Hasta</label><input id="manualRecordsTo" type="date"></div>
+        <div class="records-toolbar-actions"><button class="records-clear" id="manualRecordsClear" type="button">Limpiar filtros</button></div>
+      </div>
+      <div class="records-summary"><span class="records-count-chip" id="manualRecordsViewCount">0</span><span id="manualRecordsViewSummary">registros</span></div>
+      <div class="records-table-wrap">
+        <table class="records-table">
+          <thead><tr><th>Fecha</th><th>Equipo</th><th>H. máquina</th><th>Labor máquina</th><th>H. parada</th><th>Labor parada</th><th>Total</th><th>Acciones</th></tr></thead>
+          <tbody id="manualRecordsViewBody"></tbody>
+        </table>
+        <div class="records-empty" id="manualRecordsViewEmpty" hidden>No hay registros que coincidan con los filtros.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <div class="manual-overlay" id="manualHoursOverlay" aria-hidden="true">
   <section class="manual-card" role="dialog" aria-modal="true" aria-labelledby="manualHoursTitle">
     <div class="manual-head"><div class="manual-title-wrap"><div class="manual-title-icon">◷</div><div><h2 id="manualHoursTitle">Registro manual de horas</h2><p>Agrega un nuevo registro de horas para un equipo.</p></div></div><button class="manual-close" id="manualHoursClose" type="button" aria-label="Cerrar">×</button></div>
@@ -709,6 +769,17 @@
   const INSERT_BATCH_SIZE = 500;
   const SYNC_START_DATE = '2026-09-10';
   const EXISTING_QUERY_BATCH_SIZE = 200;
+  const MANUAL_SHIFT_TARGET_MINUTES = 9 * 60 + 30; // 9:30
+  const MANUAL_FOOD_MINUTES = 30; // 0:30 COMIDA
+  const MANUAL_REQUEST_TIMEOUT_MS = 10000;
+
+  function withManualTimeout(promise,label='La operación') {
+    let timer;
+    const timeout=new Promise((_,reject)=>{
+      timer=setTimeout(()=>reject(new Error(`${label} tardó demasiado. Verifica la conexión e inténtalo nuevamente.`)),MANUAL_REQUEST_TIMEOUT_MS);
+    });
+    return Promise.race([Promise.resolve(promise),timeout]).finally(()=>clearTimeout(timer));
+  }
 
   const db = window.supabase?.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -720,7 +791,7 @@
   const state = {
     rows:[], byEquipment:new Map(), selected:null, sourceSheet:'registros_horas', fileName:'Supabase',
     activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false,
-    manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set()
+    manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set(), manualDuplicateCheckSeq:0, manualFixedDate:'', manualAutoStopSeq:0, manualRecordsViewRows:[]
   };
 
   const $ = id => document.getElementById(id);
@@ -738,7 +809,10 @@
     manualHoursBtn:$('manualHoursBtn'), manualHoursOverlay:$('manualHoursOverlay'), manualHoursClose:$('manualHoursClose'),
     manualEntryBody:$('manualEntryBody'), manualEditingBanner:$('manualEditingBanner'), manualEditingText:$('manualEditingText'), manualCancelEdit:$('manualCancelEdit'),
     manualSaveBtn:$('manualSaveBtn'), manualClearBtn:$('manualClearBtn'), manualStatus:$('manualStatus'),
-    manualRecordsBody:$('manualRecordsBody'), manualRecordsEmpty:$('manualRecordsEmpty'), manualSavedPanel:$('manualSavedPanel')
+    manualRecordsBody:$('manualRecordsBody'), manualRecordsEmpty:$('manualRecordsEmpty'), manualSavedPanel:$('manualSavedPanel'),
+    manualRecordsViewBtn:$('manualRecordsViewBtn'), manualRecordsViewOverlay:$('manualRecordsViewOverlay'), manualRecordsViewClose:$('manualRecordsViewClose'),
+    manualRecordsSearch:$('manualRecordsSearch'), manualRecordsFrom:$('manualRecordsFrom'), manualRecordsTo:$('manualRecordsTo'), manualRecordsClear:$('manualRecordsClear'),
+    manualRecordsViewCount:$('manualRecordsViewCount'), manualRecordsViewSummary:$('manualRecordsViewSummary'), manualRecordsViewBody:$('manualRecordsViewBody'), manualRecordsViewEmpty:$('manualRecordsViewEmpty')
   };
 
   let dateRangePicker = null;
@@ -926,9 +1000,12 @@
   }
 
   async function loadManualLabors(){
-    const {data,error}=await db.from(MANUAL_LABORS_TABLE)
-      .select('id,nombre,activo')
-      .order('nombre',{ascending:true});
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_LABORS_TABLE)
+        .select('id,nombre,activo')
+        .order('nombre',{ascending:true}),
+      'La carga del catálogo de labores'
+    );
 
     if(error) throw error;
     state.manualLabors=data||[];
@@ -939,9 +1016,12 @@
   }
 
   async function loadManualEquipments(){
-    const {data,error}=await db.from(MANUAL_EQUIPMENT_TABLE)
-      .select('id,numero,activo')
-      .order('numero',{ascending:true});
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_EQUIPMENT_TABLE)
+        .select('id,numero,activo')
+        .order('numero',{ascending:true}),
+      'La carga del catálogo de equipos'
+    );
 
     if(error) throw error;
     state.manualEquipments=data||[];
@@ -956,18 +1036,24 @@
     );
     if(existing) return existing;
 
-    const {data,error}=await db.from(MANUAL_EQUIPMENT_TABLE)
-      .insert({numero,activo:true})
-      .select('id,numero,activo')
-      .single();
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_EQUIPMENT_TABLE)
+        .insert({numero,activo:true})
+        .select('id,numero,activo')
+        .single(),
+      'El guardado del equipo'
+    );
 
     if(error){
       if(/duplicate key|23505/i.test(String(error.message||error))){
-        const {data:found,error:findError}=await db.from(MANUAL_EQUIPMENT_TABLE)
-          .select('id,numero,activo')
-          .eq('numero',numero)
-          .limit(1)
-          .maybeSingle();
+        const {data:found,error:findError}=await withManualTimeout(
+          db.from(MANUAL_EQUIPMENT_TABLE)
+            .select('id,numero,activo')
+            .eq('numero',numero)
+            .limit(1)
+            .maybeSingle(),
+          'La consulta del equipo'
+        );
 
         if(findError) throw findError;
         if(found){
@@ -1015,7 +1101,10 @@
       select.innerHTML='<option value="">SELECCIONE EQUIPO</option>'+
         options.map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.text)}</option>`).join('');
       if(selectedValue) select.value=selectedValue;
-      select.addEventListener('change',renderManualRows);
+      select.addEventListener('change',()=>{
+        renderManualRows();
+        scheduleManualDuplicateCheck(select.closest('[data-manual-row]'));
+      });
       return null;
     }
 
@@ -1061,7 +1150,10 @@
     });
 
     state.manualEquipmentTomSelects.add(control);
-    control.on('change',()=>renderManualRows());
+    control.on('change',()=>{
+      renderManualRows();
+      scheduleManualDuplicateCheck(select.closest('[data-manual-row]'));
+    });
     control.on('destroy',()=>state.manualEquipmentTomSelects.delete(control));
     return control;
   }
@@ -1086,18 +1178,24 @@
     );
     if(existing) return existing;
 
-    const {data,error}=await db.from(MANUAL_LABORS_TABLE)
-      .insert({nombre,activo:true})
-      .select('id,nombre,activo')
-      .single();
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_LABORS_TABLE)
+        .insert({nombre,activo:true})
+        .select('id,nombre,activo')
+        .single(),
+      'El guardado de la labor'
+    );
 
     if(error){
       if(/duplicate key|23505/i.test(String(error.message||error))){
-        const {data:found,error:findError}=await db.from(MANUAL_LABORS_TABLE)
-          .select('id,nombre,activo')
-          .ilike('nombre',nombre)
-          .limit(1)
-          .maybeSingle();
+        const {data:found,error:findError}=await withManualTimeout(
+          db.from(MANUAL_LABORS_TABLE)
+            .select('id,nombre,activo')
+            .ilike('nombre',nombre)
+            .limit(1)
+            .maybeSingle(),
+          'La consulta de la labor'
+        );
 
         if(findError) throw findError;
         if(found){
@@ -1218,8 +1316,9 @@
   }
 
   function manualRowHtml(rowId,preset={}){
-    const fecha=preset.fecha||todayIsoLocal();
+    const fecha=preset.fecha||state.manualFixedDate||todayIsoLocal();
     const equipo=preset.equipo||'';
+    const fechaFijada=Boolean(state.manualFixedDate) && state.manualFixedDate===fecha;
 
     return `<article class="manual-entry-card" data-manual-row="${rowId}">
       <div class="manual-entry-card-head">
@@ -1239,9 +1338,15 @@
       </div>
 
       <div class="manual-entry-main">
-        <div class="manual-field">
+        <div class="manual-field manual-date-field">
           <label>Fecha</label>
-          <input class="manual-date" type="date" value="${escapeHtml(fecha)}" required>
+          <div class="manual-date-control">
+            <input class="manual-date" type="date" value="${escapeHtml(fecha)}" required>
+            <button class="manual-date-pin ${fechaFijada?'active':''}" data-date-pin type="button" aria-pressed="${fechaFijada?'true':'false'}" title="${fechaFijada?'Quitar fecha fijada':'Mantener esta fecha después de guardar'}">
+              <span class="pin-icon">📌</span><span data-date-pin-text>${fechaFijada?'Fijada':'Fijar'}</span>
+            </button>
+          </div>
+          <div class="manual-date-pin-note ${fechaFijada?'visible':''}" data-date-pin-note>${fechaFijada?'Esta fecha se mantendrá después de guardar.':''}</div>
         </div>
 
         <div class="manual-field">
@@ -1271,6 +1376,7 @@
           </section>
         </div>
       </div>
+      <div class="manual-duplicate-warning" data-duplicate-warning role="status" aria-live="polite"></div>
     </article>`;
   }
 
@@ -1294,19 +1400,149 @@
     if(target) target.textContent=fmtHoursMinutes(total);
   }
 
+  function manualMachineMinutes(row){
+    let total=0;
+    for(const input of row.querySelectorAll('.manual-machine-hours')){
+      const raw=String(input.value||'').trim();
+      if(!raw) continue;
+      const parsed=parseHoursMinutesInput(raw);
+      if(!Number.isFinite(parsed)||parsed<0) return null;
+      total+=Math.round(parsed*60);
+    }
+    return total;
+  }
+
+  async function getManualLaborByName(name){
+    const normalized=normalizeLaborName(name);
+    const existing=state.manualLabors.find(
+      labor=>normalizeLaborName(labor.nombre)===normalized
+    );
+    if(existing) return existing;
+    return await saveOrGetManualLabor(normalized);
+  }
+
+  function replaceManualStopSegments(row,segments=[]){
+    const list=row.querySelector('[data-segment-list="stop"]');
+    if(!list) return;
+
+    destroyLaborSearches(list);
+    list.innerHTML='';
+
+    // Mantener al menos una línea vacía si no hay horas de parada por completar.
+    const rows=segments.length ? segments : [{hours:'',laborId:''}];
+
+    rows.forEach((item,index)=>{
+      const holder=document.createElement('div');
+      holder.innerHTML=manualSegmentHtml('stop',index,{
+        horasParada:item.hours,
+        laborParada:item.laborId
+      });
+      const segment=holder.firstElementChild;
+      if(item.auto) segment.dataset.autoStop='true';
+      list.appendChild(segment);
+      initManualSegment(row,segment,'stop',item.laborId||'');
+    });
+
+    updateManualEntryTotal(row);
+  }
+
+  async function autofillManualStopsTo930(row){
+    if(!row||!row.isConnected) return;
+
+    const machineMinutes=manualMachineMinutes(row);
+    if(machineMinutes===null) return;
+
+    // Solo completar cuando realmente se haya escrito alguna hora máquina.
+    const hasMachineValue=[...row.querySelectorAll('.manual-machine-hours')]
+      .some(input=>String(input.value||'').trim()!=='');
+    if(!hasMachineValue) return;
+
+    const requestId=++state.manualAutoStopSeq;
+    row.dataset.autoStopRequest=String(requestId);
+
+    const remaining=Math.max(0,MANUAL_SHIFT_TARGET_MINUTES-machineMinutes);
+
+    if(remaining===0){
+      replaceManualStopSegments(row,[]);
+      if(machineMinutes>MANUAL_SHIFT_TARGET_MINUTES){
+        setManualStatus(
+          `Las horas máquina (${hoursToClockInput(machineMinutes/60)}) superan la jornada de 9:30. No se agregaron horas de parada.`,
+          'error'
+        );
+      }else{
+        setManualStatus('Horas máquina completan las 9:30. No se requieren horas de parada.','ok');
+      }
+      return;
+    }
+
+    try{
+      const comidaMinutes=Math.min(MANUAL_FOOD_MINUTES,remaining);
+      const patioMinutes=Math.max(0,remaining-comidaMinutes);
+
+      const [comidaLabor,patioLabor]=await Promise.all([
+        getManualLaborByName('COMIDA'),
+        patioMinutes>0 ? getManualLaborByName('PATIO') : Promise.resolve(null)
+      ]);
+
+      // Evita aplicar un cálculo viejo si el usuario cambió las horas mientras se consultaba Supabase.
+      if(!row.isConnected||row.dataset.autoStopRequest!==String(requestId)) return;
+
+      const segments=[];
+      if(comidaMinutes>0){
+        segments.push({hours:comidaMinutes/60,laborId:String(comidaLabor.id),auto:true});
+      }
+      if(patioMinutes>0&&patioLabor){
+        segments.push({hours:patioMinutes/60,laborId:String(patioLabor.id),auto:true});
+      }
+
+      replaceManualStopSegments(row,segments);
+
+      const machineClock=hoursToClockInput(machineMinutes/60);
+      const patioText=patioMinutes>0 ? ` + ${hoursToClockInput(patioMinutes/60)} PATIO` : '';
+      const adjustedFood=comidaMinutes<MANUAL_FOOD_MINUTES;
+      setManualStatus(
+        adjustedFood
+          ? `Para completar 9:30 desde ${machineClock}, COMIDA se ajustó a ${hoursToClockInput(comidaMinutes/60)}.`
+          : `${machineClock} máquina → 0:30 COMIDA${patioText} = 9:30.`,
+        adjustedFood?'error':'ok'
+      );
+    }catch(error){
+      console.error(error);
+      setManualStatus('No se pudieron completar automáticamente COMIDA y PATIO. Verifica el catálogo de labores.','error');
+      showToast(supabaseErrorMessage(error),true);
+    }
+  }
+
   function initManualSegment(row,segment,type,selectedLabor=''){
     const select=segment.querySelector(type==='machine'?'.manual-machine-labor':'.manual-stop-labor');
     initLaborSearch(select,selectedLabor||'');
 
     const hours=segment.querySelector(type==='machine'?'.manual-machine-hours':'.manual-stop-hours');
-    hours?.addEventListener('input',()=>updateManualEntryTotal(row));
+    hours?.addEventListener('input',()=>{
+      // Permite escribir la hora con punto o coma y la convierte automáticamente a H:MM.
+      // Ejemplos: 5.30 -> 5:30 | 0,45 -> 0:45
+      const raw=String(hours.value||'').trim();
+      if(/^\d+[.,]\d{2}$/.test(raw)){
+        hours.value=raw.replace(/[.,]/,':');
+      }
+      updateManualEntryTotal(row);
+    });
     hours?.addEventListener('blur',()=>{
       const parsed=parseHoursMinutesInput(hours.value);
       if(Number.isFinite(parsed)&&parsed>=0&&String(hours.value||'').trim()!==''){
         hours.value=hoursToClockInput(parsed);
         updateManualEntryTotal(row);
+        if(type==='machine') autofillManualStopsTo930(row);
       }
     });
+    if(type==='machine'){
+      hours?.addEventListener('keydown',event=>{
+        if(event.key==='Enter'){
+          event.preventDefault();
+          hours.blur();
+        }
+      });
+    }
 
     segment.querySelector('.manual-remove-segment')?.addEventListener('click',()=>{
       destroyLaborSearches(segment);
@@ -1333,6 +1569,141 @@
     updateManualEntryTotal(row);
   }
 
+  function clearManualDuplicateWarning(row){
+    const box=row?.querySelector('[data-duplicate-warning]');
+    if(!box) return;
+    box.classList.remove('visible');
+    box.innerHTML='';
+    delete row.dataset.duplicateCount;
+  }
+
+  function showManualDuplicateWarning(row,count,fecha,equipo){
+    const box=row?.querySelector('[data-duplicate-warning]');
+    if(!box) return;
+    if(!count){
+      clearManualDuplicateWarning(row);
+      return;
+    }
+    const pretty=displayDate(parseDate(fecha));
+    box.innerHTML=`<div aria-hidden="true">⚠️</div><div><strong>Ya existe${count===1?'':'n'} ${count} registro${count===1?'':'s'} para el equipo ${escapeHtml(equipo)} en esta fecha.</strong><span>Fecha: ${escapeHtml(pretty)}. Puedes continuar si deseas agregar otro registro, pero verifica que no sea un duplicado.</span></div>`;
+    box.classList.add('visible');
+    row.dataset.duplicateCount=String(count);
+  }
+
+  async function findExistingManualRecords(fecha,equipo,{excludeId=null}={}){
+    if(!db||!fecha||!equipo) return [];
+    let query=db.from(MANUAL_HOURS_TABLE)
+      .select('id')
+      .eq('fecha',fecha)
+      .eq('equipo',normalizeManualEquipment(equipo));
+    if(excludeId!==null&&excludeId!==undefined&&excludeId!==''){
+      query=query.neq('id',excludeId);
+    }
+    const {data,error}=await withManualTimeout(
+      query.order('id',{ascending:false}).limit(100),
+      'La comprobación de registros existentes'
+    );
+    if(error) throw error;
+    return data||[];
+  }
+
+  async function checkManualDuplicateForRow(row){
+    if(!row) return 0;
+    const fecha=text(row.querySelector('.manual-date')?.value);
+    const equipo=readManualEquipmentValue(row.querySelector('.manual-equipment-select'));
+    if(!fecha||!equipo){
+      clearManualDuplicateWarning(row);
+      return 0;
+    }
+
+    const token=String(++state.manualDuplicateCheckSeq);
+    row.dataset.duplicateCheckToken=token;
+
+    try{
+      const excludeId=state.manualEditingId||null;
+      const existing=await findExistingManualRecords(fecha,equipo,{excludeId});
+      if(row.dataset.duplicateCheckToken!==token) return existing.length;
+      showManualDuplicateWarning(row,existing.length,fecha,equipo);
+      return existing.length;
+    }catch(error){
+      console.warn('No se pudo comprobar duplicados del registro manual:',error);
+      if(row.dataset.duplicateCheckToken===token) clearManualDuplicateWarning(row);
+      return 0;
+    }
+  }
+
+  function scheduleManualDuplicateCheck(row){
+    if(!row) return;
+    clearTimeout(row._duplicateCheckTimer);
+    row._duplicateCheckTimer=setTimeout(()=>checkManualDuplicateForRow(row),180);
+  }
+
+  async function confirmManualDuplicatesBeforeSave(payloads){
+    const unique=new Map();
+    for(const item of payloads||[]){
+      const key=`${item.fecha}|||${normalizeManualEquipment(item.equipo)}`;
+      if(!unique.has(key)) unique.set(key,{fecha:item.fecha,equipo:normalizeManualEquipment(item.equipo)});
+    }
+
+    const conflicts=[];
+    for(const item of unique.values()){
+      const existing=await findExistingManualRecords(item.fecha,item.equipo,{excludeId:state.manualEditingId||null});
+      if(existing.length) conflicts.push({...item,count:existing.length});
+    }
+
+    if(!conflicts.length) return true;
+
+    const detail=conflicts.map(item=>
+      `• Equipo ${item.equipo} · ${displayDate(parseDate(item.fecha))}: ${item.count} registro${item.count===1?'':'s'} existente${item.count===1?'':'s'}`
+    ).join('\n');
+
+    return confirm(
+      `Ya existen registros para la misma fecha y equipo:\n\n${detail}\n\n¿Deseas guardar de todos modos?`
+    );
+  }
+
+  function updateManualDatePinUi(row){
+    if(!row) return;
+    const input=row.querySelector('.manual-date');
+    const btn=row.querySelector('[data-date-pin]');
+    const note=row.querySelector('[data-date-pin-note]');
+    if(!input||!btn) return;
+
+    const isFixed=Boolean(state.manualFixedDate) && state.manualFixedDate===text(input.value);
+    btn.classList.toggle('active',isFixed);
+    btn.setAttribute('aria-pressed',isFixed?'true':'false');
+    btn.title=isFixed?'Quitar fecha fijada':'Mantener esta fecha después de guardar';
+    const label=btn.querySelector('[data-date-pin-text]');
+    if(label) label.textContent=isFixed?'Fijada':'Fijar';
+    if(note){
+      note.classList.toggle('visible',isFixed);
+      note.textContent=isFixed?'Esta fecha se mantendrá después de guardar.':'';
+    }
+  }
+
+  function toggleManualFixedDate(row){
+    if(!row) return;
+    const input=row.querySelector('.manual-date');
+    const fecha=text(input?.value);
+    if(!fecha){
+      showToast('Selecciona una fecha antes de fijarla.',true);
+      return;
+    }
+
+    if(state.manualFixedDate===fecha){
+      state.manualFixedDate='';
+      updateManualDatePinUi(row);
+      setManualStatus('Fecha liberada. Después de guardar volverá a usarse la fecha actual.');
+      showToast('Fecha liberada.');
+      return;
+    }
+
+    state.manualFixedDate=fecha;
+    updateManualDatePinUi(row);
+    setManualStatus(`Fecha fijada: ${displayDate(parseDate(fecha))}. Se mantendrá después de cada guardado.`,'ok');
+    showToast(`Fecha ${displayDate(parseDate(fecha))} fijada.`);
+  }
+
   function addManualEntryRow(preset={}){
     const rowId=++state.manualRowSeq;
     const holder=document.createElement('div');
@@ -1346,7 +1717,17 @@
     const dateInput=row.querySelector('.manual-date');
 
     initManualEquipmentSearch(equipmentSelect,preset.equipo||'');
-    dateInput?.addEventListener('change',()=>renderManualRows());
+    dateInput?.addEventListener('change',()=>{
+      // Si la fecha ya estaba fijada, la nueva selección pasa a ser la fecha fijada.
+      if(state.manualFixedDate){
+        state.manualFixedDate=text(dateInput.value);
+      }
+      updateManualDatePinUi(row);
+      renderManualRows();
+      scheduleManualDuplicateCheck(row);
+    });
+    row.querySelector('[data-date-pin]')?.addEventListener('click',()=>toggleManualFixedDate(row));
+    updateManualDatePinUi(row);
 
     initManualSegment(row,firstMachine,'machine',preset.laborMaquina||'');
     initManualSegment(row,firstStop,'stop',preset.laborParada||'');
@@ -1376,6 +1757,7 @@
       clearManualEntryRows();
     });
 
+    scheduleManualDuplicateCheck(row);
     return row;
   }
 
@@ -1385,7 +1767,7 @@
     els.manualEntryBody.innerHTML='';
     state.manualRowSeq=0;
     addManualEntryRow({
-      fecha:todayIsoLocal(),
+      fecha:state.manualFixedDate||todayIsoLocal(),
       equipo:''
     });
     setManualStatus('');
@@ -1489,6 +1871,112 @@
 
   function updateManualOverallTotals(){ return; }
 
+  async function fetchManualRecordById(id){
+    let record=(state.manualRows||[]).find(r=>String(r.id)===String(id));
+    if(!record) record=(state.manualRecordsViewRows||[]).find(r=>String(r.id)===String(id));
+    if(record) return record;
+
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_HOURS_TABLE)
+        .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
+        .eq('id',id)
+        .maybeSingle(),
+      'La consulta del registro'
+    );
+    if(error) throw error;
+    return data||null;
+  }
+
+  async function loadManualRecordsViewRows(){
+    const all=[];
+    for(let from=0;;from+=PAGE_SIZE){
+      const to=from+PAGE_SIZE-1;
+      const {data,error}=await withManualTimeout(
+        db.from(MANUAL_HOURS_TABLE)
+          .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
+          .order('fecha',{ascending:false})
+          .order('id',{ascending:false})
+          .range(from,to),
+        'La carga de la vista de registros'
+      );
+      if(error) throw error;
+      all.push(...(data||[]));
+      if(!data||data.length<PAGE_SIZE) break;
+    }
+    state.manualRecordsViewRows=all;
+    return all;
+  }
+
+  function filteredManualRecordsViewRows(){
+    const q=norm(els.manualRecordsSearch?.value||'');
+    const from=String(els.manualRecordsFrom?.value||'');
+    const to=String(els.manualRecordsTo?.value||'');
+
+    return (state.manualRecordsViewRows||[]).filter(r=>{
+      const fecha=String(r.fecha||'').slice(0,10);
+      if(from&&fecha<from) return false;
+      if(to&&fecha>to) return false;
+      if(!q) return true;
+      const machineLabor=manualLaborNameById(r.labor_maquina_id);
+      const stopLabor=manualLaborNameById(r.labor_parada_id);
+      const haystack=norm(`${r.equipo||''} ${machineLabor} ${stopLabor} ${fecha} ${r.id||''}`);
+      return haystack.includes(q);
+    });
+  }
+
+  function renderManualRecordsView(){
+    if(!els.manualRecordsViewBody) return;
+    const rows=filteredManualRecordsViewRows();
+    const totalHours=rows.reduce((sum,r)=>sum+num(r.horas_maquina)+num(r.horas_parada),0);
+
+    els.manualRecordsViewCount.textContent=fmtInt(rows.length);
+    els.manualRecordsViewSummary.textContent=`registro${rows.length===1?'':'s'} · ${fmtHoursMinutes(totalHours)} acumuladas`;
+    els.manualRecordsViewEmpty.hidden=rows.length>0;
+
+    els.manualRecordsViewBody.innerHTML=rows.map(r=>{
+      const machineLabor=manualLaborNameById(r.labor_maquina_id);
+      const stopLabor=manualLaborNameById(r.labor_parada_id);
+      const total=num(r.horas_maquina)+num(r.horas_parada);
+      return `<tr>
+        <td>${escapeHtml(displayDate(parseDate(r.fecha)))}</td>
+        <td><span class="records-eq">${escapeHtml(String(r.equipo||'—'))}</span></td>
+        <td><span class="records-hours">${escapeHtml(fmtHoursMinutes(num(r.horas_maquina)))}</span></td>
+        <td><span class="records-labor">${escapeHtml(machineLabor||'—')}</span></td>
+        <td><span class="records-hours">${escapeHtml(fmtHoursMinutes(num(r.horas_parada)))}</span></td>
+        <td><span class="records-labor">${escapeHtml(stopLabor||'—')}</span></td>
+        <td><span class="records-total">${escapeHtml(fmtHoursMinutes(total))}</span></td>
+        <td><div class="records-actions"><button class="records-edit" data-records-edit="${escapeHtml(String(r.id))}" type="button" title="Editar registro">✎ Editar</button><button class="records-delete" data-records-delete="${escapeHtml(String(r.id))}" type="button" title="Eliminar registro">🗑 Borrar</button></div></td>
+      </tr>`;
+    }).join('');
+
+    els.manualRecordsViewBody.querySelectorAll('[data-records-edit]').forEach(btn=>btn.addEventListener('click',()=>editManualRecord(btn.dataset.recordsEdit)));
+    els.manualRecordsViewBody.querySelectorAll('[data-records-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteManualRecord(btn.dataset.recordsDelete)));
+  }
+
+  async function openManualRecordsView(){
+    if(!db){showToast('Supabase no está disponible.',true);return;}
+    els.manualRecordsViewOverlay.classList.add('visible');
+    els.manualRecordsViewOverlay.setAttribute('aria-hidden','false');
+    if(els.manualRecordsViewSummary) els.manualRecordsViewSummary.textContent='Cargando registros...';
+    if(els.manualRecordsViewBody) els.manualRecordsViewBody.innerHTML='';
+    if(els.manualRecordsViewEmpty) els.manualRecordsViewEmpty.hidden=true;
+
+    try{
+      await loadManualLabors();
+      await loadManualRecordsViewRows();
+      renderManualRecordsView();
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+      if(els.manualRecordsViewSummary) els.manualRecordsViewSummary.textContent='No se pudieron cargar los registros.';
+    }
+  }
+
+  function closeManualRecordsView(){
+    els.manualRecordsViewOverlay?.classList.remove('visible');
+    els.manualRecordsViewOverlay?.setAttribute('aria-hidden','true');
+  }
+
   function setManualEditMode(record=null){
     if(record){
       state.manualEditingId=record.id;
@@ -1503,9 +1991,17 @@
   }
 
   async function editManualRecord(id){
-    const record=state.manualRows.find(r=>String(r.id)===String(id));
-    if(!record) return;
+    let record;
+    try{
+      record=await fetchManualRecordById(id);
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+      return;
+    }
+    if(!record){showToast('No se encontró el registro seleccionado.',true);return;}
 
+    closeManualRecordsView();
     if(!els.manualHoursOverlay.classList.contains('visible')){
       els.manualHoursOverlay.classList.add('visible');
       els.manualHoursOverlay.setAttribute('aria-hidden','false');
@@ -1538,15 +2034,25 @@
   }
 
   async function deleteManualRecord(id){
-    const record=state.manualRows.find(r=>String(r.id)===String(id));
-    if(!record) return;
-    if(!confirm(`¿Eliminar el registro #${record.id} del equipo ${record.equipo}?`)) return;
+    let record;
+    try{
+      record=await fetchManualRecordById(id);
+    }catch(error){
+      console.error(error);
+      showToast(supabaseErrorMessage(error),true);
+      return;
+    }
+    if(!record){showToast('No se encontró el registro seleccionado.',true);return;}
+    if(!confirm(`¿Eliminar el registro #${record.id} del equipo ${record.equipo} del ${displayDate(parseDate(record.fecha))}?`)) return;
 
     try{
-      const {data,error}=await db.from(MANUAL_HOURS_TABLE)
-        .delete()
-        .eq('id',record.id)
-        .select('id');
+      const {data,error}=await withManualTimeout(
+        db.from(MANUAL_HOURS_TABLE)
+          .delete()
+          .eq('id',record.id)
+          .select('id'),
+        'La eliminación del registro'
+      );
       if(error) throw error;
       if(!(data||[]).length) throw new Error('Supabase no eliminó el registro. Verifica los permisos UPDATE/DELETE.');
 
@@ -1555,6 +2061,12 @@
         clearManualEntryRows();
       }
       await loadManualRows();
+      if(els.manualRecordsViewOverlay?.classList.contains('visible')){
+        await loadManualRecordsViewRows();
+        renderManualRecordsView();
+      }else{
+        state.manualRecordsViewRows=(state.manualRecordsViewRows||[]).filter(r=>String(r.id)!==String(record.id));
+      }
       await loadFromSupabase({keepSelection:true,silent:true});
       showToast(`Registro #${record.id} eliminado.`);
     }catch(error){
@@ -1627,11 +2139,14 @@
   }
 
   async function loadManualRows(){
-    const {data,error}=await db.from(MANUAL_HOURS_TABLE)
-      .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
-      .eq('fecha',todayIsoLocal())
-      .order('id',{ascending:false})
-      .limit(500);
+    const {data,error}=await withManualTimeout(
+      db.from(MANUAL_HOURS_TABLE)
+        .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
+        .eq('fecha',todayIsoLocal())
+        .order('id',{ascending:false})
+        .limit(500),
+      'La carga de registros manuales'
+    );
 
     if(error) throw error;
     state.manualRows=data||[];
@@ -1647,10 +2162,15 @@
     els.manualHoursOverlay.classList.add('visible');
     els.manualHoursOverlay.setAttribute('aria-hidden','false');
     setManualEditMode(null);
-    setManualStatus('Cargando catálogo de labores y registros...');
+    setManualStatus('Preparando formulario...');
+
+    // Mostrar el formulario de inmediato con los datos que ya estén en memoria.
+    clearManualEntryRows();
 
     try{
       await Promise.all([loadManualLabors(),loadManualEquipments()]);
+
+      // Reconstruir una sola vez para cargar los catálogos nuevos sin dejar controles antiguos.
       clearManualEntryRows();
       await loadManualRows();
       setManualStatus(
@@ -1667,6 +2187,8 @@
   }
 
   function closeManualHours(){
+    state.manualAutoStopSeq++;
+    state.manualDuplicateCheckSeq++;
     els.manualHoursOverlay.classList.remove('visible');
     els.manualHoursOverlay.setAttribute('aria-hidden','true');
   }
@@ -1687,6 +2209,20 @@
       return;
     }
 
+    try{
+      const canContinue=await confirmManualDuplicatesBeforeSave(payloads);
+      if(!canContinue){
+        setManualStatus('Guardado cancelado: ya existe un registro para la misma fecha y equipo.','error');
+        return;
+      }
+    }catch(error){
+      console.error(error);
+      const message='No se pudo comprobar si ya existen registros para esa fecha y equipo. Intenta nuevamente.';
+      setManualStatus(message,'error');
+      showToast(message,true);
+      return;
+    }
+
     els.manualSaveBtn.disabled=true;
     setManualStatus(state.manualEditingId?'Actualizando registro...':`Guardando ${payloads.length} registro${payloads.length===1?'':'s'}...`);
 
@@ -1694,19 +2230,25 @@
       let saved=0;
       if(state.manualEditingId){
         const editingId=state.manualEditingId;
-        const {data,error}=await db.from(MANUAL_HOURS_TABLE)
-          .update(payloads[0])
-          .eq('id',editingId)
-          .select('id');
+        const {data,error}=await withManualTimeout(
+          db.from(MANUAL_HOURS_TABLE)
+            .update(payloads[0])
+            .eq('id',editingId)
+            .select('id'),
+          'La actualización del registro'
+        );
         if(error) throw error;
         if(!(data||[]).length) throw new Error('Supabase no actualizó el registro. Verifica los permisos UPDATE.');
 
         saved=1;
 
         if(payloads.length>1){
-          const {data:extraData,error:extraError}=await db.from(MANUAL_HOURS_TABLE)
-            .insert(payloads.slice(1))
-            .select('id');
+          const {data:extraData,error:extraError}=await withManualTimeout(
+            db.from(MANUAL_HOURS_TABLE)
+              .insert(payloads.slice(1))
+              .select('id'),
+            'El guardado de líneas adicionales'
+          );
           if(extraError) throw extraError;
           saved+=(extraData||[]).length;
         }
@@ -1714,21 +2256,32 @@
         setManualEditMode(null);
         showToast(`Registro #${editingId} actualizado${payloads.length>1?' y líneas adicionales guardadas':''}.`);
       }else{
-        const {data,error}=await db.from(MANUAL_HOURS_TABLE)
-          .insert(payloads)
-          .select('id');
+        const {data,error}=await withManualTimeout(
+          db.from(MANUAL_HOURS_TABLE)
+            .insert(payloads)
+            .select('id'),
+          'El guardado de los registros'
+        );
         if(error) throw error;
         saved=(data||[]).length;
         showToast(`${saved} registro${saved===1?'':'s'} guardado${saved===1?'':'s'}.`);
       }
 
-      await loadManualRows();
+      // Liberar el formulario inmediatamente después de guardar.
+      // Las recargas de pantalla se hacen después y con control de error para evitar que la interfaz parezca congelada.
+      try{ await loadManualRows(); }catch(refreshError){ console.warn('No se pudo refrescar la lista inmediata:',refreshError); }
       clearManualEntryRows();
-      await loadFromSupabase({keepSelection:true,silent:true});
       setManualStatus(
         `${saved} registro${saved===1?'':'s'} procesado${saved===1?'':'s'} correctamente.`,
         'ok'
       );
+
+      els.manualSaveBtn.disabled=false;
+
+      if(state.manualRecordsViewRows.length){
+        loadManualRecordsViewRows().then(renderManualRecordsView).catch(error=>console.warn('No se pudo refrescar la vista de registros:',error));
+      }
+      loadFromSupabase({keepSelection:true,silent:true}).catch?.(error=>console.warn('No se pudo refrescar la vista principal:',error));
     }catch(error){
       console.error(error);
       const message=supabaseErrorMessage(error);
@@ -1935,7 +2488,7 @@
     setMissingDaysLoading();
     if(!silent) setLoading(true,'Actualizando datos','Consultando registros guardados en Supabase...');
     try{
-      await fetchAllRecords();
+      await withManualTimeout(fetchAllRecords(),'La actualización desde Supabase');
       state.sourceSheet=state.dataSource==='workshop'?MANUAL_HOURS_TABLE:'registros_horas';state.fileName='Supabase';
       updateMissingDaysIndicator(state.importedRows);
       if(!els.dateFrom.value&&!els.dateTo.value) setGlobalDateLimits(rowsForCurrentSource());
@@ -2480,12 +3033,20 @@
   els.missingDaysPopover?.addEventListener('click',event=>event.stopPropagation());
   document.addEventListener('click',()=>toggleMissingDaysPopover(false));
   document.addEventListener('keydown',event=>{
-    if(event.key==='Escape'){toggleMissingDaysPopover(false);if(els.manualHoursOverlay?.classList.contains('visible'))closeManualHours();}
+    if(event.key==='Escape'){toggleMissingDaysPopover(false);if(els.manualRecordsViewOverlay?.classList.contains('visible'))closeManualRecordsView();else if(els.manualHoursOverlay?.classList.contains('visible'))closeManualHours();}
   });
 
 
   els.fieldHoursTab?.addEventListener('click',()=>setDataSource('field'));
   els.workshopHoursTab?.addEventListener('click',()=>setDataSource('workshop'));
+
+  els.manualRecordsViewBtn?.addEventListener('click',openManualRecordsView);
+  els.manualRecordsViewClose?.addEventListener('click',closeManualRecordsView);
+  els.manualRecordsViewOverlay?.addEventListener('click',event=>{if(event.target===els.manualRecordsViewOverlay) closeManualRecordsView();});
+  els.manualRecordsSearch?.addEventListener('input',renderManualRecordsView);
+  els.manualRecordsFrom?.addEventListener('change',renderManualRecordsView);
+  els.manualRecordsTo?.addEventListener('change',renderManualRecordsView);
+  els.manualRecordsClear?.addEventListener('click',()=>{if(els.manualRecordsSearch)els.manualRecordsSearch.value='';if(els.manualRecordsFrom)els.manualRecordsFrom.value='';if(els.manualRecordsTo)els.manualRecordsTo.value='';renderManualRecordsView();});
 
   els.manualHoursBtn?.addEventListener('click',openManualHours);
   els.manualHoursClose?.addEventListener('click',closeManualHours);
@@ -2506,8 +3067,7 @@
   els.clearDates.addEventListener('click',()=>{els.dateFrom.value='';els.dateTo.value='';state.activeDay='';state.activeLabor='';state.activeMetDays=false;if(dateRangePicker)dateRangePicker.clear(false);renderEquipmentList();if(state.selected)renderDetail();});
   const toggleMet=()=>{state.activeMetDays=!state.activeMetDays;state.activeDay='';renderDetail();};els.kpiMetDaysCard.addEventListener('click',toggleMet);els.kpiMetDaysCard.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleMet();}});
   document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer?.files?.[0];if(f)loadFile(f);});
-
-  loadFromSupabase({keepSelection:false});
+  loadFromSupabase({keepSelection:false,silent:true});
 })();
 </script>
 </body>
