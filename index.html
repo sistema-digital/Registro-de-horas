@@ -1090,11 +1090,39 @@
   function setStatus(mode,message){ els.dbStatus.className='db-status '+mode; els.dbStatusText.textContent=message; }
   function showToast(message,isError=false){ els.toast.textContent=message;els.toast.className='toast show'+(isError?' error':'');clearTimeout(showToast.t);showToast.t=setTimeout(()=>els.toast.className='toast',3600); }
   function setLoading(on,title='Procesando',message='Un momento...'){ state.loading=on;els.loadingOverlay.classList.toggle('visible',on);els.loadingTitle.textContent=title;els.loadingText.textContent=message;els.loadBtn.disabled=on;els.refreshBtn.disabled=on; }
+  function isSupabasePermissionError(error){
+    const code=String(error?.code||'').trim();
+    const status=Number(error?.status||error?.statusCode||0);
+    const raw=[
+      error?.message,
+      error?.details,
+      error?.hint
+    ].filter(Boolean).join(' ');
+
+    return code==='42501' ||
+      status===401 ||
+      status===403 ||
+      /row[- ]level security/i.test(raw) ||
+      /permission denied/i.test(raw) ||
+      /violates row-level security policy/i.test(raw) ||
+      /not authorized/i.test(raw);
+  }
+
   function supabaseErrorMessage(error){
     const raw=String(error?.message||error||'Error desconocido');
-    if(/row-level security|permission denied|42501|401|403/i.test(raw)) return 'Supabase bloqueó el acceso por permisos/RLS. Ejecuta el SQL de permisos anon que te entregué junto con este archivo.';
-    if(/column .*id_key.* does not exist|42703/i.test(raw)) return 'Falta la columna id_key en registros_horas. Ejecuta el SQL de actualización ID Key que acompaña este index.';
-    if(/relation .* does not exist|42P01/i.test(raw)) return 'No encontré las tablas de Registro de horas en Supabase. Ejecuta primero el script de creación de tablas.';
+
+    if(isSupabasePermissionError(error)){
+      return 'Supabase rechazó esta operación por permisos/RLS. La aplicación continuará usando los datos disponibles y, cuando sea posible, cargará el Excel localmente.';
+    }
+
+    if(/column .*id_key.* does not exist/i.test(raw) || String(error?.code||'')==='42703'){
+      return 'Falta la columna id_key en registros_horas.';
+    }
+
+    if(/relation .* does not exist/i.test(raw) || String(error?.code||'')==='42P01'){
+      return 'No encontré una de las tablas requeridas en Supabase.';
+    }
+
     return raw;
   }
 
@@ -3755,6 +3783,48 @@
     return num(v);
   }
 
+  function mergeExcelRowsIntoImportedState(rows=[]){
+    const map=new Map();
+
+    for(const row of (state.importedRows||[])){
+      const key=idKeyText(row?.idKey);
+      if(key) map.set(key,row);
+    }
+
+    for(const row of (rows||[])){
+      const key=idKeyText(row?.idKey);
+      if(!key) continue;
+      map.set(key,{...row});
+    }
+
+    state.importedRows=[...map.values()]
+      .filter(r=>/^(840|841)/.test(r.equipment||''))
+      .sort((a,b)=>{
+        const da=a.date instanceof Date?a.date:new Date(a.date||0);
+        const dbb=b.date instanceof Date?b.date:new Date(b.date||0);
+        return da-dbb || String(a.equipment||'').localeCompare(String(b.equipment||''),undefined,{numeric:true});
+      });
+
+    if(state.dataSource==='field'){
+      applyCurrentDataSource({keepSelection:true,resetDates:false});
+    }
+
+    updateMissingDaysIndicator(state.importedRows);
+  }
+
+  function loadExcelRowsLocally(rows,fileName='Excel'){
+    mergeExcelRowsIntoImportedState(rows);
+    state.sourceSheet='Excel local';
+    state.fileName=fileName||'Excel';
+
+    if(!els.dateFrom.value&&!els.dateTo.value){
+      setGlobalDateLimits(rowsForCurrentSource());
+    }
+
+    setStatus('ok',`Excel cargado · ${fmtInt((rows||[]).length)} registros`);
+  }
+
+
   function recordHasChanged(dbRow,payload){
     if(!dbRow) return true;
 
@@ -3830,7 +3900,14 @@
         .eq('hash_archivo',hash)
         .maybeSingle();
 
-      if(existingError) throw existingError;
+      if(existingError){
+        if(isSupabasePermissionError(existingError)){
+          console.warn('Sin acceso a importaciones_horas; se continuará sin metadatos de importación.',existingError);
+          return null;
+        }
+        throw existingError;
+      }
+
       importId=existingImport?.id||null;
     }
 
@@ -3850,8 +3927,15 @@
         .select('id')
         .single();
 
-      if(importError) throw importError;
-      importId=importRow.id;
+      if(importError){
+        if(isSupabasePermissionError(importError)){
+          console.warn('Supabase no permitió guardar importaciones_horas. Se continuará sin importacion_id.',importError);
+          return null;
+        }
+        throw importError;
+      }
+
+      importId=importRow?.id||null;
     }
 
     return importId;
@@ -3907,7 +3991,14 @@
     if(equipos.length){
       const {error:eqError}=await db.from('equipos_horas')
         .upsert(equipos,{onConflict:'numero',ignoreDuplicates:true});
-      if(eqError) throw eqError;
+
+      if(eqError){
+        if(isSupabasePermissionError(eqError)){
+          console.warn('Sin permiso para actualizar equipos_horas; los registros del Excel continuarán procesándose.',eqError);
+        }else{
+          throw eqError;
+        }
+      }
     }
 
     // 5) INSERT únicamente para ID_Taller que todavía no existen.
@@ -3931,7 +4022,11 @@
     }
 
     // 6) UPDATE únicamente para ID_Taller cuyo contenido realmente cambió.
+    // Si la política RLS permite SELECT pero no UPDATE, no se cancela toda la carga:
+    // ese cambio queda aplicado localmente en la pantalla.
     let updated=0;
+    let skippedUpdates=0;
+
     for(let i=0;i<changedRows.length;i++){
       const item=changedRows[i];
 
@@ -3946,13 +4041,22 @@
         .eq('id',item.dbId)
         .select('id');
 
-      if(error) throw error;
+      if(error){
+        if(isSupabasePermissionError(error)){
+          skippedUpdates++;
+          console.warn(`Sin permiso UPDATE para ID_Taller ${item.row.idKey}; se conservará el valor del Excel localmente.`,error);
+          continue;
+        }
+        throw error;
+      }
+
       if((data||[]).length) updated++;
     }
 
     return {
       inserted,
       updated,
+      skippedUpdates,
       unchanged,
       duplicateInFile:localDedupe.duplicateInFile,
       importId
@@ -3965,7 +4069,10 @@
       return;
     }
 
-    setLoading(true,'Sincronizando Excel','Leyendo registros desde el 10/09/2026...');
+    setLoading(true,'Cargando Excel','Leyendo registros desde el 10/09/2026...');
+
+    let excelRows=[];
+    let parsedInfo=null;
 
     try{
       const buffer=await file.arrayBuffer();
@@ -3978,27 +4085,61 @@
         );
       }
 
-      const parsed=buildRows(dataset);
-      const rows=parsed.rows;
+      parsedInfo=buildRows(dataset);
+      excelRows=parsedInfo.rows;
 
-      if(!rows.length){
+      if(!excelRows.length){
         const extras=[];
-        if(parsed.beforeStartDate) extras.push(`${fmtInt(parsed.beforeStartDate)} filas anteriores al 10/09/2026 ignoradas`);
-        if(parsed.missingIdKeys) extras.push(`${fmtInt(parsed.missingIdKeys)} filas sin ID_Taller`);
+        if(parsedInfo.beforeStartDate) extras.push(`${fmtInt(parsedInfo.beforeStartDate)} filas anteriores al 10/09/2026 ignoradas`);
+        if(parsedInfo.missingIdKeys) extras.push(`${fmtInt(parsedInfo.missingIdKeys)} filas sin ID_Taller`);
 
         showToast(
           'No hay registros válidos 840/841 desde el 10/09/2026 en adelante.'+
           (extras.length?' · '+extras.join(' · '):'')
         );
 
-        await loadFromSupabase({keepSelection:true,silent:true});
         return;
       }
 
-      els.loadingText.textContent=
-        `Preparando ${fmtInt(rows.length)} registros y comparando ID_Taller con Supabase...`;
+      // El Excel se considera cargado desde este punto.
+      // Primero se deja disponible en memoria para que un problema de permisos
+      // de Supabase nunca impida verlo en la aplicación.
+      loadExcelRowsLocally(excelRows,file.name);
 
-      const result=await saveImportToSupabase(file,dataset,rows,buffer);
+      els.loadingText.textContent=
+        `Excel leído: ${fmtInt(excelRows.length)} registros. Sincronizando con Supabase...`;
+
+      let result=null;
+
+      try{
+        result=await saveImportToSupabase(file,dataset,excelRows,buffer);
+      }catch(syncError){
+        if(isSupabasePermissionError(syncError)){
+          console.warn('Excel cargado localmente; Supabase rechazó parte de la sincronización por RLS.',syncError);
+
+          const extras=[];
+          if(parsedInfo.beforeStartDate) extras.push(`${fmtInt(parsedInfo.beforeStartDate)} anteriores al 10/09/2026 ignorados`);
+          if(parsedInfo.missingIdKeys) extras.push(`${fmtInt(parsedInfo.missingIdKeys)} sin ID_Taller omitidos`);
+
+          showToast(
+            `Excel cargado correctamente: ${fmtInt(excelRows.length)} registros. `+
+            `Supabase no permitió guardarlos por permisos, pero puedes trabajar con ellos en esta sesión.`+
+            (extras.length?' · '+extras.join(' · '):'')
+          );
+
+          setStatus('ok','Excel cargado localmente');
+          return;
+        }
+
+        throw syncError;
+      }
+
+      // Leer de nuevo lo que Supabase sí aceptó.
+      await loadFromSupabase({keepSelection:true,silent:true});
+
+      // Fusionar el Excel nuevamente para que, si UPDATE estaba bloqueado por RLS,
+      // la pantalla siga mostrando el valor correcto del archivo.
+      mergeExcelRowsIntoImportedState(excelRows);
 
       const parts=[
         `${fmtInt(result.inserted)} nuevos`,
@@ -4006,23 +4147,44 @@
         `${fmtInt(result.unchanged)} sin cambios`
       ];
 
+      if(result.skippedUpdates){
+        parts.push(`${fmtInt(result.skippedUpdates)} cambios mostrados localmente por falta de permiso UPDATE`);
+      }
+
       if(result.duplicateInFile){
         parts.push(`${fmtInt(result.duplicateInFile)} ID_Taller repetidos dentro del Excel`);
       }
-      if(parsed.beforeStartDate){
-        parts.push(`${fmtInt(parsed.beforeStartDate)} anteriores al 10/09/2026 ignorados`);
+
+      if(parsedInfo.beforeStartDate){
+        parts.push(`${fmtInt(parsedInfo.beforeStartDate)} anteriores al 10/09/2026 ignorados`);
       }
-      if(parsed.missingIdKeys){
-        parts.push(`${fmtInt(parsed.missingIdKeys)} sin ID_Taller omitidos`);
+
+      if(parsedInfo.missingIdKeys){
+        parts.push(`${fmtInt(parsedInfo.missingIdKeys)} sin ID_Taller omitidos`);
       }
 
       showToast(parts.join(' · ')+'.');
-      await loadFromSupabase({keepSelection:true,silent:true});
+      setStatus('ok',result.skippedUpdates?'Excel cargado · sincronización parcial':'Excel sincronizado');
 
     }catch(error){
       console.error(error);
-      showToast(supabaseErrorMessage(error),true);
-      setStatus('error','Error al sincronizar');
+
+      // Si el Excel ya pudo leerse, nunca se pierde por un fallo posterior de Supabase.
+      if(excelRows.length){
+        loadExcelRowsLocally(excelRows,file.name);
+        showToast(
+          `El Excel se cargó con ${fmtInt(excelRows.length)} registros. `+
+          `No se pudo completar la sincronización con Supabase: ${supabaseErrorMessage(error)}`,
+          true
+        );
+        setStatus('ok','Excel cargado · Supabase pendiente');
+      }else{
+        showToast(
+          error instanceof Error ? error.message : String(error),
+          true
+        );
+        setStatus('error','Error al leer Excel');
+      }
     }finally{
       setLoading(false);
       els.fileInput.value='';
@@ -4195,6 +4357,8 @@
   els.clearDates.addEventListener('click',()=>{els.dateFrom.value='';els.dateTo.value='';state.activeDay='';state.activeLabor='';state.activeMetDays=false;if(dateRangePicker)dateRangePicker.clear(false);renderEquipmentList();if(state.selected)renderDetail();});
   const toggleMet=()=>{state.activeMetDays=!state.activeMetDays;state.activeDay='';renderDetail();};els.kpiMetDaysCard.addEventListener('click',toggleMet);els.kpiMetDaysCard.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleMet();}});
   document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer?.files?.[0];if(f)loadFile(f);});
+
+  // La carga inicial no bloquea toda la interfaz. El usuario puede abrir Registro manual mientras Supabase responde.
   loadFromSupabase({keepSelection:false,silent:true});
 })();
 </script>
