@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#2563eb" />
   <title>Registro de horas</title>
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJklEQVR42s1XMQ6DMAw0FgNrhVjZKn7CyiP6D4b+iLU/YWVFFWu3dkoVuQmxTRJqCRFB4juMfYmL6219w4mGcLKVvhev9RkdrGpqXgRSgPv8Yi5wn3/MCe7CwdzgFO9/qyBky9T9PGuHOT0BFzB9JyGCWvB2mL9A9jhEklphpDiUhJKv486tmpoXAZ/DZep2c4ETidOrAGOE80gUMFYZShJPRUAKwJ3PJiDJfokWqH8BBdCoIFsHNArHWcPWgSMWpQokwmLmXR7377W3TpyEVP3o2IADAGz9CACwSwK1iWcTcUmyATf3aFVAd75QJZhoHN4NpYlnA2/96CRXNbX+RBSK0jaNLI0o7NYs58HUNCkY6lxSgjuTMDUJ6h+5PVyq3rCUTE5hH00upd9jsLvwAAAAAElFTkSuQmCC" />
   <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJklEQVR42s1XMQ6DMAw0FgNrhVjZKn7CyiP6D4b+iLU/YWVFFWu3dkoVuQmxTRJqCRFB4juMfYmL6219w4mGcLKVvhev9RkdrGpqXgRSgPv8Yi5wn3/MCe7CwdzgFO9/qyBky9T9PGuHOT0BFzB9JyGCWvB2mL9A9jhEklphpDiUhJKv486tmpoXAZ/DZep2c4ETidOrAGOE80gUMFYZShJPRUAKwJ3PJiDJfokWqH8BBdCoIFsHNArHWcPWgSMWpQokwmLmXR7377W3TpyEVP3o2IADAGz9CACwSwK1iWcTcUmyATf3aFVAd75QJZhoHN4NpYlnA2/96CRXNbX+RBSK0jaNLI0o7NYs58HUNCkY6lxSgjuTMDUJ6h+5PVyq3rCUTE5hH00upd9jsLvwAAAAAElFTkSuQmCC" />
   <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,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" />
@@ -908,10 +911,39 @@
     return Promise.race([Promise.resolve(promise),timeout]).finally(()=>clearTimeout(timer));
   }
 
+  function freshSupabaseFetch(input,init={}){
+    const method=String(init?.method||input?.method||'GET').toUpperCase();
+    let target=input;
+
+    try{
+      const rawUrl=typeof input==='string' ? input : input?.url;
+      if(rawUrl && (method==='GET'||method==='HEAD') && rawUrl.startsWith(SUPABASE_URL)){
+        const url=new URL(rawUrl);
+        url.searchParams.set('_fresh',`${Date.now()}-${Math.random().toString(36).slice(2,8)}`);
+        target=typeof input==='string'
+          ? url.toString()
+          : new Request(url.toString(),input);
+      }
+    }catch(error){
+      console.warn('No se pudo agregar el identificador anti-cache a la consulta:',error);
+    }
+
+    const headers=new Headers(init?.headers||target?.headers||{});
+    headers.set('Cache-Control','no-cache, no-store, max-age=0');
+    headers.set('Pragma','no-cache');
+
+    return fetch(target,{
+      ...init,
+      headers,
+      cache:'no-store'
+    });
+  }
+
   const db = window.supabase?.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
         db:{schema:'public'},
-        auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}
+        auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},
+        global:{fetch:freshSupabaseFetch}
       })
     : null;
 
@@ -919,8 +951,46 @@
     rows:[], byEquipment:new Map(), selected:null, sourceSheet:'registros_horas', fileName:'Supabase',
     activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false,
     manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set(), manualDuplicateCheckSeq:0, manualFixedDate:'', manualAutoStopSeq:0, manualRecordsViewRows:[],
-    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:'', manualTimeFormat:'clock', manualLaborUsageMachine:new Map(), manualLaborUsageStop:new Map(), manualRecordsSelected:new Set()
+    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:'', manualTimeFormat:'clock', manualLaborUsageMachine:new Map(), manualLaborUsageStop:new Map(), manualRecordsSelected:new Set(), lastAuthoritativeLoad:0
   };
+
+  async function clearLegacyRegistroHorasCache(){
+    try{
+      if('caches' in window){
+        const names=await caches.keys();
+        const appCaches=names.filter(name=>
+          /registro[-_ ]?horas|horas[-_ ]?cache|hours[-_ ]?cache/i.test(name)
+        );
+        await Promise.all(appCaches.map(name=>caches.delete(name)));
+      }
+    }catch(error){
+      console.warn('No se pudieron limpiar caches antiguos:',error);
+    }
+
+    try{
+      if('serviceWorker' in navigator){
+        const registrations=await navigator.serviceWorker.getRegistrations();
+        const currentDir=new URL('.',location.href).pathname;
+
+        for(const registration of registrations){
+          const scriptUrl=
+            registration.active?.scriptURL ||
+            registration.waiting?.scriptURL ||
+            registration.installing?.scriptURL ||
+            '';
+
+          if(!scriptUrl) continue;
+
+          const scriptDir=new URL('.',scriptUrl).pathname;
+          if(scriptDir===currentDir){
+            await registration.unregister();
+          }
+        }
+      }
+    }catch(error){
+      console.warn('No se pudo retirar un service worker antiguo de esta app:',error);
+    }
+  }
 
   const $ = id => document.getElementById(id);
   const els = {
@@ -3510,10 +3580,17 @@
       manual=[];
     }
 
-    state.importedRows=imported;
-    state.manualAnalysisRows=manual;
+    // Supabase es la fuente autoritativa.
+    // Reemplazar COMPLETAMENTE lo que había en memoria evita conservar
+    // filas o valores viejos de una carga anterior.
+    state.importedRows=[...imported];
+    state.manualAnalysisRows=[...manual];
+    state.manualRecordsViewRows=[];
+    state.weeklyRows=[];
+    state.weeklyLoadedStart='';
+    state.lastAuthoritativeLoad=Date.now();
 
-    return [...imported,...manual];
+    return [...state.importedRows,...state.manualAnalysisRows];
   }
 
   function rowsForCurrentSource(){
@@ -3596,6 +3673,12 @@
 
   async function loadFromSupabase({keepSelection=true,silent=false}={}){
     const previous=state.selected;
+
+    // Invalidar vistas derivadas antes de una lectura fresca.
+    state.manualRecordsViewRows=[];
+    state.weeklyRows=[];
+    state.weeklyLoadedStart='';
+
     setStatus('loading','Consultando Supabase...');
     setMissingDaysLoading();
     if(!silent) setLoading(true,'Actualizando datos','Consultando registros guardados en Supabase...');
@@ -3605,7 +3688,7 @@
       updateMissingDaysIndicator(state.importedRows);
       if(!els.dateFrom.value&&!els.dateTo.value) setGlobalDateLimits(rowsForCurrentSource());
       applyCurrentDataSource({keepSelection,resetDates:false});
-      setStatus('ok',`Campo ${fmtInt(state.importedRows.length)} · Taller ${fmtInt(state.manualAnalysisRows.length)}`);
+      setStatus('ok',`Actualizado · Campo ${fmtInt(state.importedRows.length)} · Taller ${fmtInt(state.manualAnalysisRows.length)}`);
       if(!silent) showToast(`${sourceLabel()}: ${fmtInt(state.rows.length)} registros en ${fmtInt(state.byEquipment.size)} equipos.`);
       return state.rows;
     }catch(error){
@@ -4138,12 +4221,10 @@
         throw syncError;
       }
 
-      // Leer de nuevo lo que Supabase sí aceptó.
+      // Leer de nuevo lo que Supabase realmente guardó.
+      // IMPORTANTE: después de esta lectura NO se vuelve a mezclar el Excel
+      // sobre los datos de Supabase. Así no reaparecen valores viejos.
       await loadFromSupabase({keepSelection:true,silent:true});
-
-      // Fusionar el Excel nuevamente para que, si UPDATE estaba bloqueado por RLS,
-      // la pantalla siga mostrando el valor correcto del archivo.
-      mergeExcelRowsIntoImportedState(excelRows);
 
       const parts=[
         `${fmtInt(result.inserted)} nuevos`,
@@ -4152,7 +4233,7 @@
       ];
 
       if(result.skippedUpdates){
-        parts.push(`${fmtInt(result.skippedUpdates)} cambios mostrados localmente por falta de permiso UPDATE`);
+        parts.push(`${fmtInt(result.skippedUpdates)} cambios NO guardados por falta de permiso UPDATE`);
       }
 
       if(result.duplicateInFile){
@@ -4362,7 +4443,18 @@
   const toggleMet=()=>{state.activeMetDays=!state.activeMetDays;state.activeDay='';renderDetail();};els.kpiMetDaysCard.addEventListener('click',toggleMet);els.kpiMetDaysCard.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleMet();}});
   document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer?.files?.[0];if(f)loadFile(f);});
 
-  // La carga inicial no bloquea toda la interfaz. El usuario puede abrir Registro manual mientras Supabase responde.
+  // Limpiar restos de versiones anteriores de esta misma app.
+  clearLegacyRegistroHorasCache();
+
+  // Si el navegador restaura la página desde Back/Forward Cache,
+  // consultar Supabase otra vez para no mostrar una fotografía antigua.
+  window.addEventListener('pageshow',event=>{
+    if(event.persisted){
+      loadFromSupabase({keepSelection:true,silent:true});
+    }
+  });
+
+  // La carga inicial no bloquea toda la interfaz.
   loadFromSupabase({keepSelection:false,silent:true});
 })();
 </script>
