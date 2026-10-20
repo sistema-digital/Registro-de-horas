@@ -3737,21 +3737,42 @@
     return -1;
   }
 
+  function findExactIndex(headers,aliases){
+    for(const alias of aliases){
+      const a=norm(alias);
+      const idx=headers.findIndex(h=>h===a);
+      if(idx>=0) return idx;
+    }
+    return -1;
+  }
+
   function buildRows(dataset){
     const h=dataset.headers;
+    const exactCantidad=findExactIndex(h,['Cantidad']);
+    const exactEmpleado=findExactIndex(h,['NomEmpleado','Nombre Empleado']);
+
     const idx={
-      // NUEVA FUENTE DE VERDAD: ID_Taller
-      idKey:findIndex(h,['ID_Taller','ID Taller','IDTaller']),
-      date:findIndex(h,['Fecha']),
+      // Columnas críticas: primero coincidencia EXACTA.
+      idKey:findExactIndex(h,['ID_Taller','ID Taller','IDTaller']),
+      date:findExactIndex(h,['Fecha']),
       unit:findIndex(h,['Unidad de Produccion','Unidad Produccion','Up']),
-      equipment:findIndex(h,['Número Equipo','Numero Equipo','Equipo']),
+      equipment:findExactIndex(h,['Número Equipo','Numero Equipo','Equipo']),
       labor:findIndex(h,['No Labor','N° Labor','Nº Labor','Labor']),
       laborName:findIndex(h,['Nombre de Labor','Nombre Labor']),
-      hours:findIndex(h,['Cantidad','Horas o Ha','Horas Maquinas','Hectareas/ Horas Maquinas','Horas','Ha']),
+
+      // IMPORTANTE:
+      // Si existe la cabecera "Cantidad", se usa ESA columna y ninguna otra.
+      // Solo si no existe se permite compatibilidad con formatos antiguos.
+      hours: exactCantidad>=0
+        ? exactCantidad
+        : findIndex(h,['Horas o Ha','Horas Maquinas','Hectareas/ Horas Maquinas','Horas','Ha']),
+
       producer:findIndex(h,['Productor']),
       owner:findIndex(h,['Propietario','NombreDueñoOEq','Nombre Dueno O Eq','Dueño de Contrato','Dueno de Contrato']),
       operator:findIndex(h,['Operador']),
-      employee:findIndex(h,['NomEmpleado','Nombre Empleado'])
+      employee: exactEmpleado>=0
+        ? exactEmpleado
+        : findIndex(h,['NomEmpleado','Nombre Empleado'])
     };
 
     if(idx.idKey<0){
@@ -3760,6 +3781,22 @@
     if(idx.date<0||idx.equipment<0||idx.hours<0){
       throw new Error('No pude identificar las columnas Fecha, Número Equipo y Cantidad/Horas.');
     }
+
+    // Protección contra un mapeo incorrecto de columnas.
+    if(idx.employee>=0 && idx.hours===idx.employee){
+      throw new Error(
+        'Error de columnas: Cantidad y NomEmpleado fueron detectadas en la misma columna. '+
+        'Se canceló la importación para evitar guardar horas incorrectas.'
+      );
+    }
+
+    console.info('[Mapa columnas Excel]',{
+      idTaller:{indice:idx.idKey+1,cabecera:dataset.headersRaw?.[idx.idKey]},
+      fecha:{indice:idx.date+1,cabecera:dataset.headersRaw?.[idx.date]},
+      equipo:{indice:idx.equipment+1,cabecera:dataset.headersRaw?.[idx.equipment]},
+      cantidad:{indice:idx.hours+1,cabecera:dataset.headersRaw?.[idx.hours]},
+      empleado:{indice:idx.employee>=0?idx.employee+1:null,cabecera:idx.employee>=0?dataset.headersRaw?.[idx.employee]:null}
+    });
 
     const rows=[];
     let missingIdKeys=0;
@@ -3790,19 +3827,34 @@
         continue;
       }
 
+      const parsedHours=num(arr[idx.hours]);
+      const parsedEmployee=idx.employee>=0?text(arr[idx.employee]):'';
+
+      // Diagnóstico: evita repetir el caso donde NomEmpleado terminó como horas.
+      if(
+        idx.employee>=0 &&
+        parsedHours>1000 &&
+        String(parsedHours)===String(num(parsedEmployee))
+      ){
+        throw new Error(
+          `Fila ${r+1}: Cantidad (${parsedHours}) coincide con NomEmpleado (${parsedEmployee}). `+
+          `Se canceló la importación para evitar guardar un valor incorrecto.`
+        );
+      }
+
       rows.push({
         idKey,
         sourceRow:r+1,
         equipment,
         date,
-        hours:num(arr[idx.hours]),
+        hours:parsedHours,
         unit:idx.unit>=0?text(arr[idx.unit]):'',
         labor:idx.labor>=0?text(arr[idx.labor]):'',
         laborName:idx.laborName>=0?text(arr[idx.laborName]):'',
         producer:idx.producer>=0?text(arr[idx.producer]):'',
         owner:idx.owner>=0?text(arr[idx.owner]):'',
         operator:idx.operator>=0?text(arr[idx.operator]):'',
-        employee:idx.employee>=0?text(arr[idx.employee]):''
+        employee:parsedEmployee
       });
     }
 
