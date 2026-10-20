@@ -912,21 +912,10 @@
   }
 
   function freshSupabaseFetch(input,init={}){
-    const method=String(init?.method||input?.method||'GET').toUpperCase();
-    let target=input;
-
-    try{
-      const rawUrl=typeof input==='string' ? input : input?.url;
-      if(rawUrl && (method==='GET'||method==='HEAD') && rawUrl.startsWith(SUPABASE_URL)){
-        const url=new URL(rawUrl);
-        url.searchParams.set('_fresh',`${Date.now()}-${Math.random().toString(36).slice(2,8)}`);
-        target=typeof input==='string'
-          ? url.toString()
-          : new Request(url.toString(),input);
-      }
-    }catch(error){
-      console.warn('No se pudo agregar el identificador anti-cache a la consulta:',error);
-    }
+    // No modificar la URL de PostgREST con parámetros inventados.
+    // Supabase interpreta query-params desconocidos como filtros y puede
+    // producir errores como "failed to parse filter".
+    const target=input;
 
     const headers=new Headers(init?.headers||target?.headers||{});
     headers.set('Cache-Control','no-cache, no-store, max-age=0');
