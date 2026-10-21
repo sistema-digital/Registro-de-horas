@@ -940,7 +940,7 @@
     rows:[], byEquipment:new Map(), selected:null, sourceSheet:'registros_horas', fileName:'Supabase',
     activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false,
     manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set(), manualDuplicateCheckSeq:0, manualFixedDate:'', manualAutoStopSeq:0, manualRecordsViewRows:[],
-    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:'', manualTimeFormat:'clock', manualLaborUsageMachine:new Map(), manualLaborUsageStop:new Map(), manualRecordsSelected:new Set(), lastAuthoritativeLoad:0
+    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:'', manualTimeFormat:'clock', manualLaborUsageMachine:new Map(), manualLaborUsageStop:new Map(), manualLaborUsageByEquipmentMachine:new Map(), manualRecordsSelected:new Set(), lastAuthoritativeLoad:0
   };
 
   async function clearLegacyRegistroHorasCache(){
@@ -1447,6 +1447,12 @@
     const afterEquipmentSelected=()=>{
       renderManualRows();
       scheduleManualDuplicateCheck(row);
+
+      // SOLO Horas máquina:
+      // reordenar labores poniendo primero las ya usadas por este equipo.
+      refreshMachineLaborForRow(row);
+
+      // Flujo automático: Equipo -> Horas máquina.
       focusMachineHours();
     };
 
@@ -1603,16 +1609,26 @@
   function rebuildManualLaborUsage(records=[]){
     const machineUsage=new Map();
     const stopUsage=new Map();
+    const machineByEquipment=new Map();
 
     for(const record of (records||[])){
       if(isNoWorkRecord(record)) continue;
 
       const machineId=record?.labor_maquina_id;
       const stopId=record?.labor_parada_id;
+      const equipment=normalizeManualEquipment(record?.equipo||'');
 
       if(machineId!==null&&machineId!==undefined&&String(machineId)!==''){
         const key=String(machineId);
         machineUsage.set(key,(machineUsage.get(key)||0)+1);
+
+        if(equipment){
+          if(!machineByEquipment.has(equipment)){
+            machineByEquipment.set(equipment,new Map());
+          }
+          const equipmentMap=machineByEquipment.get(equipment);
+          equipmentMap.set(key,(equipmentMap.get(key)||0)+1);
+        }
       }
 
       if(stopId!==null&&stopId!==undefined&&String(stopId)!==''){
@@ -1623,6 +1639,7 @@
 
     state.manualLaborUsageMachine=machineUsage;
     state.manualLaborUsageStop=stopUsage;
+    state.manualLaborUsageByEquipmentMachine=machineByEquipment;
   }
 
   function laborUsageMap(type){
@@ -1636,6 +1653,14 @@
     return Number(map?.get?.(String(id))||0);
   }
 
+  function laborEquipmentUsageCount(id,equipment){
+    const eq=normalizeManualEquipment(equipment||'');
+    if(!eq) return 0;
+
+    const equipmentMap=state.manualLaborUsageByEquipmentMachine?.get?.(eq);
+    return Number(equipmentMap?.get?.(String(id))||0);
+  }
+
   function bumpManualLaborUsageFromPayloads(payloads=[]){
     if(!(state.manualLaborUsageMachine instanceof Map)){
       state.manualLaborUsageMachine=new Map();
@@ -1643,17 +1668,34 @@
     if(!(state.manualLaborUsageStop instanceof Map)){
       state.manualLaborUsageStop=new Map();
     }
+    if(!(state.manualLaborUsageByEquipmentMachine instanceof Map)){
+      state.manualLaborUsageByEquipmentMachine=new Map();
+    }
 
     for(const payload of (payloads||[])){
       const machineId=payload?.labor_maquina_id;
       const stopId=payload?.labor_parada_id;
+      const equipment=normalizeManualEquipment(payload?.equipo||'');
 
       if(machineId!==null&&machineId!==undefined&&String(machineId)!==''){
         const key=String(machineId);
+
         state.manualLaborUsageMachine.set(
           key,
           (state.manualLaborUsageMachine.get(key)||0)+1
         );
+
+        if(equipment){
+          if(!state.manualLaborUsageByEquipmentMachine.has(equipment)){
+            state.manualLaborUsageByEquipmentMachine.set(equipment,new Map());
+          }
+
+          const equipmentMap=state.manualLaborUsageByEquipmentMachine.get(equipment);
+          equipmentMap.set(
+            key,
+            (equipmentMap.get(key)||0)+1
+          );
+        }
       }
 
       if(stopId!==null&&stopId!==undefined&&String(stopId)!==''){
@@ -1666,19 +1708,30 @@
     }
   }
 
-  function laborOptions(type='machine',selected=''){
+  function laborOptions(type='machine',selected='',equipment=''){
     const selectedId=String(selected||'');
+    const eq=normalizeManualEquipment(equipment||'');
 
     return state.manualLabors
       .filter(l=>l.activo!==false)
       .filter(l=>{
-        // Solo mostrar actividades que realmente han sido usadas
-        // en el tipo correspondiente. Una seleccionada se conserva
-        // para poder editar registros antiguos sin perderla.
+        // Mantener separadas las labores de máquina y parada.
+        // Una labor ya seleccionada se conserva para edición.
         return laborUsageCount(l.id,type)>0 || String(l.id)===selectedId;
       })
       .slice()
       .sort((a,b)=>{
+        // SOLO para máquina:
+        // priorizar lo que el equipo seleccionado ya ha realizado.
+        if(type==='machine'&&eq){
+          const equipmentDiff=
+            laborEquipmentUsageCount(b.id,eq)-
+            laborEquipmentUsageCount(a.id,eq);
+
+          if(equipmentDiff!==0) return equipmentDiff;
+        }
+
+        // Después ordenar por popularidad global del mismo tipo.
         const usageDiff=laborUsageCount(b.id,type)-laborUsageCount(a.id,type);
         if(usageDiff!==0) return usageDiff;
 
@@ -1692,6 +1745,10 @@
         value:String(l.id),
         text:String(l.nombre||'').toUpperCase(),
         usage:laborUsageCount(l.id,type),
+        equipmentUsage:type==='machine'&&eq
+          ? laborEquipmentUsageCount(l.id,eq)
+          : 0,
+        equipment:eq,
         laborType:type
       }));
   }
@@ -1701,7 +1758,13 @@
       try{
         const type=control._manualLaborType==='stop'?'stop':'machine';
         const selected=String(control.getValue?.()||'');
-        const options=laborOptions(type,selected);
+        const sourceSelect=control._manualLaborSelect||null;
+        const row=sourceSelect?.closest?.('[data-manual-row]')||null;
+        const equipment=type==='machine'
+          ? readManualEquipmentValue(row?.querySelector('.manual-equipment-select'))
+          : '';
+
+        const options=laborOptions(type,selected,equipment);
 
         control.clearOptions();
 
@@ -1714,13 +1777,15 @@
             item=>String(item.id)===selected
           );
 
-          // Si está seleccionado pero todavía no tiene historial en este grupo,
-          // conservarlo temporalmente en ese selector.
           if(selectedLabor&&!control.options[selected]){
             control.addOption({
               value:selected,
               text:String(selectedLabor.nombre||'').toUpperCase(),
               usage:laborUsageCount(selected,type),
+              equipmentUsage:type==='machine'
+                ? laborEquipmentUsageCount(selected,equipment)
+                : 0,
+              equipment,
               laborType:type
             });
           }
@@ -1735,13 +1800,68 @@
     }
   }
 
+  function refreshMachineLaborForRow(row){
+    if(!row) return;
+
+    const select=row.querySelector('.manual-machine-labor');
+    if(!select) return;
+
+    const equipment=readManualEquipmentValue(
+      row.querySelector('.manual-equipment-select')
+    );
+    const selected=readLaborValue(select);
+    const options=laborOptions('machine',selected,equipment);
+
+    if(select.tomselect){
+      const control=select.tomselect;
+      control.clearOptions();
+
+      for(const option of options){
+        control.addOption(option);
+      }
+
+      if(selected){
+        const selectedLabor=state.manualLabors.find(
+          item=>String(item.id)===String(selected)
+        );
+
+        if(selectedLabor&&!control.options[String(selected)]){
+          control.addOption({
+            value:String(selected),
+            text:String(selectedLabor.nombre||'').toUpperCase(),
+            usage:laborUsageCount(selected,'machine'),
+            equipmentUsage:laborEquipmentUsageCount(selected,equipment),
+            equipment,
+            laborType:'machine'
+          });
+        }
+
+        control.setValue(String(selected),true);
+      }
+
+      control.refreshOptions(false);
+      return;
+    }
+
+    select.innerHTML='<option value="">SELECCIONE LABOR</option>'+
+      options.map(o=>
+        `<option value="${escapeHtml(o.value)}">${escapeHtml(o.text)}</option>`
+      ).join('');
+
+    if(selected) select.value=String(selected);
+  }
+
 
   function initLaborSearch(select,selected='',type='machine'){
     if(!select) return null;
 
     const laborType=type==='stop'?'stop':'machine';
     const typeLabel=laborType==='stop'?'parada':'máquina';
-    const options=laborOptions(laborType,selected);
+    const row=select.closest('[data-manual-row]');
+    const equipment=laborType==='machine'
+      ? readManualEquipmentValue(row?.querySelector('.manual-equipment-select'))
+      : '';
+    const options=laborOptions(laborType,selected,equipment);
 
     if(!window.TomSelect){
       select.innerHTML='<option value="">SELECCIONE LABOR</option>'+
@@ -1756,6 +1876,7 @@
       searchField:['text'],
       options,
       sortField:[
+        {field:'equipmentUsage',direction:'desc'},
         {field:'usage',direction:'desc'},
         {field:'text',direction:'asc'}
       ],
@@ -1787,6 +1908,10 @@
               value:String(labor.id),
               text:String(labor.nombre).toUpperCase(),
               usage:laborUsageCount(labor.id,laborType),
+              equipmentUsage:laborType==='machine'
+                ? laborEquipmentUsageCount(labor.id,equipment)
+                : 0,
+              equipment,
               laborType
             });
           })
@@ -1799,9 +1924,19 @@
       render:{
         option(data,escape){
           const count=Number(data.usage||0);
+          const equipmentCount=Number(data.equipmentUsage||0);
+          const equipmentText=String(data.equipment||'');
+
+          let reference='';
+          if(laborType==='machine'&&equipmentCount>0&&equipmentText){
+            reference=`${equipmentCount} uso${equipmentCount===1?'':'s'} con equipo ${equipmentText}`;
+          }else if(count>0){
+            reference=`${count} uso${count===1?'':'s'} en ${typeLabel}`;
+          }
+
           return `<div class="option">
             <span>${escape(data.text||'')}</span>
-            ${count>0?`<small style="float:right;color:#98a2b3;font-size:9px;font-weight:800">${count} uso${count===1?'':'s'} en ${escape(typeLabel)}</small>`:''}
+            ${reference?`<small style="float:right;color:#98a2b3;font-size:9px;font-weight:800">${escape(reference)}</small>`:''}
           </div>`;
         },
         item(data,escape){
@@ -1817,6 +1952,7 @@
     });
 
     control._manualLaborType=laborType;
+    control._manualLaborSelect=select;
     state.manualTomSelects.add(control);
 
     const openLaborDropdown=()=>{
@@ -2135,50 +2271,137 @@
   }
 
   function initManualSegment(row,segment,type,selectedLabor=''){
-    const select=segment.querySelector(type==='machine'?'.manual-machine-labor':'.manual-stop-labor');
+    const select=segment.querySelector(
+      type==='machine'?'.manual-machine-labor':'.manual-stop-labor'
+    );
     initLaborSearch(select,selectedLabor||'',type);
 
-    const hours=segment.querySelector(type==='machine'?'.manual-machine-hours':'.manual-stop-hours');
+    const hours=segment.querySelector(
+      type==='machine'?'.manual-machine-hours':'.manual-stop-hours'
+    );
+
+    let machineAdvanceTimer=null;
+
+    const focusMachineLabor=()=>{
+      // IMPORTANTE: este auto-pase existe SOLO para Horas máquina.
+      if(type!=='machine') return;
+
+      const laborSelect=segment.querySelector('.manual-machine-labor');
+      if(!laborSelect) return;
+
+      if(laborSelect.tomselect){
+        laborSelect.tomselect.focus();
+        laborSelect.tomselect.open();
+      }else{
+        laborSelect.focus();
+      }
+    };
+
+    const scheduleMachineLaborAdvance=()=>{
+      if(type!=='machine'||!hours) return;
+
+      // Cada vez que el usuario escribe algo, reiniciar la espera.
+      clearTimeout(machineAdvanceTimer);
+
+      const raw=String(hours.value||'').trim();
+      if(!raw) return;
+
+      const parsed=parseHoursMinutesInput(raw);
+      if(!Number.isFinite(parsed)||parsed<=0) return;
+
+      // SOLO Horas máquina:
+      // cualquier valor válido, incluso un solo número como "5",
+      // espera medio segundo sin nuevas teclas y luego pasa a Labor.
+      const captured=raw;
+      machineAdvanceTimer=setTimeout(()=>{
+        const current=String(hours.value||'').trim();
+
+        // Solo avanzar si el valor no cambió durante medio segundo.
+        if(current!==captured) return;
+
+        const currentParsed=parseHoursMinutesInput(current);
+        if(!Number.isFinite(currentParsed)||currentParsed<=0) return;
+
+        focusMachineLabor();
+      },500);
+    };
+
     hours?.addEventListener('input',()=>{
       // En H:MM: 5.30 / 5,30 se transforma automáticamente en 5:30.
       // En DEC se conserva el punto/coma como decimal.
       const raw=String(hours.value||'').trim();
+
       if(currentManualTimeFormat()==='clock' && /^\d+[.,]\d{2}$/.test(raw)){
         const mm=raw.split(/[.,]/)[1];
-        if(Number(mm)<=59) hours.value=raw.replace(/[.,]/,':');
+
+        if(Number(mm)<=59){
+          hours.value=raw.replace(/[.,]/,':');
+        }
       }
+
       updateManualEntryTotal(row);
+
+      // SOLO máquina: después de medio segundo sin escribir pasa a Labor.
+      scheduleMachineLaborAdvance();
     });
 
     // Al tocar el campo queda seleccionado para reemplazar el tiempo rápidamente.
     hours?.addEventListener('focus',()=>{
-      setTimeout(()=>{try{hours.select();}catch(_){}},0);
+      clearTimeout(machineAdvanceTimer);
+      setTimeout(()=>{
+        try{hours.select();}catch(_){}
+      },0);
     });
+
     hours?.addEventListener('blur',()=>{
+      clearTimeout(machineAdvanceTimer);
+
       const parsed=parseHoursMinutesInput(hours.value);
+
       if(Number.isFinite(parsed)&&parsed>=0&&String(hours.value||'').trim()!==''){
         hours.value=manualHoursValueForDisplay(parsed);
         updateManualEntryTotal(row);
+
         if(type==='machine'||(type==='stop'&&segment.dataset.autoStop!=='true')){
           autofillManualStopsTo930(row);
         }
       }
     });
 
-    // Enter confirma tanto horas máquina como una nueva parada y ejecuta el recálculo.
+    // Enter:
+    // - Máquina: confirma hora y abre inmediatamente Labor.
+    // - Parada: conserva el comportamiento anterior.
     hours?.addEventListener('keydown',event=>{
       if(event.key==='Enter'){
         event.preventDefault();
+        clearTimeout(machineAdvanceTimer);
+
+        const shouldAdvance=
+          type==='machine' &&
+          Number.isFinite(parseHoursMinutesInput(hours.value)) &&
+          parseHoursMinutesInput(hours.value)>0;
+
         hours.blur();
+
+        if(shouldAdvance){
+          setTimeout(focusMachineLabor,90);
+        }
       }
     });
 
     segment.querySelector('.manual-remove-segment')?.addEventListener('click',()=>{
-      const recalculate=type==='stop'&&segment.dataset.autoStop!=='true';
+      clearTimeout(machineAdvanceTimer);
+
+      const recalculate=
+        type==='stop'&&segment.dataset.autoStop!=='true';
+
       destroyLaborSearches(segment);
       segment.remove();
       updateManualEntryTotal(row);
-      if(recalculate) autofillManualStopsTo930(row);
+
+      if(recalculate){
+        autofillManualStopsTo930(row);
+      }
     });
   }
 
