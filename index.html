@@ -661,6 +661,44 @@
     @media(max-width:1050px){.workspace{grid-template-columns:270px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.db-status{display:none}}
     @media(max-width:760px){body{overflow:auto}.app{height:auto;min-height:100vh;display:block}.topbar{position:sticky;top:0;height:68px;padding:0 13px}.brand-sub{display:none}.btn-primary span,.btn-soft span{display:none}.workspace{display:block}.sidebar{border-right:0;border-bottom:1px solid var(--line)}.equipment-list{display:flex;overflow-x:auto;padding:8px 12px}.equipment-item{min-width:205px}.main{padding:16px 12px}.detail-header{display:block}.filters{margin:14px 0 0;justify-content:flex-start}.kpis{grid-template-columns:1fr 1fr}.empty-state{height:calc(100vh - 210px)}}
     @media(max-width:430px){.kpis{grid-template-columns:1fr}.date-range-wrap input{width:210px}}
+
+
+/* VISTA 03 · PANEL LATERAL — CAMBIOS VISUALES EXCLUSIVAMENTE */
+.manual-overlay{justify-content:flex-end!important;align-items:stretch!important;padding:0!important;background:rgba(12,28,44,.45)!important;backdrop-filter:blur(2px)!important;}
+.manual-card{margin:0!important;width:min(830px,96vw)!important;min-height:100vh!important;height:100vh!important;max-height:100vh!important;border-radius:24px 0 0 24px!important;background:#f2f8f6!important;border:0!important;border-left:1px solid #c3dcd4!important;box-shadow:-25px 0 90px #0a1b2c40!important;overflow:auto!important;}
+.manual-head{background:#fff!important;padding:23px 24px!important;border-bottom:3px solid #0f8e79!important;position:sticky!important;top:0!important;align-items:center!important;}
+.manual-head h2{color:#153c37!important;font-size:23px!important;letter-spacing:-.025em;}
+.manual-head p{color:#62847b!important;font-size:12px!important;margin-top:5px!important;}
+.manual-title-icon{background:#e2f6ef!important;color:#0e9479!important;box-shadow:none!important;width:45px!important;height:45px!important;}
+.manual-close{background:#edf5f1!important;border:1px solid #d2e7dc!important;color:#2d5b50!important;}
+.manual-body{padding:21px 24px!important;}
+.manual-panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;}
+.manual-entry-card{background:#fff!important;border:1px solid #cde4da!important;box-shadow:0 8px 23px #204f3d12!important;border-radius:17px!important;}
+.manual-entry-card-head{background:#f1faf5!important;border-bottom:1px solid #e0eee6!important;padding:12px 14px!important;}
+.manual-entry-card-title{color:#1e5b4b!important;font-size:12px!important;}
+.manual-entry-card-title .mini-icon{background:#d9f1e6!important;color:#11886b!important;}
+.manual-auto-chip{background:#e0f7ec!important;color:#00785a!important;}
+.manual-entry-total{background:#0a836c!important;border:none!important;min-width:162px!important;height:42px!important;border-radius:11px!important;}
+.manual-entry-total-icon{background:#ffffff25!important;color:#fff!important;}.manual-entry-total-text small,.manual-entry-total-text strong{color:#fff!important;}
+.manual-entry-main{display:grid!important;grid-template-columns:1fr 1fr!important;gap:14px!important;align-items:end!important;padding:18px!important;}
+.manual-hours-row{display:grid!important;grid-template-columns:1fr!important;grid-column:1/-1!important;gap:14px!important;}
+.manual-hours-group{border:1px solid #cde7e5!important;border-left:5px solid #18a58f!important;border-radius:12px!important;background:#f6fdfa!important;padding:14px!important;}
+.manual-hours-group.stop{background:#fffcf4!important;border-color:#f0e0b5!important;border-left-color:#f5b641!important;}
+.manual-hours-group-title{margin-bottom:9px!important;font-size:12px!important;}
+.manual-hours-icon{width:34px!important;height:34px!important;border-radius:10px!important;}
+.manual-hours-group.machine .manual-hours-icon{background:#d6f4eb!important;color:#0b9878!important;}
+.manual-hours-group.stop .manual-hours-icon{background:#fff0cf!important;color:#b87f12!important;}
+.manual-hours-group.machine .manual-hours-group-title{color:#0b876f!important;}
+.manual-field label{font-size:10.5px!important;color:#54776c!important;}
+.manual-field input,.manual-field .ts-control{background:#fff!important;border-color:#bbd8ce!important;height:42px!important;min-height:42px!important;border-radius:10px!important;font-size:12px!important;}
+.manual-segment-row{grid-template-columns:105px minmax(0,1fr) 28px!important;}.manual-segment-row.first{grid-template-columns:105px minmax(0,1fr)!important;}
+.manual-add-segment{border:1px solid #8fcdbb!important;color:#087962!important;min-height:31px!important;}
+.manual-entry-actions{position:sticky!important;bottom:0!important;background:#f2f8f6!important;border-top:1px solid #d7e8df!important;padding:13px 2px!important;z-index:10!important;margin:12px 0 0!important;}
+.manual-entry-actions .btn-primary{background:#0a8d72!important;box-shadow:0 5px 14px #04846a34!important;min-height:43px!important;padding:10px 20px!important;font-size:12px!important;}
+.manual-entry-actions .btn-soft{background:#e2eee9!important;color:#356459!important;min-height:43px!important;padding:10px 20px!important;font-size:12px!important;}
+.manual-date-pin{background:#effaf6!important;border-color:#b8dece!important;color:#087964!important;}
+@media(max-width:760px){.manual-card{width:100vw!important;border-radius:0!important}.manual-head{padding:16px!important}.manual-body{padding:13px!important}.manual-entry-main{grid-template-columns:1fr!important;padding:10px!important}.manual-segment-row{grid-template-columns:86px minmax(0,1fr) 28px!important}.manual-segment-row.first{grid-template-columns:86px minmax(0,1fr)!important}}
+
   </style>
 </head>
 <body>
@@ -1336,16 +1374,36 @@
     return [...set].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
   }
 
-  async function loadManualLabors(){
-    const {data,error}=await withManualTimeout(
-      db.from(MANUAL_LABORS_TABLE)
-        .select('id,nombre,activo')
-        .order('nombre',{ascending:true}),
-      'La carga del catálogo de labores'
-    );
+  // El catálogo puede superar el máximo de filas de una sola consulta de PostgREST.
+  // Recuperar todas las páginas garantiza que una labor vieja o recién creada
+  // no desaparezca simplemente porque quedó fuera de las primeras 1.000.
+  async function fetchCompleteManualLaborCatalog(){
+    const all=[];
+    for(let from=0;;from+=PAGE_SIZE){
+      const {data,error}=await withManualTimeout(
+        db.from(MANUAL_LABORS_TABLE)
+          .select('id,nombre,activo')
+          .order('id',{ascending:true})
+          .range(from,from+PAGE_SIZE-1),
+        'La carga del catálogo de labores'
+      );
+      if(error) throw error;
+      all.push(...(data||[]));
+      if(!data||data.length<PAGE_SIZE) break;
+    }
+    return all;
+  }
 
-    if(error) throw error;
-    state.manualLabors=data||[];
+  function mergeManualLaborCatalog(fresh){
+    // Un alta completada mientras había una lectura pendiente no debe perderse.
+    const byId=new Map((state.manualLabors||[]).map(l=>[String(l.id),l]));
+    for(const item of (fresh||[])) byId.set(String(item.id),item);
+    return [...byId.values()];
+  }
+
+  async function loadManualLabors(){
+    const fresh=await fetchCompleteManualLaborCatalog();
+    state.manualLabors=mergeManualLaborCatalog(fresh);
   }
 
   function normalizeManualEquipment(value){
@@ -1439,8 +1497,16 @@
       const input=row?.querySelector('.manual-machine-hours');
       if(!input) return;
       setTimeout(()=>{
+        if(!row?.isConnected || !input.isConnected) return;
+        // Un clic posterior sobre otro campo tiene prioridad.
+        const active=document.activeElement;
+        const equipmentUI=select.tomselect?.wrapper;
+        if(active && active!==document.body && active!==document.documentElement &&
+           active!==select && !equipmentUI?.contains(active)) return;
         input.focus();
-        try{input.select();}catch(_){}
+        if(document.activeElement===input){
+          try{input.select();}catch(_){}
+        }
       },80);
     };
 
@@ -1708,54 +1774,99 @@
     }
   }
 
+  // Las labores de los Excel/registros importados pueden existir sin un ID en
+  // labores_horas_manual. Mostrar sus nombres en Horas máquina también.
+  // Solo se crea su registro en el catálogo manual cuando el usuario las elige;
+  // abrir el formulario nunca modifica la base de datos.
+  let importedLaborCacheRows=null;
+  let importedLaborCache=[];
+
+  function importedMachineLaborNames(){
+    if(importedLaborCacheRows===state.importedRows) return importedLaborCache;
+    importedLaborCacheRows=state.importedRows;
+    const names=new Map();
+    for(const r of (state.importedRows||[])){
+      const nombreCampo=String(r.laborName||'').trim();
+      const codigo=String(r.labor||'').trim();
+      const nombre=normalizeLaborName(nombreCampo || (/[A-Za-zÁÉÍÓÚÑ]/i.test(codigo)?codigo:''));
+      if(nombre && !names.has(norm(nombre))) names.set(norm(nombre),nombre);
+    }
+    importedLaborCache=[...names.values()];
+    return importedLaborCache;
+  }
+
+  const IMPORTED_LABOR_PREFIX='importado:';
+  function importedLaborId(nombre){
+    return IMPORTED_LABOR_PREFIX+encodeURIComponent(normalizeLaborName(nombre));
+  }
+  function importedLaborNameFromId(id){
+    const value=String(id||'');
+    if(!value.startsWith(IMPORTED_LABOR_PREFIX)) return '';
+    try { return normalizeLaborName(decodeURIComponent(value.slice(IMPORTED_LABOR_PREFIX.length))); }
+    catch(_) { return ''; }
+  }
+
   function laborOptions(type='machine',selected='',equipment=''){
     const selectedId=String(selected||'');
     const eq=normalizeManualEquipment(equipment||'');
+    const importedNames=type==='machine'?importedMachineLaborNames():[];
+    const importedNameKeys=new Set(importedNames.map(name=>norm(name)));
 
-    return state.manualLabors
-      .filter(l=>l.activo!==false)
+    // Todas las labores activas sin uso en ningún grupo son elegibles:
+    // esto evita que una labor recién creada se oculte antes de su primer registro.
+    // Las usadas solo como parada permanecen separadas, excepto si también
+    // tienen registros importados de máquina.
+    const manual=state.manualLabors
+      .filter(l=>l.activo!==false || String(l.id)===selectedId)
       .filter(l=>{
-        // Mantener separadas las labores de máquina y parada.
-        // Una labor ya seleccionada se conserva para edición.
-        return laborUsageCount(l.id,type)>0 || String(l.id)===selectedId;
-      })
-      .slice()
-      .sort((a,b)=>{
-        // SOLO para máquina:
-        // priorizar lo que el equipo seleccionado ya ha realizado.
-        if(type==='machine'&&eq){
-          const equipmentDiff=
-            laborEquipmentUsageCount(b.id,eq)-
-            laborEquipmentUsageCount(a.id,eq);
-
-          if(equipmentDiff!==0) return equipmentDiff;
+        if(String(l.id)===selectedId) return true;
+        const machineCount=laborUsageCount(l.id,'machine');
+        const stopCount=laborUsageCount(l.id,'stop');
+        if(type==='machine'){
+          return machineCount>0 || stopCount===0 || importedNameKeys.has(norm(l.nombre));
         }
-
-        // Después ordenar por popularidad global del mismo tipo.
-        const usageDiff=laborUsageCount(b.id,type)-laborUsageCount(a.id,type);
-        if(usageDiff!==0) return usageDiff;
-
-        return String(a.nombre||'').localeCompare(
-          String(b.nombre||''),
-          'es',
-          {sensitivity:'base'}
-        );
+        return stopCount>0 || machineCount===0;
       })
       .map(l=>({
         value:String(l.id),
         text:String(l.nombre||'').toUpperCase(),
         usage:laborUsageCount(l.id,type),
-        equipmentUsage:type==='machine'&&eq
-          ? laborEquipmentUsageCount(l.id,eq)
-          : 0,
+        equipmentUsage:type==='machine'&&eq ? laborEquipmentUsageCount(l.id,eq) : 0,
         equipment:eq,
         laborType:type
       }));
+
+    // En la lista de máquina también figuran las importadas cuyo nombre aún
+    // no se ha dado de alta en el catálogo manual. Son opciones provisionales:
+    // seleccionar una la vincula a su ID real antes de guardar las horas.
+    const registered=new Set(state.manualLabors.map(l=>norm(l.nombre)));
+    const imported=type==='machine' ? importedNames
+      .filter(name=>!registered.has(norm(name)))
+      .map(name=>({
+        value:importedLaborId(name),
+        text:name,
+        usage:0,
+        equipmentUsage:0,
+        equipment:eq,
+        laborType:'machine',
+        imported:true
+      })) : [];
+
+    return [...manual,...imported].sort((a,b)=>{
+      if(type==='machine' && eq){
+        const diff=Number(b.equipmentUsage||0)-Number(a.equipmentUsage||0);
+        if(diff) return diff;
+      }
+      const diff=Number(b.usage||0)-Number(a.usage||0);
+      if(diff) return diff;
+      return a.text.localeCompare(b.text,'es',{sensitivity:'base'});
+    });
   }
 
   function refreshManualLaborControls(){
     for(const control of state.manualTomSelects){
       try{
+        if(control._manualImportResolving) continue;
         const type=control._manualLaborType==='stop'?'stop':'machine';
         const selected=String(control.getValue?.()||'');
         const sourceSelect=control._manualLaborSelect||null;
@@ -1765,6 +1876,15 @@
           : '';
 
         const options=laborOptions(type,selected,equipment);
+
+        // Nunca reconstruir un TomSelect si la persona está usando su buscador.
+        // Solo agregar opciones faltantes: sin alterar foco, texto ni desplegable.
+        if(control.isFocused || control.isOpen || document.activeElement===control.control_input){
+          for(const option of options){
+            if(!control.options[String(option.value)]) control.addOption(option);
+          }
+          continue;
+        }
 
         control.clearOptions();
 
@@ -1814,6 +1934,13 @@
 
     if(select.tomselect){
       const control=select.tomselect;
+      // Si la búsqueda de Labor ya tiene el foco, no alterar su menú.
+      if(control.isFocused || control.isOpen || document.activeElement===control.control_input){
+        for(const option of options){
+          if(!control.options[String(option.value)]) control.addOption(option);
+        }
+        return;
+      }
       control.clearOptions();
 
       for(const option of options){
@@ -1891,9 +2018,10 @@
         : 'Buscar actividad de máquina...',
       createFilter(input){
         const value=normalizeLaborName(input);
-        return Boolean(value) && !state.manualLabors.some(
-          labor=>normalizeLaborName(labor.nombre)===value
-        );
+        if(!value) return false;
+        if(state.manualLabors.some(labor=>norm(labor.nombre)===norm(value))) return false;
+        if(laborType==='machine' && importedMachineLaborNames().some(name=>norm(name)===norm(value))) return false;
+        return true;
       },
       create(input,callback){
         const value=normalizeLaborName(input);
@@ -1955,22 +2083,54 @@
     control._manualLaborSelect=select;
     state.manualTomSelects.add(control);
 
-    const openLaborDropdown=()=>{
-      if(control.isDisabled||control.isLocked) return;
-      control.open();
-    };
+    // Una actividad importada tiene nombre, pero aún no tiene ID manual.
+    // Al elegirla se crea/vincula en el catálogo y se sustituye por su ID real.
+    // La siguiente vez que abras el formulario será una opción normal.
+    control.on('change',value=>{
+      const provisional=String(value||control.getValue()||'');
+      const importedName=importedLaborNameFromId(provisional);
+      if(!importedName || control._manualImportResolving) return;
 
-    // Tap/clic en cualquier parte del campo = desplegar la lista inmediatamente.
-    control.control?.addEventListener('pointerdown',()=>{
-      setTimeout(openLaborDropdown,0);
+      control._manualImportResolving=true;
+      const job=saveOrGetManualLabor(importedName)
+        .then(labor=>{
+          if(!select.isConnected || select.tomselect!==control) return labor;
+          control.addOption({
+            value:String(labor.id),
+            text:String(labor.nombre||'').toUpperCase(),
+            usage:laborUsageCount(labor.id,laborType),
+            equipmentUsage:laborType==='machine'
+              ? laborEquipmentUsageCount(labor.id,equipment) : 0,
+            equipment,
+            laborType
+          });
+          if(String(control.getValue())===provisional){
+            control.setValue(String(labor.id),true);
+          }
+          return labor;
+        })
+        .catch(error=>{
+          console.error('No se pudo vincular la labor importada:',error);
+          showToast(`No se pudo preparar la labor ${importedName}: ${supabaseErrorMessage(error)}`,true);
+          if(select.isConnected && select.tomselect===control &&
+             String(control.getValue())===provisional){
+            control.clear(true);
+          }
+          return null;
+        })
+        .finally(()=>{
+          control._manualImportResolving=false;
+          if(control._manualImportPromise===job) control._manualImportPromise=null;
+          if(select.isConnected && select.tomselect===control){
+            refreshManualLaborControls();
+          }
+        });
+      control._manualImportPromise=job;
     });
 
-    // También abrir al recibir foco, útil en teclado y dispositivos móviles.
-    control.control_input?.addEventListener('focus',()=>{
-      setTimeout(openLaborDropdown,0);
-    });
-
-    control.on('focus',openLaborDropdown);
+    // El propio TomSelect gestiona el clic, el foco y la apertura (openOnFocus).
+    // Forzar open() desde pointerdown, focus y setTimeout simultáneamente puede
+    // cerrar/reabrir la lista y hacer que desaparezca el cursor.
     control.on('destroy',()=>state.manualTomSelects.delete(control));
     return control;
   }
@@ -2151,12 +2311,60 @@
 
       // Quitar solamente las líneas automáticas COMIDA/PATIO y líneas vacías de apoyo.
       // Las paradas que el usuario agregó con otra labor se conservan intactas.
-      if(isManagedAutoStopSegment(segment)||isEmpty){
+      const active=document.activeElement;
+      const editingThisSegment=segment.contains(active) ||
+        Boolean(labor?.tomselect?.isFocused || labor?.tomselect?.isOpen) ||
+        row._manualProtectedSegment===segment;
+      if(isManagedAutoStopSegment(segment)|| (isEmpty&&!editingThisSegment)){
         destroyLaborSearches(segment);
         segment.remove();
       }
     }
 
+    updateManualEntryTotal(row);
+  }
+
+  function updateManagedAutoStopSegments(row,desired=[]){
+    const list=row?.querySelector('[data-segment-list="stop"]');
+    if(!list) return;
+
+    const pending=new Map(desired.filter(item=>item.hours>0&&item.laborId)
+      .map(item=>[item.kind,item]));
+    const active=document.activeElement;
+    for(const segment of [...list.querySelectorAll('[data-segment-type="stop"]')]){
+      const select=segment.querySelector('.manual-stop-labor');
+      const input=segment.querySelector('.manual-stop-hours');
+      const kind=segment.dataset.autoStopKind ||
+        normalizeLaborName(manualLaborNameById(readLaborValue(select)));
+      const managed=isManagedAutoStopSegment(segment);
+      if(managed){
+        const next=pending.get(kind);
+        if(next){
+          pending.delete(kind);
+          segment.dataset.autoStop='true';
+          segment.dataset.autoStopKind=kind;
+          const value=manualHoursValueForDisplay(next.hours);
+          if(input&&input.value!==value) input.value=value;
+          if(readLaborValue(select)!==String(next.laborId)){
+            if(select?.tomselect) select.tomselect.setValue(String(next.laborId),true);
+            else if(select) select.value=String(next.laborId);
+          }
+          segment.querySelector('.manual-remove-segment')?.remove();
+        }else{
+          destroyLaborSearches(segment);
+          segment.remove();
+        }
+        continue;
+      }
+      const empty=!String(input?.value||'').trim()&&!readLaborValue(select);
+      if(empty && !segment.contains(active) &&
+         !select?.tomselect?.isFocused && !select?.tomselect?.isOpen &&
+         row._manualProtectedSegment!==segment){
+        destroyLaborSearches(segment);
+        segment.remove();
+      }
+    }
+    for(const item of pending.values()) appendManagedAutoStopSegment(row,item);
     updateManualEntryTotal(row);
   }
 
@@ -2200,11 +2408,9 @@
     const usedMinutes=machineMinutes+customStopMinutes;
     const remaining=Math.max(0,MANUAL_SHIFT_TARGET_MINUTES-usedMinutes);
 
-    // Eliminar el cálculo anterior ANTES de crear el nuevo.
-    // Las filas manuales con otras labores permanecen.
-    removeManagedAutoStopSegments(row);
-
+    // Mantener las filas existentes hasta conocer el nuevo cálculo.
     if(remaining===0){
+      updateManagedAutoStopSegments(row,[]);
       if(usedMinutes>MANUAL_SHIFT_TARGET_MINUTES){
         setManualStatus(
           `El total de horas máquina + paradas manuales (${hoursToClockInput(usedMinutes/60)}) supera la jornada de 9:30. Reduce alguna hora para poder emparejar el tiempo.`,
@@ -2231,22 +2437,12 @@
       // Evita aplicar un cálculo viejo si el usuario cambió las horas mientras se consultaba Supabase.
       if(!row.isConnected||row.dataset.autoStopRequest!==String(requestId)) return;
 
-      if(comidaMinutes>0){
-        appendManagedAutoStopSegment(row,{
-          hours:comidaMinutes/60,
-          laborId:String(comidaLabor.id),
-          kind:'COMIDA'
-        });
-      }
-      if(patioMinutes>0&&patioLabor){
-        appendManagedAutoStopSegment(row,{
-          hours:patioMinutes/60,
-          laborId:String(patioLabor.id),
-          kind:'PATIO'
-        });
-      }
-
-      updateManualEntryTotal(row);
+      updateManagedAutoStopSegments(row,[
+        {hours:comidaMinutes/60,laborId:String(comidaLabor.id),kind:'COMIDA'},
+        ...(patioMinutes>0&&patioLabor
+          ? [{hours:patioMinutes/60,laborId:String(patioLabor.id),kind:'PATIO'}]
+          : [])
+      ]);
 
       const machineClock=hoursToClockInput(machineMinutes/60);
       const customText=customStopMinutes>0
@@ -2314,6 +2510,7 @@
       // espera medio segundo sin nuevas teclas y luego pasa a Labor.
       const captured=raw;
       machineAdvanceTimer=setTimeout(()=>{
+        if(!hours.isConnected || document.activeElement!==hours) return;
         const current=String(hours.value||'').trim();
 
         // Solo avanzar si el valor no cambió durante medio segundo.
@@ -2349,7 +2546,9 @@
     hours?.addEventListener('focus',()=>{
       clearTimeout(machineAdvanceTimer);
       setTimeout(()=>{
-        try{hours.select();}catch(_){}
+        if(hours.isConnected && document.activeElement===hours){
+          try{hours.select();}catch(_){}
+        }
       },0);
     });
 
@@ -2363,7 +2562,12 @@
         updateManualEntryTotal(row);
 
         if(type==='machine'||(type==='stop'&&segment.dataset.autoStop!=='true')){
-          autofillManualStopsTo930(row);
+          // Esperar a que termine el clic que provocó el blur; así el campo
+          // destino ya es el activo antes de actualizar COMIDA/PATIO.
+          clearTimeout(row._manualStopsTimer);
+          row._manualStopsTimer=setTimeout(()=>{
+            if(row.isConnected) autofillManualStopsTo930(row);
+          },0);
         }
       }
     });
@@ -2384,7 +2588,14 @@
         hours.blur();
 
         if(shouldAdvance){
-          setTimeout(focusMachineLabor,90);
+          setTimeout(()=>{
+            // Enter avanza, salvo que el usuario ya haya pulsado otro campo.
+            const active=document.activeElement;
+            if(hours.isConnected && (active===document.body ||
+               active===document.documentElement || active===hours)){
+              focusMachineLabor();
+            }
+          },90);
         }
       }
     });
@@ -3522,6 +3733,48 @@
     renderManualRows();
   }
 
+  function refreshPendingManualCatalogs(){
+    // Solo se ejecuta cuando el usuario empezó a editar antes de la carga.
+    // Agregar opciones nuevas sin destruir, vaciar ni reordenar sus controles.
+    for(const select of els.manualEntryBody.querySelectorAll('.manual-equipment-select')){
+      const options=manualEquipmentOptions();
+      if(select.tomselect){
+        const ctl=select.tomselect;
+        for(const option of options){
+          if(!ctl.options[String(option.value)]) ctl.addOption(option);
+        }
+        // No refrescar el menú mientras está abierto.
+      }else{
+        const value=select.value;
+        for(const option of options){
+          if(![...select.options].some(o=>o.value===option.value))
+            select.add(new Option(option.text,option.value));
+        }
+        select.value=value;
+      }
+    }
+    for(const select of els.manualEntryBody.querySelectorAll('.manual-labor-select')){
+      const type=select.classList.contains('manual-stop-labor')?'stop':'machine';
+      const row=select.closest('[data-manual-row]');
+      const selected=readLaborValue(select);
+      const equipo=type==='machine'
+        ? readManualEquipmentValue(row?.querySelector('.manual-equipment-select')) : '';
+      const options=laborOptions(type,selected,equipo);
+      if(select.tomselect){
+        const ctl=select.tomselect;
+        for(const option of options){
+          if(!ctl.options[String(option.value)]) ctl.addOption(option);
+        }
+        // No refrescar el menú mientras está abierto.
+      }else{
+        for(const option of options){
+          if(![...select.options].some(o=>o.value===option.value))
+            select.add(new Option(option.text,option.value));
+        }
+      }
+    }
+  }
+
   async function openManualHours(){
     if(!db){
       showToast('Supabase no está disponible.',true);
@@ -3539,8 +3792,18 @@
     try{
       await Promise.all([loadManualLabors(),loadManualEquipments()]);
 
-      // Reconstruir una sola vez para cargar los catálogos nuevos sin dejar controles antiguos.
-      clearManualEntryRows();
+      if(!els.manualHoursOverlay.classList.contains('visible')) return;
+      // El formulario original se reconstruye cuando no fue usado todavía.
+      // Si ya tiene foco/valores, solo añadir opciones sin borrar sus campos.
+      const row=els.manualEntryBody.querySelector('[data-manual-row]');
+      const interacted=row && (
+        row.contains(document.activeElement) ||
+        [...row.querySelectorAll('.manual-machine-hours,.manual-stop-hours')]
+          .some(input=>String(input.value||'').trim()) ||
+        readManualEquipmentValue(row.querySelector('.manual-equipment-select'))
+      );
+      if(interacted) refreshPendingManualCatalogs();
+      else clearManualEntryRows();
       await loadManualRows();
       setManualStatus(
         'Selecciona un equipo guardado o agrega uno nuevo. Los registros de hoy aparecerán debajo cuando elijas el equipo.',
@@ -3566,6 +3829,18 @@
     let payloads;
 
     try{
+      // Esperar al ID de Supabase si se acaba de elegir una labor importada.
+      // Nunca enviar "NaN" como labor_maquina_id.
+      for(const select of els.manualEntryBody.querySelectorAll('.manual-labor-select')){
+        const control=select.tomselect;
+        if(control?._manualImportPromise){
+          const labor=await control._manualImportPromise;
+          if(!labor) throw new Error('No se pudo vincular una labor importada. Vuelve a seleccionarla.');
+        }
+        if(importedLaborNameFromId(readLaborValue(select))){
+          throw new Error('La labor importada todavía se está preparando. Vuelve a seleccionarla.');
+        }
+      }
       payloads=collectManualEntryRows();
     }catch(error){
       showToast(String(error.message||error),true);
@@ -3745,17 +4020,16 @@
 
   async function fetchManualAnalysisRecords(){
     // Se carga también el catálogo para mostrar el nombre real de las labores.
-    const [{data:labors,error:laborsError},{data:manual,error:manualError}]=await Promise.all([
-      db.from(MANUAL_LABORS_TABLE).select('id,nombre,activo').order('nombre',{ascending:true}),
+    const [labors,{data:manual,error:manualError}]=await Promise.all([
+      fetchCompleteManualLaborCatalog(),
       db.from(MANUAL_HOURS_TABLE)
         .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
         .order('fecha',{ascending:true}).order('id',{ascending:true})
     ]);
 
-    if(laborsError) throw laborsError;
     if(manualError) throw manualError;
 
-    state.manualLabors=labors||[];
+    state.manualLabors=mergeManualLaborCatalog(labors||[]);
 
     // Recalcular popularidad por separado:
     // máquina solo cuenta labor_maquina_id y parada solo labor_parada_id.
@@ -3797,6 +4071,9 @@
     // filas o valores viejos de una carga anterior.
     state.importedRows=[...imported];
     state.manualAnalysisRows=[...manual];
+    if(els.manualHoursOverlay?.classList.contains('visible')){
+      refreshManualLaborControls();
+    }
     state.manualRecordsViewRows=[];
     state.weeklyRows=[];
     state.weeklyLoadedStart='';
@@ -4156,6 +4433,9 @@
         return da-dbb || String(a.equipment||'').localeCompare(String(b.equipment||''),undefined,{numeric:true});
       });
 
+    if(els.manualHoursOverlay?.classList.contains('visible')){
+      refreshManualLaborControls();
+    }
     if(state.dataSource==='field'){
       applyCurrentDataSource({keepSelection:true,resetDates:false});
     }
@@ -4686,6 +4966,20 @@
   els.manualRecordsFrom?.addEventListener('change',renderManualRecordsView);
   els.manualRecordsTo?.addEventListener('change',renderManualRecordsView);
   els.manualRecordsClear?.addEventListener('click',()=>{if(els.manualRecordsSearch)els.manualRecordsSearch.value='';if(els.manualRecordsFrom)els.manualRecordsFrom.value='';if(els.manualRecordsTo)els.manualRecordsTo.value='';renderManualRecordsView();});
+
+  // Una pulsación en Labor parada debe proteger ese control de recálculos
+  // disparados por el blur del campo anterior (mousedown sucede antes de blur).
+  els.manualEntryBody?.addEventListener('pointerdown',event=>{
+    const row=event.target.closest('[data-manual-row]');
+    if(!row) return;
+    row._manualProtectedSegment=event.target.closest('[data-segment-type="stop"]');
+  },true);
+  els.manualEntryBody?.addEventListener('focusin',event=>{
+    const row=event.target.closest('[data-manual-row]');
+    if(!row) return;
+    const segment=event.target.closest('[data-segment-type="stop"]');
+    if(segment) row._manualProtectedSegment=segment;
+  });
 
   els.manualHoursBtn?.addEventListener('click',openManualHours);
   els.manualHoursClose?.addEventListener('click',closeManualHours);
