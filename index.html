@@ -852,7 +852,7 @@
         <span class="weekly-chip pending"><strong id="weeklyPendingCount">0</strong> pendientes</span>
         <span class="weekly-chip nowork"><strong id="weeklyNoWorkCount">0</strong> no trabajó</span>
       </div>
-      <p class="weekly-note">Se muestran lunes a sábado. Los días futuros no se consideran pendientes. “No trabajó” se guarda en Supabase y deja de contar como registro pendiente.</p>
+      <p class="weekly-note" id="weeklyDataStatus" role="status" aria-live="polite">Se muestran lunes a sábado. Se comprueban los registros manuales e importados.</p>
       <div class="weekly-table-wrap">
         <table class="weekly-table"><thead id="weeklyControlHead"></thead><tbody id="weeklyControlBody"></tbody></table>
         <div class="weekly-empty" id="weeklyControlEmpty" hidden>No hay equipos para mostrar.</div>
@@ -978,7 +978,7 @@
     rows:[], byEquipment:new Map(), selected:null, sourceSheet:'registros_horas', fileName:'Supabase',
     activeDay:'', activeLabor:'', activeMetDays:false, equipmentStatus:'all', loading:false,
     manualLabors:[], manualRows:[], manualTomSelects:new Set(), manualRowSeq:0, importedRows:[], manualAnalysisRows:[], dataSource:'field', manualEditingId:null, manualEquipments:[], manualEquipmentTomSelects:new Set(), manualDuplicateCheckSeq:0, manualFixedDate:'', manualAutoStopSeq:0, manualRecordsViewRows:[],
-    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:'', manualTimeFormat:'clock', manualLaborUsageMachine:new Map(), manualLaborUsageStop:new Map(), manualLaborUsageByEquipmentMachine:new Map(), manualRecordsSelected:new Set(), lastAuthoritativeLoad:0
+    weeklyStart:'', weeklyRows:[], weeklyBusy:false, weeklyEquipmentQuery:'', weeklyStatusFilter:'all', weeklyDayFilter:'all', manualNoWorkRows:[], weeklyLoadedStart:'', weeklyIndex:new Map(), weeklyLoadState:'idle', weeklySourcesVerified:{manual:false,imported:false}, weeklyEquipmentCatalogVerified:false, weeklyRequestSeq:0, manualTimeFormat:'clock', manualLaborUsageMachine:new Map(), manualLaborUsageStop:new Map(), manualLaborUsageByEquipmentMachine:new Map(), manualRecordsSelected:new Set(), lastAuthoritativeLoad:0
   };
 
   async function clearLegacyRegistroHorasCache(){
@@ -1362,6 +1362,12 @@
     );
 
     for(const row of (state.manualAnalysisRows||[])){
+      const eq=normalizeManualEquipment(row.equipment);
+      if(eq) set.add(eq);
+    }
+
+    // También mostrar los equipos que solamente tienen horas de campo importadas.
+    for(const row of (state.importedRows||[])){
       const eq=normalizeManualEquipment(row.equipment);
       if(eq) set.add(eq);
     }
@@ -3216,57 +3222,202 @@
   }
 
 
-  async function loadWeeklyControlRows(){
-    const dates=weeklyDates();
-    const from=isoDate(dates[0]);
-    const to=isoDate(dates[dates.length-1]);
-    const {data,error}=await withManualTimeout(
-      db.from(MANUAL_HOURS_TABLE)
-        .select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id')
-        .gte('fecha',from).lte('fecha',to)
-        .order('fecha',{ascending:true}).order('equipo',{ascending:true}),
-      'La carga del control semanal'
-    );
-    if(error) throw error;
-    state.weeklyRows=data||[];
-    state.weeklyLoadedStart=state.weeklyStart;
-    return state.weeklyRows;
+  // Control semanal V5: consultar las DOS fuentes de horas del periodo y paginar.
+  // Una sola página de PostgREST puede ocultar registros posteriores al límite de 1.000.
+  async function fetchWeeklyTablePages(table,fields,from,to){
+    const all=[];
+    for(let offset=0;;offset+=PAGE_SIZE){
+      const {data,error}=await withManualTimeout(
+        db.from(table).select(fields)
+          .gte('fecha',from).lte('fecha',to)
+          .order('fecha',{ascending:true}).order('id',{ascending:true})
+          .range(offset,offset+PAGE_SIZE-1),
+        `La consulta semanal de ${table}`
+      );
+      if(error) throw error;
+      all.push(...(data||[]));
+      if(!data||data.length<PAGE_SIZE) break;
+    }
+    return all;
   }
 
+  // La estructura normalizada permite reconocer un día con registro
+  // tanto si viene de registro_horas_manual como de registros_horas.
+  function weeklyImportedDbRow(r){
+    const equipo=normalizeManualEquipment(r.equipo_numero);
+    const fecha=String(r.fecha||'').slice(0,10);
+    if(!equipo||!fecha||!/^(840|841)/.test(equipo)) return null;
+    return {
+      id:`IMPORTADO-${r.id}`,fecha,equipo,
+      horas_maquina:num(r.cantidad),horas_parada:0,
+      labor_maquina_id:null,labor_parada_id:null,
+      weeklySource:'imported'
+    };
+  }
+
+  function weeklyImportedAppRow(r){
+    const equipo=normalizeManualEquipment(r?.equipment);
+    const fecha=r?.date instanceof Date?isoDate(r.date):String(r?.date||'').slice(0,10);
+    if(!equipo||!fecha||!/^(840|841)/.test(equipo)) return null;
+    return {
+      id:`IMPORTADO-${r.idKey||r.id||''}`,fecha,equipo,
+      horas_maquina:num(r.hours),horas_parada:0,
+      labor_maquina_id:null,labor_parada_id:null,weeklySource:'imported'
+    };
+  }
+
+  function weeklyManualAppRow(r){
+    const equipo=normalizeManualEquipment(r?.equipment);
+    const fecha=r?.date instanceof Date?isoDate(r.date):String(r?.date||'').slice(0,10);
+    if(!equipo||!fecha) return null;
+    return {
+      id:r.manualId??String(r.id||'').replace(/^manual-/,''),fecha,equipo,
+      horas_maquina:num(r.hours),horas_parada:num(r.stopHours),
+      labor_maquina_id:r.labor?String(r.labor).replace(/^M-/,''):null,
+      labor_parada_id:null,weeklySource:'manual'
+    };
+  }
 
   function hydrateWeeklyFromLoadedState(){
     const dates=weeklyDates();
     const from=isoDate(dates[0]);
     const to=isoDate(dates[dates.length-1]);
+    const inWeek=r=>r && r.fecha>=from && r.fecha<=to;
     const rows=[];
 
+    // Fallback local si algún origen falla; nunca considerar este fallback
+    // como verificación suficiente para declarar una ausencia de registros.
     for(const r of (state.manualAnalysisRows||[])){
-      if(!r?.date) continue;
-      const fecha=isoDate(r.date);
-      if(fecha<from||fecha>to) continue;
-
-      rows.push({
-        id:r.manualId??String(r.id||'').replace(/^manual-/,''),
-        fecha,
-        equipo:normalizeManualEquipment(r.equipment),
-        horas_maquina:num(r.hours),
-        total_maquina:num(r.machineTotal),
-        labor_maquina_id:r.labor ? String(r.labor).replace(/^M-/,'') : null,
-        horas_parada:num(r.stopHours),
-        total_parada:num(r.stopTotal),
-        labor_parada_id:null
-      });
+      const parsed=weeklyManualAppRow(r);
+      if(inWeek(parsed)) rows.push(parsed);
     }
-
     for(const r of (state.manualNoWorkRows||[])){
       const fecha=String(r.fecha||'').slice(0,10);
-      if(fecha>=from&&fecha<=to) rows.push({...r});
+      if(fecha>=from&&fecha<=to) rows.push({...r,weeklySource:'manual'});
+    }
+    for(const r of (state.importedRows||[])){
+      const parsed=weeklyImportedAppRow(r);
+      if(inWeek(parsed)) rows.push(parsed);
+    }
+    state.weeklyRows=rows;
+    state.weeklyLoadedStart=state.weeklyStart;
+    rebuildWeeklyIndex();
+    return rows;
+  }
+
+  function rebuildWeeklyIndex(){
+    const index=new Map();
+    for(const r of (state.weeklyRows||[])){
+      const fecha=String(r.fecha||'').slice(0,10);
+      const equipo=normalizeManualEquipment(r.equipo);
+      if(!fecha||!equipo) continue;
+      const key=`${equipo}|||${fecha}`;
+      if(!index.has(key)) index.set(key,{count:0,total:0,noWork:0,markerId:null});
+      const entry=index.get(key);
+      if(isNoWorkRecord(r)){
+        entry.noWork++;
+        if(entry.markerId==null) entry.markerId=r.id;
+      }else{
+        entry.count++;
+        entry.total+=num(r.horas_maquina)+num(r.horas_parada);
+      }
+    }
+    state.weeklyIndex=index;
+  }
+
+  async function loadWeeklyEquipmentCatalog(){
+    const all=[];
+    for(let offset=0;;offset+=PAGE_SIZE){
+      const {data,error}=await withManualTimeout(
+        db.from(MANUAL_EQUIPMENT_TABLE)
+          .select('id,numero,activo')
+          .order('id',{ascending:true})
+          .range(offset,offset+PAGE_SIZE-1),
+        'La carga de equipos para Control semanal'
+      );
+      if(error) throw error;
+      all.push(...(data||[]));
+      if(!data||data.length<PAGE_SIZE) break;
+    }
+    // No perder equipos recién creados mientras esta consulta estaba pendiente.
+    const byNumber=new Map((state.manualEquipments||[]).map(item=>[normalizeManualEquipment(item.numero),item]));
+    for(const item of all) byNumber.set(normalizeManualEquipment(item.numero),item);
+    state.manualEquipments=[...byNumber.values()];
+    return all;
+  }
+
+  async function loadWeeklyControlRows(){
+    const week=state.weeklyStart;
+    const token=++state.weeklyRequestSeq;
+    const dates=weeklyDates();
+    const from=isoDate(dates[0]);
+    const to=isoDate(dates[dates.length-1]);
+    state.weeklyLoadState='loading';
+
+    const [manualResult,importedResult,catalogResult,equipmentResult]=await Promise.allSettled([
+      fetchWeeklyTablePages(MANUAL_HOURS_TABLE,
+        'id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id',from,to),
+      fetchWeeklyTablePages('registros_horas','id,fecha,equipo_numero,cantidad',from,to),
+      // Necesario para distinguir los marcadores NO TRABAJÓ de horas reales.
+      // Leer de nuevo para reconocer incluso marcas NO TRABAJÓ nuevas.
+      loadManualLabors(),
+      loadWeeklyEquipmentCatalog()
+    ]);
+
+    // Evita que una petición tardía de otra semana sobreescriba la actual.
+    if(token!==state.weeklyRequestSeq||week!==state.weeklyStart) return false;
+
+    const manualOk=manualResult.status==='fulfilled'&&catalogResult.status==='fulfilled';
+    const importedOk=importedResult.status==='fulfilled';
+    const fallback=hydrateWeeklyFromLoadedState();
+    const rows=[];
+
+    if(manualOk){
+      rows.push(...manualResult.value.map(r=>({...r,weeklySource:'manual'})));
+    }else{
+      rows.push(...fallback.filter(r=>r.weeklySource==='manual'));
+    }
+    if(importedOk){
+      rows.push(...importedResult.value.map(weeklyImportedDbRow).filter(Boolean));
+    }else{
+      rows.push(...fallback.filter(r=>r.weeklySource==='imported'));
     }
 
     state.weeklyRows=rows;
-    state.weeklyLoadedStart=state.weeklyStart;
+    state.weeklyLoadedStart=week;
+    state.weeklySourcesVerified={manual:manualOk,imported:importedOk};
+    state.weeklyEquipmentCatalogVerified=equipmentResult.status==='fulfilled';
+    state.weeklyLoadState='ready';
+    rebuildWeeklyIndex();
+
+    if(equipmentResult.status==='rejected'){
+      console.warn('No se pudo completar el catálogo semanal de equipos:',equipmentResult.reason);
+      showToast('No se pudieron cargar todos los equipos del catálogo. Se muestran los encontrados en los registros.',true);
+    }
+    if(!manualOk||!importedOk){
+      const failed=[!manualOk?'manuales':null,!importedOk?'importados':null].filter(Boolean).join(' e ');
+      console.warn('Control semanal: consulta incompleta',failed,
+        manualResult.status==='rejected'?manualResult.reason:null,
+        importedResult.status==='rejected'?importedResult.reason:null,
+        catalogResult.status==='rejected'?catalogResult.reason:null);
+      showToast(`Control semanal: no se pudo verificar ${failed}. Los días sin datos quedarán como No verificados.`,true);
+    }
+    return true;
   }
 
+  function weeklyStatusMessage(){
+    if(state.weeklyLoadState==='loading')
+      return 'Consultando Supabase: registros manuales y registros importados de esta semana...';
+    if(state.weeklyLoadState==='error')
+      return '⚠ No se pudo consultar esta semana. No se marcarán días como pendientes sin verificar los datos.';
+    if(state.weeklyLoadState!=='ready')
+      return 'Preparando consulta semanal...';
+    if(!state.weeklySourcesVerified.manual||!state.weeklySourcesVerified.imported)
+      return '⚠ Consulta parcial. Los días sin registros confirmados aparecen como No verificado, no como pendientes.';
+    if(!state.weeklyEquipmentCatalogVerified)
+      return '⚠ Registros de ambas fuentes verificados; no se pudo comprobar el catálogo completo de equipos.';
+    return 'Datos comprobados en Supabase: horas manuales y horas importadas. Los domingos se excluyen y los días futuros no se evalúan.';
+  }
 
   function weeklyEquipmentMatchesFilters(equipo,dates){
     const q=norm(state.weeklyEquipmentQuery||'');
@@ -3299,16 +3450,18 @@
   }
 
   function weeklyCellState(equipo,fecha){
-    const rows=(state.weeklyRows||[]).filter(r=>String(r.fecha||'').slice(0,10)===fecha&&normalizeManualEquipment(r.equipo)===equipo);
-    const actual=rows.filter(r=>!isNoWorkRecord(r));
-    const noWork=rows.filter(r=>isNoWorkRecord(r));
-    if(actual.length){
-      const total=actual.reduce((sum,r)=>sum+num(r.horas_maquina)+num(r.horas_parada),0);
-      return {type:'record',count:actual.length,total,markerId:noWork[0]?.id||null};
-    }
-    if(noWork.length) return {type:'nowork',count:noWork.length,total:0,markerId:noWork[0].id};
+    const entry=state.weeklyIndex.get(`${normalizeManualEquipment(equipo)}|||${fecha}`);
+    // Un registro real siempre prevalece frente a una marca vieja «No trabajó».
+    if(entry?.count) return {type:'record',count:entry.count,total:entry.total,markerId:entry.markerId};
+    if(entry?.noWork) return {type:'nowork',count:entry.noWork,total:0,markerId:entry.markerId};
     const d=localDateFromIso(fecha),today=localDateFromIso(todayIsoLocal());
     if(d&&today&&d>today) return {type:'future',count:0,total:0,markerId:null};
+    // Si no se pudo verificar alguna de las dos tablas, jamás declarar
+    // «Sin registro»: podría existir allí un registro que no se consultó.
+    if(state.weeklyLoadState!=='ready'||
+       !state.weeklySourcesVerified.manual||!state.weeklySourcesVerified.imported){
+      return {type:'unverified',count:0,total:0,markerId:null};
+    }
     return {type:'missing',count:0,total:0,markerId:null};
   }
 
@@ -3317,6 +3470,8 @@
     const dates=weeklyDates();
     const allEquipments=weeklyEquipmentNumbers();
     const equipments=allEquipments.filter(eq=>weeklyEquipmentMatchesFilters(eq,dates));
+    const statusNote=$('weeklyDataStatus');
+    if(statusNote) statusNote.textContent=weeklyStatusMessage();
 
     els.weeklyRangeLabel.textContent=`${displayDate(dates[0])} – ${displayDate(dates[dates.length-1])}`;
 
@@ -3334,6 +3489,16 @@
     let recorded=0,pending=0,noWork=0;
     const body=[];
 
+    if(state.weeklyLoadState==='loading'||state.weeklyLoadState==='error'||state.weeklyLoadState==='idle'){
+      els.weeklyEquipmentCount.textContent='—';
+      els.weeklyRecordedCount.textContent='—';
+      els.weeklyPendingCount.textContent='—';
+      els.weeklyNoWorkCount.textContent='—';
+      els.weeklyControlEmpty.hidden=true;
+      els.weeklyControlBody.innerHTML=`<tr><td colspan="${visibleDateIndexes.length+1}" class="weekly-empty">${state.weeklyLoadState==='loading'?'Comprobando registros de ambas fuentes...':'No se pudieron verificar los registros de la semana.'}</td></tr>`;
+      return;
+    }
+
     for(const equipo of equipments){
       const cells=visibleDateIndexes.map(i=>{
         const d=dates[i];
@@ -3350,6 +3515,9 @@
         }
         if(status.type==='future'){
           return `<td><div class="weekly-cell future"><div class="weekly-status">Próximo día</div><div class="weekly-sub">Aún no se evalúa</div></div></td>`;
+        }
+        if(status.type==='unverified'){
+          return `<td><div class="weekly-cell future"><div class="weekly-status">? No verificado</div><div class="weekly-sub">Falta comprobar un origen</div></div></td>`;
         }
         pending++;
         return `<td><div class="weekly-cell missing">
@@ -3479,6 +3647,7 @@
       const inserted=data||[];
       state.weeklyRows.push(...inserted);
       state.manualNoWorkRows.push(...inserted);
+      rebuildWeeklyIndex();
       renderWeeklyControl();
 
       showToast(`Equipo ${equipo}: ${inserted.length} día${inserted.length===1?'':'s'} marcado${inserted.length===1?'':'s'} como No trabajó.`);
@@ -3502,7 +3671,7 @@
       if(existing.type==='nowork'){showToast('Ese día ya estaba marcado como No trabajó.');return;}
       const payload={fecha,equipo:normalizeManualEquipment(equipo),horas_maquina:0,total_maquina:0,labor_maquina_id:Number(labor.id),horas_parada:0,total_parada:0,labor_parada_id:null};
       const {data,error}=await withManualTimeout(db.from(MANUAL_HOURS_TABLE).insert(payload).select('id,fecha,equipo,horas_maquina,total_maquina,labor_maquina_id,horas_parada,total_parada,labor_parada_id').single(),'El marcado de No trabajó');
-      if(error) throw error;if(data){state.weeklyRows.push(data);state.manualNoWorkRows.push(data);}renderWeeklyControl();showToast(`Equipo ${equipo}: ${displayDate(parseDate(fecha))} marcado como No trabajó.`);
+      if(error) throw error;if(data){state.weeklyRows.push(data);state.manualNoWorkRows.push(data);}rebuildWeeklyIndex();renderWeeklyControl();showToast(`Equipo ${equipo}: ${displayDate(parseDate(fecha))} marcado como No trabajó.`);
     }catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);}finally{state.weeklyBusy=false;if(button)button.disabled=false;}
   }
 
@@ -3513,6 +3682,7 @@
       if(error)throw error;if(!(data||[]).length)throw new Error('No se pudo quitar la marca “No trabajó”.');
       state.weeklyRows=(state.weeklyRows||[]).filter(r=>String(r.id)!==String(id));
       state.manualNoWorkRows=(state.manualNoWorkRows||[]).filter(r=>String(r.id)!==String(id));
+      rebuildWeeklyIndex();
       renderWeeklyControl();showToast(`Equipo ${equipo}: ${displayDate(parseDate(fecha))} vuelve a quedar pendiente.`);
     }catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);}finally{state.weeklyBusy=false;if(button)button.disabled=false;}
   }
@@ -3528,22 +3698,47 @@
     if(els.weeklyStatusFilter) els.weeklyStatusFilter.value=state.weeklyStatusFilter||'all';
     if(els.weeklyDayFilter) els.weeklyDayFilter.value=state.weeklyDayFilter||'all';
 
-    // Abrir la vista NO consulta Supabase.
-    hydrateWeeklyFromLoadedState();
+    state.weeklyLoadState='loading';
     renderWeeklyControl();
+    try{
+      if(await loadWeeklyControlRows()) renderWeeklyControl();
+    }catch(error){
+      console.error(error);
+      state.weeklyLoadState='error';
+      renderWeeklyControl();
+      showToast(supabaseErrorMessage(error),true);
+    }
   }
 
   function closeWeeklyControl(){els.weeklyControlOverlay?.classList.remove('visible');els.weeklyControlOverlay?.setAttribute('aria-hidden','true');}
 
   async function changeWeeklyWeek(days){
-    const current=localDateFromIso(state.weeklyStart)||mondayOf(new Date());state.weeklyStart=isoDate(addLocalDays(current,days));
-    try{await loadWeeklyControlRows();renderWeeklyControl();}catch(error){console.error(error);showToast(supabaseErrorMessage(error),true);}
+    const current=localDateFromIso(state.weeklyStart)||mondayOf(new Date());
+    state.weeklyStart=isoDate(addLocalDays(current,days));
+    state.weeklyLoadState='loading';
+    renderWeeklyControl();
+    try{
+      if(await loadWeeklyControlRows()) renderWeeklyControl();
+    }catch(error){
+      console.error(error);
+      state.weeklyLoadState='error';
+      renderWeeklyControl();
+      showToast(supabaseErrorMessage(error),true);
+    }
   }
 
   async function goCurrentWeeklyWeek(){
     state.weeklyStart=isoDate(mondayOf(new Date()));
-    hydrateWeeklyFromLoadedState();
+    state.weeklyLoadState='loading';
     renderWeeklyControl();
+    try{
+      if(await loadWeeklyControlRows()) renderWeeklyControl();
+    }catch(error){
+      console.error(error);
+      state.weeklyLoadState='error';
+      renderWeeklyControl();
+      showToast(supabaseErrorMessage(error),true);
+    }
   }
 
   async function removeNoWorkMarkersForPayloads(payloads){
@@ -4075,8 +4270,12 @@
       refreshManualLaborControls();
     }
     state.manualRecordsViewRows=[];
-    state.weeklyRows=[];
-    state.weeklyLoadedStart='';
+    if(!els.weeklyControlOverlay?.classList.contains('visible')){
+      state.weeklyRows=[];
+      state.weeklyIndex=new Map();
+      state.weeklyLoadedStart='';
+      state.weeklyLoadState='idle';
+    }
     state.lastAuthoritativeLoad=Date.now();
 
     return [...state.importedRows,...state.manualAnalysisRows];
@@ -4165,8 +4364,12 @@
 
     // Invalidar vistas derivadas antes de una lectura fresca.
     state.manualRecordsViewRows=[];
-    state.weeklyRows=[];
-    state.weeklyLoadedStart='';
+    if(!els.weeklyControlOverlay?.classList.contains('visible')){
+      state.weeklyRows=[];
+      state.weeklyIndex=new Map();
+      state.weeklyLoadedStart='';
+      state.weeklyLoadState='idle';
+    }
 
     setStatus('loading','Consultando Supabase...');
     setMissingDaysLoading();
@@ -4177,6 +4380,11 @@
       updateMissingDaysIndicator(state.importedRows);
       if(!els.dateFrom.value&&!els.dateTo.value) setGlobalDateLimits(rowsForCurrentSource());
       applyCurrentDataSource({keepSelection,resetDates:false});
+      if(els.weeklyControlOverlay?.classList.contains('visible')){
+        state.weeklyLoadState='loading';
+        renderWeeklyControl();
+        if(await loadWeeklyControlRows()) renderWeeklyControl();
+      }
       setStatus('ok',`Actualizado · Campo ${fmtInt(state.importedRows.length)} · Taller ${fmtInt(state.manualAnalysisRows.length)}`);
       if(!silent) showToast(`${sourceLabel()}: ${fmtInt(state.rows.length)} registros en ${fmtInt(state.byEquipment.size)} equipos.`);
       return state.rows;
@@ -4919,15 +5127,10 @@
   els.weeklyTodayBtn?.addEventListener('click',goCurrentWeeklyWeek);
   let weeklyFilterTimer=null;
 
-  async function queryWeeklyForFilter(){
-    try{
-      await loadWeeklyControlRows();
-      renderWeeklyControl();
-    }catch(error){
-      console.error(error);
-      showToast(supabaseErrorMessage(error),true);
-      renderWeeklyControl();
-    }
+  // Los filtros deben ser instantáneos: no consultar la base ni reemplazar
+  // los registros de la semana cada vez que alguien escribe o elige un filtro.
+  function queryWeeklyForFilter(){
+    renderWeeklyControl();
   }
 
   els.weeklyEquipmentSearch?.addEventListener('input',()=>{
